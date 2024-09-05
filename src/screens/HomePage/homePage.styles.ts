@@ -1,0 +1,55 @@
+export const homePageStyles = {
+  container: {
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: '2rem',
+      fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+      color: '#f4f4f4',
+      backgroundColor: '#2c2c2c',
+  },
+  header: {
+      textAlign: 'center' as 'center',
+      marginBottom: '3rem',
+      backgroundColor: '#444',
+      color: '#fff',
+      padding: '2rem',
+      borderRadius: '8px',
+      boxShadow: '0 4px 8px rgba(0, 0, 0, 0.3)',
+  },
+  headerTitle: {
+      fontSize: '2.5rem',
+      marginBottom: '1rem',
+  },
+  headerSubtitle: {
+      fontSize: '1.25rem',
+  },
+  schedulePreview: {
+      marginTop: '3rem',
+      textAlign: 'center' as 'center',
+      width: '100%',
+  },
+  scheduleTable: {
+      width: '100%',
+      margin: '0 auto',
+      borderCollapse: 'collapse' as 'collapse',
+      backgroundColor: '#444',
+      color: '#fff',
+      borderRadius: '8px',
+      overflow: 'hidden',
+      boxShadow: '0 10px 20px rgba(0, 0, 0, 0.3)',
+  },
+  scheduleTableCell: {
+      padding: '1.5rem',
+      textAlign: 'center' as 'center',
+      border: '2px solid #555',
+      backgroundColor: '#333',
+  },
+  classBlockCell: {
+      backgroundColor: '#666',
+      color: '#fff',
+      borderRadius: '8px',
+      border: '2px solid #444',
+      padding: '1rem',
+      fontWeight: 'bold',
+  },
+};
