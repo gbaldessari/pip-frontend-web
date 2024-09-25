@@ -5,7 +5,7 @@ import { AppRoutes } from "./routes/AppRoutes";
 function App() {
   return (
     <BrowserRouter>
-      <div style={{ position: "fixed", left: 0, width: '100%', }}>
+      <div style={{ position: "fixed", top: 0, left: 0, width: '100%', }}>
         <div style={{display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'auto',}}>
           <AppRoutes />
         </div>
