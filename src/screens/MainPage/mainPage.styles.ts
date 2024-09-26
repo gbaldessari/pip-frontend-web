@@ -6,10 +6,10 @@ export const mainPageStyles = {
     fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
     color: '#f4f4f4',
     backgroundColor: '#1d1551',
-    overflow: 'hidden',
     width: '100%',
     height: '100vh',
     position: 'relative',
+    overflow: 'hidden',
   },
   header: {
     top: '0',
@@ -21,12 +21,12 @@ export const mainPageStyles = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
-    padding: '1rem',
   },
   headerImage: {
-    width: '180px',
+    width: '150px',
     position: 'relative',
     zIndex: 2,
+    padding: '1rem',
   },
   backgroundImage: {
     width: '100%',
@@ -34,7 +34,7 @@ export const mainPageStyles = {
     objectFit: 'cover',
     position: 'absolute',
     top: '0',
-    left: '0',
+    right: '0',
     zIndex: 1,
   },
   headerButton: {
@@ -47,6 +47,11 @@ export const mainPageStyles = {
     borderRadius: '5px',
     cursor: 'pointer',
     zIndex: 2,
+    transition: 'background-color 0.3s ease, transform 0.2s ease',
+    '&:hover': {
+      backgroundColor: '#315bb7',
+      transform: 'scale(1.05)',
+    },
   },
   body: {
     padding: '10rem',
@@ -60,16 +65,25 @@ export const mainPageStyles = {
     alignItems: 'center',
     justifyContent: 'center',
     padding: '3rem',
+    flexWrap: 'wrap',
   },
   bodyButton: {
     backgroundColor: '#427390',
     fontSize: '1.5rem',
-    color: 'fff',
+    color: '#fff',
     padding: '2rem 5rem',
-    marginRight: '4rem',
-    marginLeft: '4rem',
+    margin: '1rem', // Ajustado para responsividad
     border: 'none',
     borderRadius: '20px',
     cursor: 'pointer',
+    transition: 'background-color 0.3s ease, transform 0.2s ease',
+    '&:hover': {
+      backgroundColor: '#315b73',
+      transform: 'scale(1.05)',
+    },
+    '@media (max-width: 768px)': {
+      padding: '1.5rem 3rem',
+      fontSize: '1.2rem',
+    },
   },
 };
