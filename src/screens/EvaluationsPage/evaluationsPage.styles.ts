@@ -1,0 +1,52 @@
+export const evaluationsPageStyles = {
+  container: {
+    top: '0',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+    color: '#01579b',
+    backgroundColor: '#1d1551',
+    width: '100%',
+    height: '100vh',
+    overflow: 'hidden',
+  },
+  header: {
+    top: '0',
+    backgroundColor: '#427390',
+    color: '#fff',
+    padding: '2.5rem 2rem',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'relative',
+    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.3)',
+  },
+  table: {
+    width: '100%',
+    maxWidth: '900px',
+    borderCollapse: 'collapse',
+    marginTop: '2rem',
+    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)',
+  },
+  tableHead: {
+    backgroundColor: '#427390',
+    color: '#fff',
+    textAlign: 'center',
+    fontSize: '1.2rem',
+  },
+  tableBody: {
+    backgroundColor: '#fff',
+  },
+  tableCell: {
+    border: '1px solid #427390',
+    padding: '1rem',
+    textAlign: 'center',
+    fontSize: '1rem',
+  },
+  body: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    padding: '2rem',
+  },
+};

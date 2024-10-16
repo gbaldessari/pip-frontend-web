@@ -16,7 +16,7 @@ export const homePageStyles = {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        justifyContent: 'space-between',
+        justifyContent: 'center',
         backgroundColor: '#1d1551',
         color: '#fff',
         padding: '2rem',
@@ -42,12 +42,8 @@ export const homePageStyles = {
     },
     loginContainer: {
         display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'flex-end',
+        flexDirection: 'column',
         alignItems: 'center',
-        marginRight: '2rem',
-        marginLeft: 'auto',
-
         marginBottom: '2rem',
         zIndex: 2,
     },
@@ -77,10 +73,13 @@ export const homePageStyles = {
         fontSize: '1rem',
         cursor: 'pointer',
         boxShadow: '0 2px 6px rgba(0, 0, 0, 0.2)',
-        transition: 'all 0.3s ease',
-        ':hover': {
-            backgroundColor: '#315bb7',
-            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
-        },
+    },
+    forgotPasswordButton: {
+        marginTop: '1rem',
+        backgroundColor: 'transparent',
+        border: 'none',
+        color: '#4273ff',
+        textDecoration: 'underline',
+        cursor: 'pointer',
     },
 };

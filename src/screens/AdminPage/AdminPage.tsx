@@ -50,7 +50,7 @@ const AdminPage: React.FC = () => {
             onMouseLeave={() => setHoveredButton(null)}
             onClick={() => navigator('/students')} // Abrir ventana de registro de estudiantes
           >
-            Registro de estudiantes
+            Gestión de estudiantes
           </button>
           <button
             style={
@@ -70,7 +70,7 @@ const AdminPage: React.FC = () => {
           </button>
           <button
             style={
-              hoveredButton === "attendance"
+              hoveredButton === "guardians"
                 ? {
                     ...adminPageStyles.bodyButton,
                     backgroundColor: "#315b73",
@@ -78,11 +78,11 @@ const AdminPage: React.FC = () => {
                   }
                 : adminPageStyles.bodyButton
             }
-            onMouseEnter={() => setHoveredButton("attendance")}
+            onMouseEnter={() => setHoveredButton("guardians")}
             onMouseLeave={() => setHoveredButton(null)}
-            onClick={() => navigator('/attendance')} // Abrir ventana de control de asistencia
+            onClick={() => navigator('/guardians')}
           >
-            Control de asistencia
+            Gestión de apoderados
           </button>
         </div>
         <div style={adminPageStyles.subBody as React.CSSProperties}>
@@ -116,7 +116,7 @@ const AdminPage: React.FC = () => {
             onMouseLeave={() => setHoveredButton(null)}
             onClick={() => navigator('/employees')} // Abrir ventana de registro de empleados
           >
-            Registro de empleados
+            Gestión de empleados
           </button>
         </div>
       </main>

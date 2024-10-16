@@ -1,0 +1,48 @@
+export const documentsPageStyles = {
+  container: {
+    top: '0',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+    color: '#f4f4f4',
+    backgroundColor: '#1d1551',
+    width: '100%',
+    height: '100vh',
+    overflow: 'hidden',
+  },
+  header: {
+    top: '0',
+    backgroundColor: '#427390',
+    color: '#fff',
+    padding: '2.5rem 2rem',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'relative',
+    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.3)',
+  },
+  description: {
+    fontSize: '1.2rem',
+    marginBottom: '2rem',
+  },
+  documentList: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    listStyleType: 'none',
+    padding: '0',
+    margin: '0',
+  },
+  documentItem: {
+    marginBottom: '1rem',
+    display: 'flex',
+    justifyContent: 'center',
+  },
+  downloadButton: {
+    backgroundColor: '#4273ff',
+    color: '#fff',
+    textDecoration: 'none',
+    padding: '1rem 2rem',
+    borderRadius: '5px',
+    fontSize: '1.2rem',
+  },
+};
