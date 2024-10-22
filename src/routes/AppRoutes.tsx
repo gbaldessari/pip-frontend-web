@@ -1,6 +1,7 @@
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import HomePage from "../screens/HomePage/HomePage";
+import RegisterPage from "../screens/ApoderadoRegisterPage/RegisterPage";
 import MainPage from "../screens/MainPage/MainPage";
 import AdminPage from "../screens/AdminPage/AdminPage";
 import EvaluationsPage from "../screens/EvaluationsPage/EvaluationsPage";
@@ -17,7 +18,8 @@ import GuardiansPage from "../screens/GuardiansPage/GuardiansPage";
 import TeacherPage from "../screens/TeacherPage/TeacherPage";
 import ForgottenPage from "../screens/ForgottenPage/ForgottenPage";
 import RecoverPage from "../screens/RecoverPage/RecoverPage";
-import { useUser } from '../routes/UserContext'; // Ajusta la ruta según tu estructura
+import PasswordResetPage from "../screens/PasswordReset/PasswordResetPage"; // Importa la nueva pantalla de recuperación de contraseña
+import { useUser } from '../routes/UserContext';
 
 export const AppRoutes: React.FC<{}> = () => {
   const { user, loading } = useUser();
@@ -31,8 +33,10 @@ export const AppRoutes: React.FC<{}> = () => {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/home" element={<HomePage />} />
+        <Route path="/register" element={<RegisterPage />} />
         <Route path="/forgotten" element={<ForgottenPage />} />
         <Route path="/recover" element={<RecoverPage />} />
+        <Route path="/password-reset" element={<PasswordResetPage />} /> {/* Nueva ruta para recuperar contraseña */}
         <Route path="/main" element={user?.rol === 'apoderado' ? <MainPage /> : <Navigate to="/" />} />
         <Route path="/admin" element={user?.rol === 'admin' ? <AdminPage /> : <Navigate to="/" />} />
         <Route path="/teacher" element={user?.rol === 'profesor' ? <TeacherPage /> : <Navigate to="/" />} />

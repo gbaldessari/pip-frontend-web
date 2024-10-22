@@ -10,6 +10,7 @@ const HomePage: React.FC = () => {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [loginSuccess, setLoginSuccess] = useState('');
+    const [showPrompt, setShowPrompt] = useState(true);
     const navigate = useNavigate();
     const { fetchUserData, user } = useUser();
 
@@ -17,15 +18,22 @@ const HomePage: React.FC = () => {
         try {
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
             setLoginSuccess('Login exitoso');
-
-            // Obtener el rol del usuario desde Firestore
-            await fetchUserData(userCredential.user.uid); // Llama a fetchUserData aquí
+            setError('');
+            setShowPrompt(false);
+            await fetchUserData(userCredential.user.uid);
         } catch (err: any) {
             setError('Error al iniciar sesión: ' + err.message);
+            setLoginSuccess('');
+            setShowPrompt(false);
         }
     };
 
-    // Uso de useEffect para redirigir según el rol del usuario
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Enter') {
+            handleLogin();
+        }
+    };
+
     useEffect(() => {
         if (user && user.rol) {
             if (user.rol === 'profesor') {
@@ -36,19 +44,32 @@ const HomePage: React.FC = () => {
                 navigate('/main');
             }
         }
-    }, [user, navigate]); // El efecto se ejecuta cuando 'user' cambia
+    }, [user, navigate]);
 
     return (
         <div style={styles.container as React.CSSProperties}>
+            <img
+                src="src/assets/Cerro_Grande_La_Serena.jpg"
+                style={styles.bodyImage as React.CSSProperties}
+            />
             <header style={styles.header as React.CSSProperties}>
                 <img src="src/assets/Bajos.png" style={styles.headerImage as React.CSSProperties} />
+                <h1 style={styles.welcomeTitle}>Bienvenido al Sistema de Gestión Integral<br />Bajos del Cerro Chico</h1>
                 <div style={styles.loginContainer as React.CSSProperties}>
+                    <div style={styles.messageContainer as React.CSSProperties}>
+                        {error && <p style={styles.errorMessage as React.CSSProperties}>{error}</p>}
+                        {loginSuccess && <p style={styles.successMessage as React.CSSProperties}>{loginSuccess}</p>}
+                        {showPrompt && !error && !loginSuccess && (
+                            <p style={styles.successMessage as React.CSSProperties}>Por favor, inicia sesión</p>
+                        )}
+                    </div>
                     <input
                         type="text"
                         placeholder="Usuario"
                         style={styles.input as React.CSSProperties}
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
+                        onKeyDown={handleKeyDown}
                     />
                     <input
                         type="password"
@@ -56,6 +77,7 @@ const HomePage: React.FC = () => {
                         style={styles.input as React.CSSProperties}
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
+                        onKeyDown={handleKeyDown}
                     />
                     <button 
                         style={styles.loginButton as React.CSSProperties}
@@ -63,17 +85,17 @@ const HomePage: React.FC = () => {
                     >
                         Ingresar
                     </button>
-                    {error && <p style={{ color: 'red' }}>{error}</p>}
-                    {loginSuccess && <p style={{ color: 'green' }}>{loginSuccess}</p>}
-                    <button style={styles.forgotPasswordButton as React.CSSProperties}>
+                    <button style={styles.forgotPasswordButton as React.CSSProperties} onClick={() => navigate('/password-reset')}>
                         Olvidé mi contraseña
+                    </button>
+                    <button
+                        style={styles.registerButton as React.CSSProperties}
+                        onClick={() => navigate('/register')}
+                    >
+                        Registrarse como Apoderado
                     </button>
                 </div>
             </header>
-            <img
-                src="src/assets/Cerro_Grande_La_Serena.jpg"
-                style={styles.bodyImage as React.CSSProperties}
-            />
         </div>
     );
 };
