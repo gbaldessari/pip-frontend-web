@@ -17,9 +17,7 @@ const RecoverPage: React.FC = () => {
       return;
     }
 
-    // Simulación de envío de token y nueva contraseña
     if (token && newPassword && confirmPassword) {
-      // Aquí se debería realizar la lógica de validación del token y restablecimiento de contraseña en el backend
       setMessage("Tu contraseña ha sido restablecida exitosamente.");
       setError("");
     } else {

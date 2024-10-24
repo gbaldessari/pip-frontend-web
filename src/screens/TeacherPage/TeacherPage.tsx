@@ -48,7 +48,7 @@ const TeacherPage: React.FC = () => {
             }
             onMouseEnter={() => setHoveredButton("attendance")}
             onMouseLeave={() => setHoveredButton(null)}
-            onClick={() => navigator('/attendance')} // Abrir ventana de control de asistencia
+            onClick={() => navigator('/attendance')}
           >
             Control de asistencia
           </button>

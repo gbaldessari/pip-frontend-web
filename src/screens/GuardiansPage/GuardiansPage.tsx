@@ -163,7 +163,7 @@ const GuardiansPage: React.FC = () => {
               <input
                 type="text"
                 name="students"
-                value={newGuardian.students.join(', ')}  // Convertimos el array en una string
+                value={newGuardian.students.join(', ')}
                 onChange={(e) => setNewGuardian({ ...newGuardian, students: e.target.value.split(',').map(Number) })}
                 placeholder="IDs de Estudiantes (separados por comas)"
                 style={styles.input as React.CSSProperties}

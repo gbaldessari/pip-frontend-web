@@ -13,14 +13,12 @@ interface Subject {
 }
 
 const AttendancePage: React.FC = () => {
-  // Simulación de asignaturas del profesor
   const subjects: Subject[] = [
     { id: 1, name: "Matemáticas" },
     { id: 2, name: "Ciencias" },
     { id: 3, name: "Historia" }
   ];
 
-  // Simulación de estudiantes
   const students: Student[] = [
     { id: 1, name: "Juan Pérez", present: false },
     { id: 2, name: "Ana Gómez", present: false },

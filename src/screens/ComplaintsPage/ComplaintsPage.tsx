@@ -3,9 +3,9 @@ import { complaintsPageStyles as styles } from './complaintsPage.styles';
 
 interface Complaint {
   id: number;
-  type: string; // "Reclamo" o "Sugerencia"
+  type: string;
   message: string;
-  status: string; // "Sin respuesta" o "Respondido"
+  status: string;
 }
 
 const ComplaintsPage: React.FC = () => {
@@ -17,7 +17,6 @@ const ComplaintsPage: React.FC = () => {
   const [message, setMessage] = useState("");
   const [type, setType] = useState("Reclamo");
 
-  // Función para manejar el envío de reclamos o sugerencias
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const newComplaint: Complaint = {
@@ -27,7 +26,7 @@ const ComplaintsPage: React.FC = () => {
       status: "Sin respuesta",
     };
     setComplaints([...complaints, newComplaint]);
-    setMessage(""); // Limpiar campo de mensaje
+    setMessage("");
   };
 
   return (

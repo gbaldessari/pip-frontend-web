@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { mainPageStyles } from "./mainPage.styles";
+import { mainPageStyles as styles} from "./mainPage.styles";
 import { useNavigate } from "react-router-dom";
 
 const MainPage: React.FC = () => {
@@ -22,34 +22,34 @@ const MainPage: React.FC = () => {
   const getBodyButtonStyles = () => {
     if (windowWidth < 768) {
       return {
-        ...mainPageStyles.bodyButton,
+        ...styles.bodyButton,
         padding: "1.5rem 3rem",
         fontSize: "1.2rem",
       };
     }
-    return mainPageStyles.bodyButton;
+    return styles.bodyButton;
   };
 
   return (
-    <div style={mainPageStyles.container as React.CSSProperties}>
-      <header style={mainPageStyles.header as React.CSSProperties}>
+    <div style={styles.container as React.CSSProperties}>
+      <header style={styles.header as React.CSSProperties}>
         <img
           src="src/assets/Cerro_Grande_La_Serena.jpg"
-          style={mainPageStyles.backgroundImage as React.CSSProperties}
+          style={styles.backgroundImage as React.CSSProperties}
         />
         <img
           src="src/assets/Bajos.png"
-          style={mainPageStyles.headerImage as React.CSSProperties}
+          style={styles.headerImage as React.CSSProperties}
         />
         <button
           style={
             hoveredButton === "header"
               ? {
-                  ...mainPageStyles.headerButton,
+                  ...styles.headerButton,
                   backgroundColor: "#315bb7",
                   transform: "scale(1.05)",
                 }
-              : mainPageStyles.headerButton
+              : styles.headerButton
           }
           onMouseEnter={() => setHoveredButton("header")}
           onMouseLeave={() => setHoveredButton(null)}
@@ -58,8 +58,8 @@ const MainPage: React.FC = () => {
         </button>
       </header>
 
-      <main style={mainPageStyles.body as React.CSSProperties}>
-        <div style={mainPageStyles.subBody as React.CSSProperties}>
+      <main style={styles.body as React.CSSProperties}>
+        <div style={styles.subBody as React.CSSProperties}>
           <button
             style={
               hoveredButton === "evaluations"
@@ -88,7 +88,7 @@ const MainPage: React.FC = () => {
             }
             onMouseEnter={() => setHoveredButton("documents")}
             onMouseLeave={() => setHoveredButton(null)}
-            onClick={() => navigator('/documents')} // Abrir ventana de documentos
+            onClick={() => navigator('/documents')}
           >
             Documentos
           </button>
@@ -104,12 +104,12 @@ const MainPage: React.FC = () => {
             }
             onMouseEnter={() => setHoveredButton("reports")}
             onMouseLeave={() => setHoveredButton(null)}
-            onClick={() => navigator('/reports')} // Abrir ventana de reportes
+            onClick={() => navigator('/reports')}
           >
             Reportes
           </button>
         </div>
-        <div style={mainPageStyles.subBody as React.CSSProperties}>
+        <div style={styles.subBody as React.CSSProperties}>
           <button
             style={
               hoveredButton === "services"
@@ -122,7 +122,7 @@ const MainPage: React.FC = () => {
             }
             onMouseEnter={() => setHoveredButton("services")}
             onMouseLeave={() => setHoveredButton(null)}
-            onClick={() => navigator('/services')} // Abrir ventana de servicios
+            onClick={() => navigator('/services')}
           >
             Servicios
           </button>
@@ -138,7 +138,7 @@ const MainPage: React.FC = () => {
             }
             onMouseEnter={() => setHoveredButton("complaints")}
             onMouseLeave={() => setHoveredButton(null)}
-            onClick={() => navigator('/complaints')} // Abrir ventana de reclamos
+            onClick={() => navigator('/complaints')}
           >
             Reclamos
           </button>

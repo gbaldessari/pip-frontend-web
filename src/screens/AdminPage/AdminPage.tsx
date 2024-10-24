@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { adminPageStyles } from "./adminPage.styles";
+import { adminPageStyles as styles} from "./adminPage.styles";
 import { useNavigate } from "react-router-dom";
 
 const AdminPage: React.FC = () => {
@@ -7,25 +7,25 @@ const AdminPage: React.FC = () => {
   const navigator = useNavigate();
   
   return (
-    <div style={adminPageStyles.container as React.CSSProperties}>
-      <header style={adminPageStyles.header as React.CSSProperties}>
+    <div style={styles.container as React.CSSProperties}>
+      <header style={styles.header as React.CSSProperties}>
         <img
           src="src/assets/Cerro_Grande_La_Serena.jpg"
-          style={adminPageStyles.backgroundImage as React.CSSProperties}
+          style={styles.backgroundImage as React.CSSProperties}
         />
         <img
           src="src/assets/Bajos.png"
-          style={adminPageStyles.headerImage as React.CSSProperties}
+          style={styles.headerImage as React.CSSProperties}
         />
         <button
           style={
             hoveredButton === "header"
               ? {
-                  ...adminPageStyles.headerButton,
+                  ...styles.headerButton,
                   backgroundColor: "#315bb7",
                   transform: "scale(1.05)",
                 }
-              : adminPageStyles.headerButton
+              : styles.headerButton
           }
           onMouseEnter={() => setHoveredButton("header")}
           onMouseLeave={() => setHoveredButton(null)}
@@ -34,21 +34,21 @@ const AdminPage: React.FC = () => {
         </button>
       </header>
 
-      <main style={adminPageStyles.body as React.CSSProperties}>
-        <div style={adminPageStyles.subBody as React.CSSProperties}>
+      <main style={styles.body as React.CSSProperties}>
+        <div style={styles.subBody as React.CSSProperties}>
           <button
             style={
               hoveredButton === "students"
                 ? {
-                    ...adminPageStyles.bodyButton,
+                    ...styles.bodyButton,
                     backgroundColor: "#315b73",
                     transform: "scale(1.05)",
                   }
-                : adminPageStyles.bodyButton
+                : styles.bodyButton
             }
             onMouseEnter={() => setHoveredButton("students")}
             onMouseLeave={() => setHoveredButton(null)}
-            onClick={() => navigator('/students')} // Abrir ventana de registro de estudiantes
+            onClick={() => navigator('/students')}
           >
             Gestión de estudiantes
           </button>
@@ -56,15 +56,15 @@ const AdminPage: React.FC = () => {
             style={
               hoveredButton === "subjects"
                 ? {
-                    ...adminPageStyles.bodyButton,
+                    ...styles.bodyButton,
                     backgroundColor: "#315b73",
                     transform: "scale(1.05)",
                   }
-                : adminPageStyles.bodyButton
+                : styles.bodyButton
             }
             onMouseEnter={() => setHoveredButton("subjects")}
             onMouseLeave={() => setHoveredButton(null)}
-            onClick={() => navigator('/subjects')} // Abrir ventana de gestión de asignaturas
+            onClick={() => navigator('/subjects')}
           >
             Gestión de asignaturas
           </button>
@@ -72,11 +72,11 @@ const AdminPage: React.FC = () => {
             style={
               hoveredButton === "guardians"
                 ? {
-                    ...adminPageStyles.bodyButton,
+                    ...styles.bodyButton,
                     backgroundColor: "#315b73",
                     transform: "scale(1.05)",
                   }
-                : adminPageStyles.bodyButton
+                : styles.bodyButton
             }
             onMouseEnter={() => setHoveredButton("guardians")}
             onMouseLeave={() => setHoveredButton(null)}
@@ -85,20 +85,20 @@ const AdminPage: React.FC = () => {
             Gestión de apoderados
           </button>
         </div>
-        <div style={adminPageStyles.subBody as React.CSSProperties}>
+        <div style={styles.subBody as React.CSSProperties}>
           <button
             style={
               hoveredButton === "payments"
                 ? {
-                    ...adminPageStyles.bodyButton,
+                    ...styles.bodyButton,
                     backgroundColor: "#315b73",
                     transform: "scale(1.05)",
                   }
-                : adminPageStyles.bodyButton
+                : styles.bodyButton
             }
             onMouseEnter={() => setHoveredButton("payments")}
             onMouseLeave={() => setHoveredButton(null)}
-            onClick={() => navigator('/payments')} // Abrir ventana de control de pagos
+            onClick={() => navigator('/payments')}
           >
             Control de pagos
           </button>
@@ -106,15 +106,15 @@ const AdminPage: React.FC = () => {
             style={
               hoveredButton === "employees"
                 ? {
-                    ...adminPageStyles.bodyButton,
+                    ...styles.bodyButton,
                     backgroundColor: "#315b73",
                     transform: "scale(1.05)",
                   }
-                : adminPageStyles.bodyButton
+                : styles.bodyButton
             }
             onMouseEnter={() => setHoveredButton("employees")}
             onMouseLeave={() => setHoveredButton(null)}
-            onClick={() => navigator('/employees')} // Abrir ventana de registro de empleados
+            onClick={() => navigator('/employees')}
           >
             Gestión de empleados
           </button>

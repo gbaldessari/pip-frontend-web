@@ -24,7 +24,6 @@ const SubjectsPage: React.FC = () => {
   const [editingSubject, setEditingSubject] = useState<Subject | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   
-  // Estados para filtros
   const [filterName, setFilterName] = useState<string>('');
   const [filterCourse, setFilterCourse] = useState<string>('');
   const [filterTeacher, setFilterTeacher] = useState<string>('');
@@ -64,7 +63,6 @@ const SubjectsPage: React.FC = () => {
     setNewSubject({ id: Date.now(), name: '', course: '', teacher: '' });
   };
 
-  // Filtrado de asignaturas
   const filteredSubjects = subjects.filter(subject => {
     return (
       subject.name.toLowerCase().includes(filterName.toLowerCase()) &&

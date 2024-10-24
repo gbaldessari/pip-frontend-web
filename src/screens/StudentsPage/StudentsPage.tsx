@@ -151,8 +151,6 @@ const StudentsPage: React.FC = () => {
           <button style={styles.addButton} onClick={() => setIsModalOpen(true)}>Agregar Estudiante</button>
         </div>
         
-
-        {/* Tabla de estudiantes */}
         <table style={styles.table as React.CSSProperties}>
           <thead style={styles.tableHead as React.CSSProperties}>
             <tr>
@@ -185,7 +183,6 @@ const StudentsPage: React.FC = () => {
           </tbody>
         </table>
 
-        {/* Modal */}
         {isModalOpen && (
           <div style={styles.modalOverlay as React.CSSProperties}>
             <div style={styles.modal as React.CSSProperties}>

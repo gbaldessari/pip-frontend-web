@@ -3,7 +3,7 @@ import { servicesPageStyles as styles } from './servicesPage.styles';
 
 const ServicesPage: React.FC = () => {
   return (
-    <div style={styles.container}>
+    <div style={styles.container as React.CSSProperties}>
       <h1 style={styles.title}>Servicios</h1>
       <p style={styles.message}>Próximamente podrás acceder a servicios como matrículas y mensualidades.</p>
       <div style={styles.underConstruction}>

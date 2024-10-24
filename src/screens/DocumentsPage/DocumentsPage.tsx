@@ -2,7 +2,6 @@ import React from "react";
 import { documentsPageStyles as styles } from './documentsPage.styles';
 
 const DocumentsPage: React.FC = () => {
-  // Lista de documentos disponibles para descargar
   const documents = [
     { id: 1, name: "Certificado de Notas", url: "/downloads/certificado-notas.pdf" },
     { id: 2, name: "Carta de Conducta", url: "/downloads/carta-conducta.pdf" },

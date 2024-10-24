@@ -2,7 +2,6 @@ import React from "react";
 import { reportsPageStyles as styles } from './reportsPage.styles';
 
 const ReportsPage: React.FC = () => {
-  // Datos de asistencia por asignatura y clase
   const attendance = [
     { 
       subject: "Matemáticas", 
@@ -27,18 +26,17 @@ const ReportsPage: React.FC = () => {
     }
   ];
 
-  // Función para definir el estilo condicional de la celda de asistencia
   const getAttendanceStyle = (status: number) => {
     let backgroundColor;
     switch (status) {
       case 0:
-        backgroundColor = 'red'; // No asistió
+        backgroundColor = 'red'; 
         break;
       case 2:
-        backgroundColor = 'yellow'; // Justificado
+        backgroundColor = 'yellow';
         break;
       default:
-        backgroundColor = 'green'; // Asistió
+        backgroundColor = 'green';
     }
     return {
       ...styles.tableCell,
