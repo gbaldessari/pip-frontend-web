@@ -96,8 +96,11 @@ const StudentsPage: React.FC = () => {
     <div style={styles.container as React.CSSProperties}>
       <header style={styles.header as React.CSSProperties}>
         <h1>Registros de Estudiantes</h1>
+        <img src="https://firebasestorage.googleapis.com/v0/b/escuelapp-f167e.appspot.com/o/Bajos.png?alt=media" alt="Logo Colegio" style={styles.schoolImage} />
       </header>
       <div style={styles.body as React.CSSProperties}>
+        <button style={styles.backButton} onClick={() => window.history.back()}>Volver al menú</button>
+
         {/* Filtros de búsqueda */}
         <div style={styles.filterContainer as React.CSSProperties}>
           <input
@@ -150,7 +153,6 @@ const StudentsPage: React.FC = () => {
           />
           <button style={styles.addButton} onClick={() => setIsModalOpen(true)}>Agregar Estudiante</button>
         </div>
-        
 
         {/* Tabla de estudiantes */}
         <table style={styles.table as React.CSSProperties}>

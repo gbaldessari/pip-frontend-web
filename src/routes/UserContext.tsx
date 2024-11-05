@@ -1,12 +1,14 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { auth } from '../firebase-config'; // Ajusta la ruta según tu estructura
-import { onAuthStateChanged } from 'firebase/auth';
+import { onAuthStateChanged, setPersistence, browserLocalPersistence } from 'firebase/auth';
 import { doc, getDoc, getFirestore } from 'firebase/firestore';
+import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
 
 // Define la interfaz para el usuario
 interface User {
     uid: string;
+    apellido: string;
     email: string;
+    nombre: string;
     rol?: string; // Rol es opcional aquí
 }
 
@@ -30,30 +32,47 @@ export const UserProvider = ({ children }: UserProviderProps) => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-            console.log("Estado de autenticación cambiado:", currentUser);
-            setLoading(false); // Cambia loading a false cuando la autenticación cambia
-
-            if (currentUser) {
-                setUser({ uid: currentUser.uid, email: currentUser.email || '' }); // Guarda solo uid y email por ahora
-            } else {
-                setUser(null); // No hay usuario autenticado
-            }
-        });
-
-        return () => unsubscribe();
+        setPersistence(auth, browserLocalPersistence)
+            .then(() => {
+                const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+                    if (currentUser) {
+                        console.log("Estado de autenticación cambiado:", currentUser);
+                        setLoading(true);
+                        fetchUserData(currentUser.uid);
+                    } else {
+                        setUser(null);
+                        setLoading(false);
+                    }
+                });
+                return () => unsubscribe();
+            })
+            .catch((error) => {
+                console.error('Error al establecer la persistencia:', error);
+                setLoading(false);
+            });
     }, []);
+    
+    
+    
 
     // Nueva función para buscar el documento del usuario en Firestore
     const fetchUserData = async (uid: string) => {
+        setLoading(true); // Solo cuando hay un usuario autenticado
         const db = getFirestore();
         const userDoc = await getDoc(doc(db, "user", uid));
         if (userDoc.exists()) {
-            setUser((prev) => ({ ...prev!, rol: userDoc.data().rol })); // Actualiza el rol del usuario
+            setUser((prev) => ({
+                ...prev!,
+                nombre: userDoc.data().nombre || '',
+                apellido: userDoc.data().apellido || '',
+                rol: userDoc.data().rol 
+            }));
         } else {
             console.log("No se encontró el documento del usuario");
         }
+        setLoading(false);
     };
+    
 
     return (
         <UserContext.Provider value={{ user, loading, fetchUserData }}>

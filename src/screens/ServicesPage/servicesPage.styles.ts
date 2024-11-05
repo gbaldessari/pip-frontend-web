@@ -1,7 +1,9 @@
-export const servicesPageStyles = {
+import { CSSProperties } from 'react';
+
+export const servicesPageStyles: { [key: string]: CSSProperties } = {
   container: {
     display: 'flex',
-    flexDirection: 'column',
+    flexDirection: 'column', // Asegúrate de que flexDirection use valores válidos
     justifyContent: 'center',
     alignItems: 'center',
     fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",

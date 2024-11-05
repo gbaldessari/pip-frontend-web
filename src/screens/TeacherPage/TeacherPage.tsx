@@ -1,22 +1,42 @@
 import React, { useState } from "react";
 import { teacherPageStyles as styles } from "./teacherPage.styles";
 import { useNavigate } from "react-router-dom";
+import { getAuth, signOut } from "firebase/auth";
+import { useUser } from "../../routes/UserContext"; // Asegúrate de importar tu UserContext
 
 const TeacherPage: React.FC = () => {
   const [hoveredButton, setHoveredButton] = useState<string | null>(null);
   const navigator = useNavigate();
-  
+  const auth = getAuth();
+  const { user } = useUser(); // Obtenemos el contexto del usuario
+
+  const handleLogout = () => {
+    signOut(auth)
+      .then(() => {
+        alert("Se ha cerrado su sesión satisfactoriamente");
+        navigator("/");
+      })
+      .catch((error) => {
+        console.error("Error al cerrar sesión: ", error);
+      });
+  };
+
   return (
     <div style={styles.container as React.CSSProperties}>
       <header style={styles.header as React.CSSProperties}>
         <img
-          src="src/assets/Cerro_Grande_La_Serena.jpg"
+          src="https://firebasestorage.googleapis.com/v0/b/escuelapp-f167e.appspot.com/o/Cerro_Grande_La_Serena.jpg?alt=media"
           style={styles.backgroundImage as React.CSSProperties}
         />
         <img
-          src="src/assets/Bajos.png"
+          src="https://firebasestorage.googleapis.com/v0/b/escuelapp-f167e.appspot.com/o/Bajos.png?alt=media"
           style={styles.headerImage as React.CSSProperties}
         />
+        <div style={styles.userInfo}>
+          <h2 style={styles.welcomeText}>
+            Bienvenido, {user?.nombre} {user?.apellido}
+          </h2>
+        </div>
         <button
           style={
             hoveredButton === "header"
@@ -48,12 +68,20 @@ const TeacherPage: React.FC = () => {
             }
             onMouseEnter={() => setHoveredButton("attendance")}
             onMouseLeave={() => setHoveredButton(null)}
-            onClick={() => navigator('/attendance')} // Abrir ventana de control de asistencia
+            onClick={() => navigator("/attendance")}
           >
             Control de asistencia
           </button>
         </div>
       </main>
+
+      {/* Botón de Cerrar Sesión */}
+      <button
+        style={styles.logoutButton}
+        onClick={handleLogout}
+      >
+        Cerrar sesión
+      </button>
     </div>
   );
 };
