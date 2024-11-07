@@ -24,3 +24,4 @@ export const auth = getAuth(app);
 const storage = getStorage(app);
 
 export { storage };
+
