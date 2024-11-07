@@ -35,7 +35,7 @@ const PasswordResetPage: React.FC = () => {
     return (
         <div style={styles.container as React.CSSProperties}>
             <header style={styles.header as React.CSSProperties}>
-                <img src="src/assets/Bajos.png" style={styles.headerImage as React.CSSProperties} />
+                <img src="https://firebasestorage.googleapis.com/v0/b/escuelapp-f167e.appspot.com/o/Bajos.png?alt=media" style={styles.headerImage as React.CSSProperties} />
                 <div style={styles.resetContainer as React.CSSProperties}>
                     <h2 style={{ color: '#fff' }}>Recuperar contraseña</h2>
                     <input
