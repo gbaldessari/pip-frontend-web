@@ -47,11 +47,11 @@ const MainPage: React.FC = () => {
     <div style={mainPageStyles.container as React.CSSProperties}>
       <header style={mainPageStyles.header as React.CSSProperties}>
         <img
-          src="src/assets/Cerro_Grande_La_Serena.jpg"
+          src="https://firebasestorage.googleapis.com/v0/b/escuelapp-f167e.appspot.com/o/Cerro_Grande_La_Serena.jpg?alt=media"
           style={mainPageStyles.backgroundImage as React.CSSProperties}
         />
         <img
-          src="src/assets/Bajos.png"
+          src="https://firebasestorage.googleapis.com/v0/b/escuelapp-f167e.appspot.com/o/Bajos.png?alt=media"
           style={mainPageStyles.headerImage as React.CSSProperties}
         />
         <button
