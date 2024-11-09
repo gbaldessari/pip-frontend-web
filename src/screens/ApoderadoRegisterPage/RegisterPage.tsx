@@ -49,6 +49,11 @@ const RegisterPage: React.FC = () => {
                 uid: user.uid,
             });
 
+            await setDoc(doc(db, "Apoderados", user.uid), {
+                nombre: name,
+                apellido: lastName,
+            });
+
             // Enviar correo de verificación
             await sendEmailVerification(user);
             setLoginSuccess('Registro exitoso. Revisa tu correo para verificar tu cuenta.');

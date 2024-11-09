@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { studentsPageStyles as styles } from './studentsPage.styles';
-import { addDoc, collection, getDocs, getFirestore } from "firebase/firestore";
+import { addDoc, collection, deleteDoc, getDocs, getFirestore } from "firebase/firestore";
 import { updateDoc, doc } from "firebase/firestore";
 
 interface Student {
@@ -33,11 +33,10 @@ const StudentsPage: React.FC = () => {
     course: "",
     guardian: ""
   });
-
+  
   const [editingStudent, setEditingStudent] = useState<Student | null>(null);
   
   const editStudent = async (updatedData: any) => {
-    // Verifica si editingStudent no es null antes de continuar
     if (!editingStudent) {
       console.error("No hay estudiante seleccionado para editar.");
       return;
@@ -47,7 +46,6 @@ const StudentsPage: React.FC = () => {
       const studentRef = doc(db, "Alumnos", editingStudent.id);
       await updateDoc(studentRef, updatedData);
   
-      // Actualizar el estado después de editar
       setStudents((prevStudents) =>
         prevStudents.map((student) =>
           student.id === editingStudent.id ? { ...student, ...updatedData } : student
@@ -59,12 +57,15 @@ const StudentsPage: React.FC = () => {
         )
       );
   
-      // Cerrar el formulario de edición
+      setSuccessMessage("Estudiante actualizado exitosamente");
       setEditingStudent(null);
+      setIsModalOpen(false); // Cierra el modal después de editar
     } catch (error) {
       console.error("Error al actualizar el estudiante:", error);
+      setError("No se pudo actualizar el estudiante");
     }
   };
+  
   
 
   const [newStudent, setNewStudent] = useState<Student>({
@@ -187,16 +188,37 @@ const StudentsPage: React.FC = () => {
   };
 
 
-  const handleUpdateStudent = () => {
-    setStudents(students.map(student => (student.id === newStudent.id ? newStudent : student)));
-    setEditingStudent(null);
-    setNewStudent({ id: Date.now().toString(), firstName: '', lastName: '', rut: '', birthDate: '', course: '', guardian: '' });
-    setIsModalOpen(false);
+  // Función para manejar la confirmación de la edición
+  const handleEditConfirm = () => {
+    const updatedData = {
+      nombre: newStudent.firstName,
+      apellido: newStudent.lastName,
+      rut: newStudent.rut,
+      fechaNacimiento: newStudent.birthDate,
+      curso: newStudent.course,
+      apoderadoId: newStudent.guardian,
+    };
+    editStudent(updatedData);
   };
+  
 
-  const handleDeleteStudent = (id: number) => {
-    setStudents(students.filter(student => student.id !== id.toString()));
-  };
+
+
+const handleDeleteStudent = async (id: string) => {
+  try {
+    // Eliminar el documento de Firestore
+    const studentRef = doc(db, "Alumnos", id);
+    await deleteDoc(studentRef);
+
+    // Actualizar el estado eliminando el estudiante
+    setStudents(students.filter((student) => student.id !== id));
+    setFilteredStudents(filteredStudents.filter((student) => student.id !== id));
+    setSuccessMessage("Estudiante eliminado exitosamente");
+  } catch (error) {
+    console.error("Error al eliminar el estudiante:", error);
+    setError("No se pudo eliminar el estudiante");
+  }
+};
   
 
   const handleModalClose = () => {
@@ -305,7 +327,7 @@ const StudentsPage: React.FC = () => {
                 <td>{student.guardian}</td>
                 <td>
                   <button style={styles.editButton} onClick={() => handleEditStudent(student)}>Editar</button>
-                  <button style={styles.deleteButton} onClick={() => handleDeleteStudent(Number(student.id))}>Eliminar</button>
+                  <button style={styles.deleteButton} onClick={() => handleDeleteStudent(student.id)}>Eliminar</button>
       </td>
     </tr>
   ))}
@@ -380,7 +402,7 @@ const StudentsPage: React.FC = () => {
 
               <div style={styles.modalActions as React.CSSProperties}>
                 {editingStudent ? (
-                  <button style={styles.updateButton} onClick={handleUpdateStudent}>Actualizar Estudiante</button>
+                  <button style={styles.updateButton} onClick={handleEditConfirm}>Actualizar Estudiante</button>
                 ) : (
                   <button style={styles.addButton} onClick={handleAddStudent}>Agregar Estudiante</button>
                 )}

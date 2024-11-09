@@ -77,8 +77,10 @@ const SubjectsPage: React.FC = () => {
     <div style={styles.container as React.CSSProperties}>
       <header style={styles.header as React.CSSProperties}>
         <h1>Gestión de Asignaturas</h1>
+        <img src="https://firebasestorage.googleapis.com/v0/b/escuelapp-f167e.appspot.com/o/Bajos.png?alt=media" alt="Logo Colegio" style={styles.schoolImage} />
       </header>
       <div style={styles.body as React.CSSProperties}>
+      <button style={styles.backButton} onClick={() => window.history.back()}>Volver al menú</button>
         <div style={styles.filterContainer as React.CSSProperties}>
           <input
             type="text"
