@@ -49,7 +49,37 @@ const HomePage: React.FC = () => {
             setLoginSuccess('');
             setShowPrompt(false);
         }
+
+        // TODO: Aqui deberia llamarse al login service
+
+        // const response = await loginService({ email, password });
+        // if (response.success) {
+        //     setLoginSuccess('Inicio de sesión exitoso');
+        //     setError('');
+        //     setShowPrompt(false);
+        //     await handleNavigation(response.data.token);
+        // } else {
+        //       setError(response.data?.message || 'Error al iniciar sesión. Revisa tus datos.');
+        //       setLoginSuccess('');
+        //       setShowPrompt(false);
+        // }
     };
+
+    // const handleNavigation = async (token: string) => {
+    //     const response = await getUserDataService({ token });
+    //     if (response.success) {
+    //         if (response.data.rol === 'profesor') {
+    //             navigate('/teacher');
+    //         } else if (response.data.rol === 'admin') {
+    //             navigate('/admin');
+    //         } else if (response.data.rol === 'apoderado') {
+    //             navigate('/main');
+    //         }
+    //     } else {
+    //         setError('Error al obtener los datos del usuario.');
+    //     }
+    // };
+
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter') {
