@@ -5,15 +5,15 @@ export const adminPageStyles = {
     justifyContent: 'center',
     fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
     color: '#f4f4f4',
-    backgroundColor: '#1d1551',
+    backgroundColor: '#1d2a50',
     width: '100%',
     height: '100vh',
     position: 'relative',
-    overflow: 'hidden',
+    overflowY: 'auto',
   },
   header: {
     top: '0',
-    backgroundColor: '#1d1551',
+    backgroundColor: '#1d2a50',
     color: '#fff',
     boxShadow: '0 4px 8px rgba(0, 0, 0, 0.3)',
     width: '100%',
@@ -37,7 +37,15 @@ export const adminPageStyles = {
     right: '0',
     zIndex: 1,
   },
-  headerButton: {
+  userInfo: {
+    zIndex: 2,
+    marginLeft: '2rem',
+  },
+  welcomeText: {
+    fontSize: '1.8rem',
+    color: '#fff',
+  },
+  adminButton: {
     backgroundColor: '#4273ff',
     fontSize: '1.5rem',
     color: '#fff',
@@ -48,13 +56,26 @@ export const adminPageStyles = {
     cursor: 'pointer',
     zIndex: 2,
     transition: 'background-color 0.3s ease, transform 0.2s ease',
+  },
+  logoutButton: {
+    backgroundColor: '#ff4747',
+    fontSize: '1rem',
+    color: '#fff',
+    border: 'none',
+    padding: '1rem 0.5rem',
+    margin: '5rem', // Coloca el botón al final del contenedor
+    borderRadius: '520px',
+    cursor: 'pointer',
+    zIndex: 2,
+    transition: 'background-color 0.3s ease, transform 0.2s ease',
     '&:hover': {
-      backgroundColor: '#315bb7',
+      backgroundColor: '#cc3737',
       transform: 'scale(1.05)',
     },
   },
+
   body: {
-    padding: '10rem',
+    padding: '2rem',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -64,15 +85,15 @@ export const adminPageStyles = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: '3rem',
+    padding: '1.5rem',
     flexWrap: 'wrap',
   },
   bodyButton: {
     backgroundColor: '#427390',
-    fontSize: '1.5rem',
+    fontSize: '1.2rem',
     color: '#fff',
-    padding: '2rem 5rem',
-    margin: '1rem', // Ajustado para responsividad
+    padding: '1.5rem 3rem',
+    margin: '1rem',
     border: 'none',
     borderRadius: '20px',
     cursor: 'pointer',
@@ -82,8 +103,8 @@ export const adminPageStyles = {
       transform: 'scale(1.05)',
     },
     '@media (max-width: 768px)': {
-      padding: '1.5rem 3rem',
-      fontSize: '1.2rem',
+      padding: '1rem 2rem',
+      fontSize: '1rem',
     },
   },
 };

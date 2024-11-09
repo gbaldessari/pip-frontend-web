@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { mainPageStyles as styles} from "./mainPage.styles";
 import { useNavigate } from "react-router-dom";
+import { getAuth, signOut } from "firebase/auth";
 
 const MainPage: React.FC = () => {
-  const navigator = useNavigate();
   const [hoveredButton, setHoveredButton] = useState<string | null>(null);
+  const navigator = useNavigate();
+  const auth = getAuth();
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
   useEffect(() => {
@@ -18,6 +20,17 @@ const MainPage: React.FC = () => {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
+
+  const handleLogout = () => {
+    signOut(auth)
+      .then(() => {
+        alert("Se ha cerrado su sesión satisfactoriamente");
+        navigator("/");
+      })
+      .catch((error) => {
+        console.error("Error al cerrar sesión: ", error);
+      });
+  };
 
   const getBodyButtonStyles = () => {
     if (windowWidth < 768) {
@@ -34,11 +47,11 @@ const MainPage: React.FC = () => {
     <div style={styles.container as React.CSSProperties}>
       <header style={styles.header as React.CSSProperties}>
         <img
-          src="src/assets/Cerro_Grande_La_Serena.jpg"
+          src="https://firebasestorage.googleapis.com/v0/b/escuelapp-f167e.appspot.com/o/Cerro_Grande_La_Serena.jpg?alt=media"
           style={styles.backgroundImage as React.CSSProperties}
         />
         <img
-          src="src/assets/Bajos.png"
+          src="https://firebasestorage.googleapis.com/v0/b/escuelapp-f167e.appspot.com/o/Bajos.png?alt=media"
           style={styles.headerImage as React.CSSProperties}
         />
         <button
@@ -56,6 +69,12 @@ const MainPage: React.FC = () => {
         >
           Apoderado
         </button>
+        <button
+          style={styles.logoutButton}
+          onClick={handleLogout}
+        >
+          Cerrar sesión
+        </button>
       </header>
 
       <main style={styles.body as React.CSSProperties}>
@@ -72,7 +91,7 @@ const MainPage: React.FC = () => {
             }
             onMouseEnter={() => setHoveredButton("evaluations")}
             onMouseLeave={() => setHoveredButton(null)}
-            onClick={() => navigator('/evaluations')}
+            onClick={() => navigator("/evaluations")}
           >
             Evaluaciones
           </button>
@@ -109,6 +128,7 @@ const MainPage: React.FC = () => {
             Reportes
           </button>
         </div>
+
         <div style={styles.subBody as React.CSSProperties}>
           <button
             style={

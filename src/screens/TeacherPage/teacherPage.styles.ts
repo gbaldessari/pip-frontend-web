@@ -37,6 +37,14 @@ export const teacherPageStyles = {
     right: '0',
     zIndex: 1,
   },
+  userInfo: {
+    zIndex: 2,
+    marginLeft: '2rem',
+  },
+  welcomeText: {
+    fontSize: '1.8rem',
+    color: '#fff',
+  },
   headerButton: {
     backgroundColor: '#4273ff',
     fontSize: '1.5rem',
@@ -72,7 +80,7 @@ export const teacherPageStyles = {
     fontSize: '1.5rem',
     color: '#fff',
     padding: '2rem 5rem',
-    margin: '1rem', // Ajustado para responsividad
+    margin: '1rem',
     border: 'none',
     borderRadius: '20px',
     cursor: 'pointer',
@@ -84,6 +92,22 @@ export const teacherPageStyles = {
     '@media (max-width: 768px)': {
       padding: '1.5rem 3rem',
       fontSize: '1.2rem',
+    },
+  },
+  logoutButton: {
+    backgroundColor: '#ff4747',
+    fontSize: '1rem',
+    color: '#fff',
+    border: 'none',
+    padding: '1rem 0.5rem',
+    margin: '5rem',
+    borderRadius: '520px',
+    cursor: 'pointer',
+    zIndex: 2,
+    transition: 'background-color 0.3s ease, transform 0.2s ease',
+    '&:hover': {
+      backgroundColor: '#cc3737',
+      transform: 'scale(1.05)',
     },
   },
 };

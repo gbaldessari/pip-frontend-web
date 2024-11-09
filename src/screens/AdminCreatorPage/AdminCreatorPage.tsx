@@ -3,20 +3,23 @@ import { useNavigate } from 'react-router-dom';
 import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
 import { auth } from '../../firebase-config';
 import { getFirestore, doc, setDoc } from 'firebase/firestore';
-import { registerPageStyles as styles } from './registerPage.styles'; // Importar estilos
-import { FaEye, FaEyeSlash } from 'react-icons/fa'; // Iconos de ojo para ver/ocultar contraseña
+import { adminCreatorPageStyles as styles } from './adminCreatorPage.styles';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import { useUser } from '../../routes/UserContext'; // Importar el contexto del usuario
 
-const RegisterPage: React.FC = () => {
+const AdminCreatorPage: React.FC = () => {
     const [name, setName] = useState('');
     const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+    const [power, setPower] = useState('Estandar'); // Poder por defecto es 'Estandar'
     const [error, setError] = useState('');
-    const [loginSuccess, setLoginSuccess] = useState('');
-    const [showPassword, setShowPassword] = useState(false); // Estado para mostrar/ocultar contraseña
+    const [registerSuccess, setRegisterSuccess] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
     const db = getFirestore();
+    const { user } = useUser(); // Accede al contexto del usuario
 
     const validateInputs = () => {
         if (!name || !lastName) {
@@ -35,31 +38,35 @@ const RegisterPage: React.FC = () => {
     };
 
     const handleRegister = async () => {
+        // Verifica si el usuario actual tiene poder "Alto" o "Estandar"
+        if (user?.rol !== 'Alto') {
+            setError('Usted no puede crear usuarios de tipo Administradores');
+            return;
+        }
+
         if (!validateInputs()) return;
-        
+
         try {
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-            const user = userCredential.user;
+            const newUser = userCredential.user;
 
-            await setDoc(doc(db, "user", user.uid), {
+            // Crear el documento del usuario en Firestore
+            await setDoc(doc(db, "user", newUser.uid), {
                 nombre: name,
                 apellido: lastName,
-                email: user.email,
-                rol: 'apoderado',
-                uid: user.uid,
-            });
-
-            await setDoc(doc(db, "Apoderados", user.uid), {
-                nombre: name,
-                apellido: lastName,
+                email: newUser.email,
+                poder: power, // 'Estandar' o 'Alto'
+                rol: 'admin',
+                uid: newUser.uid,
             });
 
             // Enviar correo de verificación
-            await sendEmailVerification(user);
-            setLoginSuccess('Registro exitoso. Revisa tu correo para verificar tu cuenta.');
+            await sendEmailVerification(newUser);
+            setRegisterSuccess('Administrador creado exitosamente. Revisa tu correo para verificar tu cuenta.');
 
-            // Redirigir después de un tiempo
-            setTimeout(() => navigate('/'), 5000);
+            // Mostrar mensaje emergente y redirigir a la página de administración después de un tiempo
+            alert('Administrador creado exitosamente.');
+            setTimeout(() => navigate('/admin'), 5000);
         } catch (err: any) {
             if (err.code === 'auth/email-already-in-use') {
                 setError('Este correo ya está registrado.');
@@ -74,7 +81,7 @@ const RegisterPage: React.FC = () => {
     return (
         <div style={styles.container as React.CSSProperties}>
             <div style={styles.formContainer as React.CSSProperties}>
-                <h2 style={styles.title as React.CSSProperties}>Registro de Apoderado</h2>
+                <h2 style={styles.title as React.CSSProperties}>Crear Usuario Administrador</h2>
                 <input
                     type="text"
                     placeholder="Nombre"
@@ -118,23 +125,31 @@ const RegisterPage: React.FC = () => {
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                 />
+                <select 
+                    style={styles.select as React.CSSProperties} 
+                    value={power} 
+                    onChange={(e) => setPower(e.target.value)}
+                >
+                    <option value="Estandar">Estandar</option>
+                    <option value="Alto">Alto</option>
+                </select>
                 <button 
                     style={styles.button as React.CSSProperties}
                     onClick={handleRegister}
                 >
-                    Registrar
+                    Registrar Administrador
                 </button>
                 {error && <p style={styles.errorText as React.CSSProperties}>{error}</p>}
-                {loginSuccess && <p style={styles.successText as React.CSSProperties}>{loginSuccess}</p>}
+                {registerSuccess && <p style={styles.successText as React.CSSProperties}>{registerSuccess}</p>}
                 <button
                     style={styles.backButton as React.CSSProperties}
-                    onClick={() => navigate('/')}
+                    onClick={() => navigate('/admin')}
                 >
-                    Volver
+                    Volver al menú de administrador
                 </button>
             </div>
         </div>
     );
 };
 
-export default RegisterPage;
+export default AdminCreatorPage;

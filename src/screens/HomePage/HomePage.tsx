@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../firebase-config';
 import { homePageStyles as styles } from './homePage.styles';
 import { useUser } from '../../routes/UserContext';
+import { getStorage, ref, getDownloadURL } from 'firebase/storage';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
+
+const storage = getStorage();
 
 const HomePage: React.FC = () => {
     const [email, setEmail] = useState('');
@@ -11,22 +15,71 @@ const HomePage: React.FC = () => {
     const [error, setError] = useState('');
     const [loginSuccess, setLoginSuccess] = useState('');
     const [showPrompt, setShowPrompt] = useState(true);
+    const [headerImageUrl, setHeaderImageUrl] = useState('');
+    const [bodyImageUrl, setBodyImageUrl] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
+    const location = useLocation();
     const { fetchUserData, user } = useUser();
 
     const handleLogin = async () => {
         try {
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
-            setLoginSuccess('Login exitoso');
+            setLoginSuccess('Inicio de sesión exitoso');
             setError('');
             setShowPrompt(false);
             await fetchUserData(userCredential.user.uid);
         } catch (err: any) {
-            setError('Error al iniciar sesión: ' + err.message);
+            switch (err.code) {
+                case 'auth/invalid-email':
+                    setError('El correo electrónico no es válido.');
+                    break;
+                case 'auth/user-not-found':
+                    setError('No se encontró un usuario con este correo.');
+                    break;
+                case 'auth/wrong-password':
+                    setError('La contraseña es incorrecta.');
+                    break;
+                case 'auth/too-many-requests':
+                    setError('Demasiados intentos fallidos. Inténtalo más tarde.');
+                    break;
+                default:
+                    setError('Error al iniciar sesión. Revisa tus datos.');
+            }
             setLoginSuccess('');
             setShowPrompt(false);
         }
+
+        // TODO: Aqui deberia llamarse al login service
+
+        // const response = await loginService({ email, password });
+        // if (response.success) {
+        //     setLoginSuccess('Inicio de sesión exitoso');
+        //     setError('');
+        //     setShowPrompt(false);
+        //     await handleNavigation(response.data.token);
+        // } else {
+        //       setError(response.data?.message || 'Error al iniciar sesión. Revisa tus datos.');
+        //       setLoginSuccess('');
+        //       setShowPrompt(false);
+        // }
     };
+
+    // const handleNavigation = async (token: string) => {
+    //     const response = await getUserDataService({ token });
+    //     if (response.success) {
+    //         if (response.data.rol === 'profesor') {
+    //             navigate('/teacher');
+    //         } else if (response.data.rol === 'admin') {
+    //             navigate('/admin');
+    //         } else if (response.data.rol === 'apoderado') {
+    //             navigate('/main');
+    //         }
+    //     } else {
+    //         setError('Error al obtener los datos del usuario.');
+    //     }
+    // };
+
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter') {
@@ -35,7 +88,28 @@ const HomePage: React.FC = () => {
     };
 
     useEffect(() => {
-        if (user && user.rol) {
+        const fetchImages = async () => {
+            try {
+                const headerRef = ref(storage, 'Bajos.png');
+                const bodyRef = ref(storage, 'Cerro_Grande_La_Serena.jpg');
+
+                const headerUrl = await getDownloadURL(headerRef);
+                const bodyUrl = await getDownloadURL(bodyRef);
+
+                setHeaderImageUrl(headerUrl);
+                setBodyImageUrl(bodyUrl);
+            } catch (error) {
+                console.error('Error al cargar las imágenes:', error);
+                setError('No se pudieron cargar las imágenes.');
+            }
+        };
+
+        fetchImages();
+    }, []);
+
+    useEffect(() => {
+        // Redirigir solo si hay un usuario autenticado y la ruta es la página de inicio de sesión
+        if (user && location.pathname === '/') {
             if (user.rol === 'profesor') {
                 navigate('/teacher');
             } else if (user.rol === 'admin') {
@@ -44,16 +118,21 @@ const HomePage: React.FC = () => {
                 navigate('/main');
             }
         }
-    }, [user, navigate]);
+    }, [user, navigate, location.pathname]);
 
     return (
         <div style={styles.container as React.CSSProperties}>
             <img
-                src="src/assets/Cerro_Grande_La_Serena.jpg"
+                src={bodyImageUrl}
                 style={styles.bodyImage as React.CSSProperties}
+                alt="Cerro Grande La Serena"
             />
             <header style={styles.header as React.CSSProperties}>
-                <img src="src/assets/Bajos.png" style={styles.headerImage as React.CSSProperties} />
+                <img 
+                    src={headerImageUrl} 
+                    style={styles.headerImage as React.CSSProperties} 
+                    alt="Bajos del Cerro Chico"
+                />
                 <h1 style={styles.welcomeTitle}>Bienvenido al Sistema de Gestión Integral<br />Bajos del Cerro Chico</h1>
                 <div style={styles.loginContainer as React.CSSProperties}>
                     <div style={styles.messageContainer as React.CSSProperties}>
@@ -71,21 +150,34 @@ const HomePage: React.FC = () => {
                         onChange={(e) => setEmail(e.target.value)}
                         onKeyDown={handleKeyDown}
                     />
-                    <input
-                        type="password"
-                        placeholder="Contraseña"
-                        style={styles.input as React.CSSProperties}
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        onKeyDown={handleKeyDown}
-                    />
+                    <div style={styles.passwordContainer}>
+                        <input
+                            type={showPassword ? 'text' : 'password'}
+                            placeholder="Contraseña"
+                            style={styles.input as React.CSSProperties}
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            onKeyDown={handleKeyDown}
+                        />
+                        <button
+                            style={styles.eyeButton}
+                            onMouseDown={() => setShowPassword(true)}
+                            onMouseUp={() => setShowPassword(false)}
+                            onMouseLeave={() => setShowPassword(false)}
+                        >
+                            {showPassword ? <FaEyeSlash /> : <FaEye />}
+                        </button>
+                    </div>
                     <button 
                         style={styles.loginButton as React.CSSProperties}
                         onClick={handleLogin}
                     >
                         Ingresar
                     </button>
-                    <button style={styles.forgotPasswordButton as React.CSSProperties} onClick={() => navigate('/password-reset')}>
+                    <button 
+                        style={styles.forgotPasswordButton as React.CSSProperties} 
+                        onClick={() => navigate('/password-reset')}
+                    >
                         Olvidé mi contraseña
                     </button>
                     <button

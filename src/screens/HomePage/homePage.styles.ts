@@ -135,4 +135,19 @@ export const homePageStyles = {
         width: 'auto',
         textAlign: 'center',
     } as CSSProperties,
+    eyeButton: {
+        position: 'absolute',
+        right: '10px',
+        top: '50%',
+        transform: 'translateY(-50%)',
+        background: 'none',
+        border: 'none',
+        cursor: 'pointer',
+        color: '#333',
+    } as CSSProperties,
+    passwordContainer: {
+        position: 'relative',
+        margin: '10px 0', // ajusta según sea necesario
+    } as CSSProperties,
+    
 };

@@ -12,11 +12,11 @@ export const registerPageStyles = {
         padding: '20px',
         borderRadius: '8px',
         boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
-        width: '300px',
+        width: '400px',
         textAlign: 'center',
     },
     input: {
-        width: '100%',
+        width: '90%',
         padding: '10px',
         margin: '10px 0',
         borderRadius: '4px',
@@ -29,7 +29,7 @@ export const registerPageStyles = {
     },
     eyeIcon: {
         position: 'absolute',
-        right: '10px',
+        right: '20px',
         top: '50%',
         transform: 'translateY(-50%)',
         cursor: 'pointer',
