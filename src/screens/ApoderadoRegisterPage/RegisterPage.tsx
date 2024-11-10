@@ -5,6 +5,8 @@ import { auth } from '../../firebase-config';
 import { getFirestore, doc, setDoc } from 'firebase/firestore';
 import { registerPageStyles as styles } from './registerPage.styles'; // Importar estilos
 import { FaEye, FaEyeSlash } from 'react-icons/fa'; // Iconos de ojo para ver/ocultar contraseña
+import { registerApoderado, registerUser } from '../../services/auth.service';
+import { RegisterApoderado, RegisterUser} from '../../services/services.types';
 
 const RegisterPage: React.FC = () => {
     const [name, setName] = useState('');
@@ -41,18 +43,28 @@ const RegisterPage: React.FC = () => {
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
 
-            await setDoc(doc(db, "user", user.uid), {
-                nombre: name,
-                apellido: lastName,
-                email: user.email,
-                rol: 'apoderado',
-                uid: user.uid,
-            });
+            console.log("🚀 ~ handleRegister ~ userCredential:", userCredential)
 
-            await setDoc(doc(db, "Apoderados", user.uid), {
+            const data : RegisterApoderado = {
+                id: user.uid,
+                nombre: name,
+                apellido: lastName
+            }
+
+            const dataUser : RegisterUser = {
+                id: user.uid,
                 nombre: name,
                 apellido: lastName,
-            });
+                rol: 'apoderado',
+                uid: user.uid
+            }
+
+            const userResp = await registerApoderado(data)
+            const userResp2 = await registerUser(dataUser)
+            
+            console.log("🚀 ~ handleRegister ~ userResp2:", userResp2)
+            console.log("🚀 ~ handleRegister ~ userResp:", userResp)
+            
 
             // Enviar correo de verificación
             await sendEmailVerification(user);
@@ -69,6 +81,7 @@ const RegisterPage: React.FC = () => {
                 setError('Error al crear la cuenta: ' + err.message);
             }
         }
+            
     };
 
     return (
