@@ -29,11 +29,19 @@ export type LoginPayload = {
 	password: string;
 }
 
-export type RegisterPayload = {
+export type RegisterApoderado = {
+	id: string;
 	nombre: string;
 	apellido: string;
-	email: string;
+}
+
+export type RegisterUser = {
+	id: string;
+	nombre: string;
+	apellido: string;
 	rol: string;
+	uid: string;
+
 }
 
 export type RecoverPasswordPayload = {
