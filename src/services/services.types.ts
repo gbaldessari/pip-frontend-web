@@ -51,3 +51,52 @@ export type RecoverPasswordPayload = {
 export type GetUserDataPayload = {
 	token: string;
 }
+
+export interface Student {
+	id: string;
+	nombre: string;
+	apellido: string;
+	rut: string;
+	fechaNacimiento: string;
+	curso: string;
+	apoderadoNombre: string | null;
+  }
+
+  export type RegisterAlumno = {
+	nombre: string;
+	apellido: string;
+	rut: string;
+	fechaNacimiento: string;
+	apoderadoId: string;
+	curso: string;
+
+}
+
+export type UpdateAlumno = {
+	nombre?: string;
+	apellido?: string;
+	curso?: string;
+}
+
+export type RegisterEstudiante = {
+	nombre: string;
+	apellido: string;
+	rut: string;
+	fechaNacimiento: string;
+	apoderadoId: string;
+	curso: string;
+
+}
+
+export interface Curso {
+	id: string;
+	nombre: string;
+
+  }
+
+  export type Apoderados = {
+	nombre: string;
+	apellido: string;
+	id: string;
+	estudiantes: Student[];
+}

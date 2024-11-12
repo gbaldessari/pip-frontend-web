@@ -1,6 +1,8 @@
 import axios from "axios";
 import axiosInstance from "./AxiosInstance";
-import { GetUserDataPayload, GetUserDataResponse, LoginPayload, LoginResponse, RecoverPasswordPayload, RecoverPasswordResponse, RegisterApoderado, RegisterResponse, ServiceResponse } from "./services.types";
+import { GetUserDataPayload, GetUserDataResponse, LoginPayload, LoginResponse, RecoverPasswordPayload, RecoverPasswordResponse, RegisterAlumno, RegisterApoderado, RegisterResponse, ServiceResponse, Student, Apoderados, UpdateAlumno } from "./services.types";
+
+
 
 export const loginService = async (payload: LoginPayload): Promise<ServiceResponse<LoginResponse>> => {
   try {
@@ -32,6 +34,55 @@ export const registerUser = async (payload: RegisterApoderado): Promise<ServiceR
   }
 };
 
+export const mostrarEstudiantes = async (): Promise<Student[]> => {
+  try {
+    const response = await axios.get(`https://backend-integrador-32fz.onrender.com/alumnos`); 
+    return response.data; 
+  } catch (error) {
+    console.error("Error al obtener estudiantes:", error);
+    throw error; 
+  }
+};
+
+export const mostrarApoderados = async (): Promise<Apoderados[]> => {
+  try {
+    const response = await axios.get(`https://backend-integrador-32fz.onrender.com/apoderados`); 
+    return response.data; 
+  } catch (error) {
+    console.error("Error al obtener apoderados:", error);
+    throw error; 
+  }
+};
+
+export const mostrarCursos = async (): Promise<Student[]> => {
+  try {
+    const response = await axios.get(`https://backend-integrador-32fz.onrender.com/cursos`); 
+    return response.data; 
+  } catch (error) {
+    console.error("Error al obtener estudiantes:", error);
+    throw error; 
+  }
+};
+
+export const registerAlumno = async (payload: RegisterAlumno): Promise<ServiceResponse<RegisterResponse>> => {
+  try {
+    const response = await axios.post('https://backend-integrador-32fz.onrender.com/alumnos/createAlumno', payload);
+    return { success: true, data: response.data };
+  } catch (error) {
+    console.error('Error en registerService:', error);
+    return { success: false, error: String(error) };
+  }
+};
+
+export const updateAlumno = async (id: string, payload: UpdateAlumno): Promise<ServiceResponse<RegisterResponse>> => {
+  try {
+    const response = await axios.patch(`https://backend-integrador-32fz.onrender.com/alumnos/${id}`, payload);
+    return { success: true, data: response.data };
+  } catch (error) {
+    console.error('Error en updateAlumno:', error);
+    return { success: false, error: String(error) };
+  }
+};
 
 export const recoverPasswordService = async (payload: RecoverPasswordPayload): Promise<ServiceResponse<RecoverPasswordResponse>> => {
   try {

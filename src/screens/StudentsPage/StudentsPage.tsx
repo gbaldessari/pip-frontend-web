@@ -1,238 +1,193 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { studentsPageStyles as styles } from './studentsPage.styles';
-import { addDoc, collection, deleteDoc, getDocs, getFirestore } from "firebase/firestore";
-import { updateDoc, doc } from "firebase/firestore";
-
-interface Student {
-  id: string;
-  firstName: string;
-  lastName: string;
-  rut: string;
-  birthDate: string;
-  course: string;
-  guardian: string;
-}
+import { mostrarEstudiantes, registerAlumno, mostrarCursos, mostrarApoderados, updateAlumno } from '../../services/auth.service';
+import { Student, Curso, Apoderados, RegisterEstudiante } from '../../services/services.types'; 
 
 const StudentsPage: React.FC = () => {
-  
-  
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
-  const [guardians, setGuardians] = useState<any[]>([]); 
-  const [courses, setCourses] = useState<any[]>([]);
-  const [students, setStudents] = useState<Student[]>([]); 
-  
-  const db = getFirestore();
-
-  const [filteredStudents, setFilteredStudents] = useState<Student[]>(students);
+  const [estudiantes, setEstudiantes] = useState<Student[]>([]);
+  const [cursos, setCursos] = useState<Curso[]>([]);
+  const [apoderados, setApoderados] = useState<Apoderados[]>([]);
+  const [filteredStudents, setFilteredStudents] = useState<Student[]>([]);
   const [searchFilters, setSearchFilters] = useState({
-    firstName: "",
-    lastName: "",
-    rut: "",
-    birthDate: "",
-    course: "",
-    guardian: ""
-  });
-  
-  const [editingStudent, setEditingStudent] = useState<Student | null>(null);
-  
-  const editStudent = async (updatedData: any) => {
-    if (!editingStudent) {
-      console.error("No hay estudiante seleccionado para editar.");
-      return;
-    }
-  
-    try {
-      const studentRef = doc(db, "Alumnos", editingStudent.id);
-      await updateDoc(studentRef, updatedData);
-  
-      setStudents((prevStudents) =>
-        prevStudents.map((student) =>
-          student.id === editingStudent.id ? { ...student, ...updatedData } : student
-        )
-      );
-      setFilteredStudents((prevFiltered) =>
-        prevFiltered.map((student) =>
-          student.id === editingStudent.id ? { ...student, ...updatedData } : student
-        )
-      );
-  
-      setSuccessMessage("Estudiante actualizado exitosamente");
-      setEditingStudent(null);
-      setIsModalOpen(false); // Cierra el modal después de editar
-    } catch (error) {
-      console.error("Error al actualizar el estudiante:", error);
-      setError("No se pudo actualizar el estudiante");
-    }
-  };
-  
-  
-
-  const [newStudent, setNewStudent] = useState<Student>({
-    id: Date.now().toString(),
-    firstName: '',
-    lastName: '',
+    nombre: '',
+    apellido: '',
     rut: '',
-    birthDate: '',
-    course: '',
-    guardian: ''
+    fechaNacimiento: '',
+    curso: '',
+    apoderadoNombre: ''
   });
+
+  const [nuevoEstudiante, setnuevoEstudiante] = useState<RegisterEstudiante>({
+    nombre: '',
+    apellido: '',
+    rut: '',
+    fechaNacimiento: '',
+    curso: '',
+    apoderadoId: ''
+  });
+
+  const [editingStudent, setEditingStudent] = useState<Student | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const fetchStudents = async () => {
+  const cargarEstudiantes = async () => {
     try {
-      const studentsSnapshot = await getDocs(collection(db, "Alumnos"));
-      const studentsList = studentsSnapshot.docs.map(doc => {
-        const studentData = doc.data();
-  
-        // Busca el apoderado por su ID en la lista de `guardians`
-        const guardian = guardians.find(g => g.id === studentData.apoderadoId);
-        
-        return {
-          id: doc.id,
-          firstName: studentData.nombre,
-          lastName: studentData.apellido,
-          rut: studentData.rut,
-          birthDate: studentData.fechaNacimiento,
-          course: studentData.curso,
-          guardian: guardian ? `${guardian.nombre} ${guardian.apellido}` : "Apoderado no encontrado"
-        };
-      });
-  
-      setStudents(studentsList);
-      setFilteredStudents(studentsList);
-    } catch (err) {
-      console.error("Error al cargar estudiantes:", err);
+      const listaEstudiantes = await mostrarEstudiantes();
+      setEstudiantes(listaEstudiantes);
+      setFilteredStudents(listaEstudiantes);
+    } catch (error) {
+      console.error("Error al cargar estudiantes:", error);
       setError("No se pudieron cargar los estudiantes");
     }
   };
-  
-  
 
-  const fetchGuardians = async () => {
-    const guardiansSnapshot = await getDocs(collection(db, "Apoderados"));
-    const guardiansList = guardiansSnapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    }));
-    setGuardians(guardiansList);
-  };
-
-  const fetchCourses = async () => {
-    const coursesSnapshot = await getDocs(collection(db, "Cursos"));
-    const coursesList = coursesSnapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    }));
-    setCourses(coursesList);
-  };
-  
-  
+  useEffect(() => {
+    cargarEstudiantes(); 
+    cargarCursos();
+    cargarApoderados();
+  }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setNewStudent({ ...newStudent, [name]: value });
+    
+    setnuevoEstudiante({ ...nuevoEstudiante, [name]: value });
   };
 
   const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+    
     setSearchFilters({ ...searchFilters, [name]: value });
   };
 
-  const filterStudents = () => {
+  const filtrarEstudiantes = () => {
     setFilteredStudents(
-      students.filter((student) =>
+      estudiantes.filter((estudiante) =>
         Object.keys(searchFilters).every((key) =>
-          (student as any)[key].toString().toLowerCase().includes(searchFilters[key as keyof typeof searchFilters].toLowerCase())
+          (estudiante as any)[key]?.toString().toLowerCase().includes(searchFilters[key as keyof typeof searchFilters].toLowerCase())
         )
       )
     );
   };
 
+  useEffect(() => {
+    filtrarEstudiantes();
+  }, [searchFilters, estudiantes]);
+
   const handleAddStudent = async () => {
+    console.log("Nuevo estudiante:", nuevoEstudiante);
     setError('');
     setSuccessMessage('');
-
-    // Verifica si los campos están completos en newStudent
-    const { firstName, lastName, rut, birthDate, course, guardian } = newStudent;
-    if (!firstName || !lastName || !rut || !birthDate || !course || !guardian) {
-        setError('Por favor, completa todos los campos.');
-        return;
+  
+    const { nombre, apellido, rut, fechaNacimiento, curso, apoderadoId } = nuevoEstudiante;
+        if (!nombre || !apellido || !rut || !fechaNacimiento || !curso || !apoderadoId) {
+      setError('Por favor, completa todos los campos.');
+      return;
     }
-
+  
     try {
-        await addDoc(collection(db, 'Alumnos'), {
-            nombre: firstName,
-            apellido: lastName,
-            rut,
-            fechaNacimiento: birthDate,
-            curso: course,
-            apoderadoId: guardian
-        });
-        
-        setSuccessMessage('Estudiante registrado exitosamente');
-        
-        // Limpiar el formulario después de agregar
-        setNewStudent({ id: Date.now().toString(), firstName: '', lastName: '', rut: '', birthDate: '', course: '', guardian: '' });
-        setIsModalOpen(false);
-    } catch (err) {
-        setError('Error al añadir el documento: ' + (err as Error).message);
-    }
-};
+      const nuevoEstudianteData = {
+        nombre,
+        apellido,
+        rut,
+        fechaNacimiento,
+        curso,
+        apoderadoId
+      };
 
+      const estudianteNuevo = await registerAlumno(nuevoEstudianteData);
+      if(!estudianteNuevo.success) {
+        setError('Error al añadir el estudiante');
+        return;
+      }
+      setSuccessMessage('Estudiante registrado exitosamente');
+      setIsModalOpen(false);
+      setnuevoEstudiante({ nombre: '', apellido: '', rut: '', fechaNacimiento: '', curso: '', apoderadoId: '' });
+  
+      cargarEstudiantes();
+    } catch (error) {
+      setError('Error al añadir el estudiante: ' + error);
+    }
+  };
 
   const handleEditStudent = (student: Student) => {
     setEditingStudent(student);
-    setNewStudent(student);
+    
     setIsModalOpen(true);
   };
 
-
-  // Función para manejar la confirmación de la edición
-  const handleEditConfirm = () => {
-    const updatedData = {
-      nombre: newStudent.firstName,
-      apellido: newStudent.lastName,
-      rut: newStudent.rut,
-      fechaNacimiento: newStudent.birthDate,
-      curso: newStudent.course,
-      apoderadoId: newStudent.guardian,
-    };
-    editStudent(updatedData);
+  const cargarCursos = async () => {
+    try {
+      const listaCursos = await mostrarCursos(); 
+      setCursos(listaCursos);
+    } catch (error) {
+      setError("No se pudieron cargar los cursos");
+    }
   };
+
+  const cargarApoderados = async () => { 
+    try {
+      const listaApoderados = await mostrarApoderados(); 
+      setApoderados(listaApoderados);
+    } catch (error) {
+      setError("No se pudieron cargar los apoderados");
+    }
+  };
+
+
+  useEffect(() => {
+    cargarEstudiantes();
+    cargarCursos(); 
+  }, []);
+
+  const handleEditConfirm = async () => {
+    if (!editingStudent) return;
   
-
-
-
-const handleDeleteStudent = async (id: string) => {
-  try {
-    // Eliminar el documento de Firestore
-    const studentRef = doc(db, "Alumnos", id);
-    await deleteDoc(studentRef);
-
-    // Actualizar el estado eliminando el estudiante
-    setStudents(students.filter((student) => student.id !== id));
-    setFilteredStudents(filteredStudents.filter((student) => student.id !== id));
-    setSuccessMessage("Estudiante eliminado exitosamente");
-  } catch (error) {
-    console.error("Error al eliminar el estudiante:", error);
-    setError("No se pudo eliminar el estudiante");
-  }
-};
+    const updatedData = {
+      nombre: nuevoEstudiante.nombre,
+      apellido: nuevoEstudiante.apellido,
+      curso: nuevoEstudiante.curso,
+    };
   
+    try {
+      console.log("🚀 ~ handleEditConfirm ~ updatedData", updatedData);
+      const response = await updateAlumno( editingStudent.id, {...updatedData} );
+      console.log("🚀 ~ handleEditConfirm ~ response", response);
+      if (!response.success) {
+        throw new Error('Error al actualizar el estudiante');
+      }
+
+      
+      setSuccessMessage("Estudiante actualizado exitosamente");
+      setEditingStudent(null);
+      setnuevoEstudiante({ nombre: '', apellido: '', rut: '', fechaNacimiento: '', curso: '', apoderadoId: '' });
+      setIsModalOpen(false);
+      cargarEstudiantes();
+    } catch (error) {
+      console.error("Error al actualizar el estudiante:", error);
+      setError("No se pudo actualizar el estudiante: " + error);
+    }
+  };
+
+  // const handleDeleteStudent = async (id: string) => {
+  //   try {
+  //     const studentRef = doc(db, "Alumnos", id);
+  //     await deleteDoc(studentRef);
+
+  //     setStudents(students.filter((student) => student.id !== id));
+  //     setFilteredStudents(filteredStudents.filter((student) => student.id !== id));
+  //     setSuccessMessage("Estudiante eliminado exitosamente");
+  //   } catch (error) {
+  //     console.error("Error al eliminar el estudiante:", error);
+  //     setError("No se pudo eliminar el estudiante");
+  //   }
+  // };
 
   const handleModalClose = () => {
     setIsModalOpen(false);
     setEditingStudent(null);
-    setNewStudent({ id: Date.now().toString(), firstName: '', lastName: '', rut: '', birthDate: '', course: '', guardian: '' });
+    setnuevoEstudiante({ nombre: '', apellido: '', rut: '', fechaNacimiento: '', curso: '', apoderadoId: '' });
   };
-
-  React.useEffect(() => {
-    filterStudents();
-    fetchGuardians();
-    fetchCourses();
-    fetchStudents();
-  }, [searchFilters, students]);
 
   return (
     <div style={styles.container as React.CSSProperties}>
@@ -245,61 +200,18 @@ const handleDeleteStudent = async (id: string) => {
 
         {/* Filtros de búsqueda */}
         <div style={styles.filterContainer as React.CSSProperties}>
-          <input
-            type="text"
-            name="firstName"
-            placeholder="Buscar por nombre"
-            value={searchFilters.firstName}
-            onChange={handleFilterChange}
-            style={styles.filterInput as React.CSSProperties}
-          />
-          <input
-            type="text"
-            name="lastName"
-            placeholder="Buscar por apellido"
-            value={searchFilters.lastName}
-            onChange={handleFilterChange}
-            style={styles.filterInput as React.CSSProperties}
-          />
-          <input
-            type="text"
-            name="rut"
-            placeholder="Buscar por Rut"
-            value={searchFilters.rut}
-            onChange={handleFilterChange}
-            style={styles.filterInput as React.CSSProperties}
-          />
-          <input
-            type="date"
-            name="birthDate"
-            placeholder="Buscar por fecha de nacimiento"
-            value={searchFilters.birthDate}
-            onChange={handleFilterChange}
-            style={styles.filterInput as React.CSSProperties}
-          />
-          <input
-            type="text"
-            name="course"
-            placeholder="Buscar por curso"
-            value={searchFilters.course}
-            onChange={handleFilterChange}
-            style={styles.filterInput as React.CSSProperties}
-          />
-          <input
-            type="text"
-            name="guardian"
-            placeholder="Buscar por apoderado"
-            value={searchFilters.guardian}
-            onChange={handleFilterChange}
-            style={styles.filterInput as React.CSSProperties}
-          />
+          <input type="text" name="nombre" placeholder="Buscar por nombre" value={searchFilters.nombre} onChange={handleFilterChange} style={styles.filterInput as React.CSSProperties} />
+          <input type="text" name="apellido" placeholder="Buscar por apellido" value={searchFilters.apellido} onChange={handleFilterChange} style={styles.filterInput as React.CSSProperties} />
+          <input type="text" name="rut" placeholder="Buscar por Rut" value={searchFilters.rut} onChange={handleFilterChange} style={styles.filterInput as React.CSSProperties} />
+          <input type="date" name="fechaNacimiento" placeholder="Buscar por fecha de nacimiento" value={searchFilters.fechaNacimiento} onChange={handleFilterChange} style={styles.filterInput as React.CSSProperties} />
+          <input type="text" name="curso" placeholder="Buscar por curso" value={searchFilters.curso} onChange={handleFilterChange} style={styles.filterInput as React.CSSProperties} />
+          {/*<input type="text" name="apoderado" placeholder="Buscar por apoderado" value={searchFilters.apoderadoNombre} onChange={handleFilterChange} style={styles.filterInput as React.CSSProperties} /> */}
           <button style={styles.addButton} onClick={() => setIsModalOpen(true)}>Agregar Estudiante</button>
         </div>
 
         {/* Mensajes de Error y Éxito */}
         {error && <div style={{ color: 'red' }}>{error}</div>}
         {successMessage && <div style={{ color: 'green' }}>{successMessage}</div>}
-
 
         {/* Tabla de estudiantes */}
         <table style={styles.table as React.CSSProperties}>
@@ -319,97 +231,130 @@ const handleDeleteStudent = async (id: string) => {
             {filteredStudents.map((student) => (
               <tr key={student.id}>
                 <td>{student.id}</td>
-                <td>{student.firstName}</td>
-                <td>{student.lastName}</td>
+                <td>{student.nombre}</td>
+                <td>{student.apellido}</td>
                 <td>{student.rut}</td>
-                <td>{student.birthDate}</td>
-                <td>{student.course}</td>
-                <td>{student.guardian}</td>
+                <td>{student.fechaNacimiento}</td>
+                <td>{student.curso}</td>
+                <td>{student.apoderadoNombre}</td>
                 <td>
                   <button style={styles.editButton} onClick={() => handleEditStudent(student)}>Editar</button>
-                  <button style={styles.deleteButton} onClick={() => handleDeleteStudent(student.id)}>Eliminar</button>
-      </td>
-    </tr>
-  ))}
-</tbody>
-
+                  
+                </td>
+              </tr>
+            ))}
+          </tbody>
         </table>
 
         {isModalOpen && (
-          <div style={styles.modalOverlay as React.CSSProperties}>
-            <div style={styles.modal as React.CSSProperties}>
-              <h2>{editingStudent ? "Editar Estudiante" : "Agregar Estudiante"}</h2>
-              <input
-                type="text"
-                name="firstName"
-                value={newStudent.firstName}
-                onChange={handleInputChange}
-                placeholder="Nombres"
-                style={styles.input as React.CSSProperties}
-              />
-              <input
-                type="text"
-                name="lastName"
-                value={newStudent.lastName}
-                onChange={handleInputChange}
-                placeholder="Apellidos"
-                style={styles.input as React.CSSProperties}
-              />
-              <input
-                type="text"
-                name="rut"
-                value={newStudent.rut}
-                onChange={handleInputChange}
-                placeholder="RUT"
-                style={styles.input as React.CSSProperties}
-              />
-              <input
-                type="date"
-                name="birthDate"
-                value={newStudent.birthDate}
-                onChange={handleInputChange}
-                placeholder="Fecha de Nacimiento"
-                style={styles.input as React.CSSProperties}
-              />
-              <select
-                name="course"
-                value={newStudent.course}
-                onChange={handleInputChange}
-                style={styles.input as React.CSSProperties}
-              >
-              <option value="">Seleccionar curso</option>
-                {courses.map((course) => (
-                <option key={course.id} value={course.id}>
-                  {course.nombre} {/* Suponiendo que el nombre del curso está en el campo 'nombre' */}
-                </option>
-              ))}
-              </select>
-              <select
-                name="guardian"
-                  value={newStudent.guardian}
-                  onChange={handleInputChange}
-                  style={styles.input as React.CSSProperties}
-                  >
-                    <option value="">Seleccionar apoderado</option>
-                    {guardians.map((guardian) => (
-                      <option key={guardian.id} value={guardian.id}>
-                        {guardian.nombre} {guardian.apellido} {/* Mostrar el nombre y apellido */}
-                        </option>
-                      ))}
-                      </select>
-
-
-              <div style={styles.modalActions as React.CSSProperties}>
-                {editingStudent ? (
-                  <button style={styles.updateButton} onClick={handleEditConfirm}>Actualizar Estudiante</button>
-                ) : (
-                  <button style={styles.addButton} onClick={handleAddStudent}>Agregar Estudiante</button>
-                )}
-                <button style={styles.cancelButton} onClick={handleModalClose}>Cancelar</button>
-              </div>
-            </div>
-          </div>
+  <div style={styles.modalOverlay as React.CSSProperties}>
+    <div style={styles.modal as React.CSSProperties}>
+      <h2>{editingStudent ? "Editar Estudiante" : "Agregar Estudiante"}</h2>
+      {editingStudent ? (
+        <>
+          <input
+            type="text"
+            name="nombre"
+            value={nuevoEstudiante.nombre}
+            onChange={handleInputChange}
+            placeholder="Nombres"
+            style={styles.input as React.CSSProperties}
+          />
+          <input
+            type="text"
+            name="apellido"
+            value={nuevoEstudiante.apellido}
+            onChange={handleInputChange}
+            placeholder="Apellidos"
+            style={styles.input as React.CSSProperties}
+          />
+          <select
+            name="curso"
+            value={nuevoEstudiante.curso}
+            onChange={handleInputChange}
+            style={styles.input as React.CSSProperties}
+          >
+            <option value="">Seleccionar curso</option>
+            {cursos.map((curso) => (
+              <option key={curso.id} value={curso.id}>
+                {curso.nombre}
+              </option>
+            ))}
+          </select>
+        </>
+      ) : (
+        <>
+          <input
+            type="text"
+            name="nombre"
+            value={nuevoEstudiante.nombre}
+            onChange={handleInputChange}
+            placeholder="Nombres"
+            style={styles.input as React.CSSProperties}
+          />
+          <input
+            type="text"
+            name="apellido"
+            value={nuevoEstudiante.apellido}
+            onChange={handleInputChange}
+            placeholder="Apellidos"
+            style={styles.input as React.CSSProperties}
+          />
+          <input
+            type="text"
+            name="rut"
+            value={nuevoEstudiante.rut}
+            onChange={handleInputChange}
+            placeholder="RUT"
+            style={styles.input as React.CSSProperties}
+          />
+          <input
+            type="date"
+            name="fechaNacimiento"
+            value={nuevoEstudiante.fechaNacimiento}
+            onChange={handleInputChange}
+            placeholder="Fecha de Nacimiento"
+            style={styles.input as React.CSSProperties}
+          />
+          <select
+            name="curso"
+            value={nuevoEstudiante.curso}
+            onChange={handleInputChange}
+            style={styles.input as React.CSSProperties}
+          >
+            <option value="">Seleccionar curso</option>
+            {cursos.map((curso) => (
+              <option key={curso.id} value={curso.id}>
+                {curso.nombre}
+              </option>
+            ))}
+          </select>
+          <select
+            name="apoderadoId"
+            value={nuevoEstudiante.apoderadoId}
+            onChange={handleInputChange}
+            style={styles.input as React.CSSProperties}
+          >
+            <option value="">Seleccionar Apoderado</option>
+            {apoderados.map((apoderado) => (
+              <option key={apoderado.id} value={apoderado.id}>
+                {`${apoderado.nombre} ${apoderado.apellido}`}
+              </option>
+            ))}
+          </select>
+        </>
+      )}
+      <div style={styles.modalActions as React.CSSProperties}>
+        {editingStudent ? (
+          <button style={styles.updateButton} onClick={handleEditConfirm}>Actualizar Estudiante</button>
+        ) : (
+          <button style={styles.addButton} onClick={handleAddStudent}>Agregar Estudiante</button>
         )}
+        <button style={styles.cancelButton} onClick={handleModalClose}>Cancelar</button>
+      </div>
+    </div>
+  </div>
+)}
       </div>
     </div>
   );
