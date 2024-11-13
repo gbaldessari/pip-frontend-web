@@ -62,7 +62,7 @@ export interface Student {
 	apoderadoNombre: string | null;
   }
 
-  export type RegisterAlumno = {
+export type RegisterAlumno = {
 	nombre: string;
 	apellido: string;
 	rut: string;
@@ -91,12 +91,38 @@ export type RegisterEstudiante = {
 export interface Curso {
 	id: string;
 	nombre: string;
-
   }
 
-  export type Apoderados = {
+export type Apoderados = {
 	nombre: string;
 	apellido: string;
 	id: string;
 	estudiantes: Student[];
+}
+
+export type EliminarAlumno = {
+	id: string;
+}
+
+export type EliminarAsignatura = {
+	id: string;
+}
+
+export interface Profesor {
+	id: string;
+	nombre: string;
+	apellido: string;
+  }
+
+export interface Asignatura{
+	id: string;
+	nombre: string;
+	profesor: Profesor;
+	curso: Curso;
+}
+
+export type RegisterAsignatura = {
+	nombre: string;
+	profesorId: string;
+	cursoId: string;
 }

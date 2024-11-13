@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { studentsPageStyles as styles } from './studentsPage.styles';
-import { mostrarEstudiantes, registerAlumno, mostrarCursos, mostrarApoderados, updateAlumno } from '../../services/auth.service';
+import { mostrarEstudiantes, registerAlumno, mostrarCursos, mostrarApoderados, updateAlumno, eliminarAlumno } from '../../services/auth.service';
 import { Student, Curso, Apoderados, RegisterEstudiante } from '../../services/services.types'; 
 
 const StudentsPage: React.FC = () => {
@@ -169,19 +169,20 @@ const StudentsPage: React.FC = () => {
     }
   };
 
-  // const handleDeleteStudent = async (id: string) => {
-  //   try {
-  //     const studentRef = doc(db, "Alumnos", id);
-  //     await deleteDoc(studentRef);
+  const handleDeleteStudent = async (id: string) => {
+    try {
 
-  //     setStudents(students.filter((student) => student.id !== id));
-  //     setFilteredStudents(filteredStudents.filter((student) => student.id !== id));
-  //     setSuccessMessage("Estudiante eliminado exitosamente");
-  //   } catch (error) {
-  //     console.error("Error al eliminar el estudiante:", error);
-  //     setError("No se pudo eliminar el estudiante");
-  //   }
-  // };
+      const response = await eliminarAlumno({ id });
+      if (!response.success) {
+        throw new Error('Error al eliminar el estudiante');
+      }
+      setSuccessMessage("Estudiante eliminado exitosamente");
+      cargarEstudiantes();
+
+    } catch (error) {
+      setError("No se pudo eliminar el estudiante");
+    }
+  };
 
   const handleModalClose = () => {
     setIsModalOpen(false);
@@ -239,6 +240,7 @@ const StudentsPage: React.FC = () => {
                 <td>{student.apoderadoNombre}</td>
                 <td>
                   <button style={styles.editButton} onClick={() => handleEditStudent(student)}>Editar</button>
+                  <button style={styles.deleteButton} onClick={() => handleDeleteStudent(student.id)}>Eliminar</button>
                   
                 </td>
               </tr>
