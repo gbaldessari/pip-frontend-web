@@ -115,7 +115,7 @@ export const mostrarAsignatura = async (): Promise<Asignatura[]> => {
   }
 };
 
-export const eliminarAsignatura = async (payload: EliminarAlumno): Promise<ServiceResponse<RegisterResponse>> => {
+export const eliminarAsignatura = async (payload: EliminarAsignatura): Promise<ServiceResponse<RegisterResponse>> => {
   try {
     const response = await axios.delete(`https://backend-integrador-32fz.onrender.com/asignatura/${payload.id}`);
     return { success: true, data: response.data };
