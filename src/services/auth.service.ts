@@ -115,28 +115,15 @@ export const mostrarAsignatura = async (): Promise<Asignatura[]> => {
   }
 };
 
-
-export const eliminarAsignatura = async (payload: EliminarAsignatura): Promise<ServiceResponse<RegisterResponse>> => {
+export const eliminarAsignatura = async (payload: EliminarAlumno): Promise<ServiceResponse<RegisterResponse>> => {
   try {
     const response = await axios.delete(`https://backend-integrador-32fz.onrender.com/asignatura/${payload.id}`);
     return { success: true, data: response.data };
   } catch (error) {
     console.error('Error en eliminarAlumno:', error);
-    return { success: false, error: String(error) };  const handleDeleteSubject = async (id: string) => {
-    try {
-      const response = await eliminarAsignatura(id);
-      if (response.success) {
-        setAsignaturas(asignaturas.filter(subject => subject.id !== id));
-      } else {
-        console.error("Error al eliminar asignatura:", response.error);
-      }
-    } catch (error) {
-      console.error("Error al eliminar asignatura:", error);
-    }
-  };
+    return { success: false, error: String(error) };
   }
 };
-
 export const updateAsignatura = async (id: string, payload: UpdateAlumno): Promise<ServiceResponse<RegisterResponse>> => {
   try {
     const response = await axios.patch(`https://backend-integrador-32fz.onrender.com/asignatura/${id}`, payload);
