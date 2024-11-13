@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
 import { auth } from '../../firebase-config';
-import { getFirestore, doc, setDoc } from 'firebase/firestore';
 import { registerPageStyles as styles } from './registerPage.styles'; // Importar estilos
 import { FaEye, FaEyeSlash } from 'react-icons/fa'; // Iconos de ojo para ver/ocultar contraseña
 import { registerApoderado, registerUser } from '../../services/auth.service';
@@ -16,9 +15,8 @@ const RegisterPage: React.FC = () => {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [error, setError] = useState('');
     const [loginSuccess, setLoginSuccess] = useState('');
-    const [showPassword, setShowPassword] = useState(false); // Estado para mostrar/ocultar contraseña
+    const [showPassword, setShowPassword] = useState(false); 
     const navigate = useNavigate();
-    const db = getFirestore();
 
     const validateInputs = () => {
         if (!name || !lastName) {
@@ -65,13 +63,11 @@ const RegisterPage: React.FC = () => {
             console.log("🚀 ~ handleRegister ~ userResp2:", userResp2)
             console.log("🚀 ~ handleRegister ~ userResp:", userResp)
             
-
-            // Enviar correo de verificación
             await sendEmailVerification(user);
             setLoginSuccess('Registro exitoso. Revisa tu correo para verificar tu cuenta.');
 
-            // Redirigir después de un tiempo
             setTimeout(() => navigate('/'), 5000);
+
         } catch (err: any) {
             if (err.code === 'auth/email-already-in-use') {
                 setError('Este correo ya está registrado.');
