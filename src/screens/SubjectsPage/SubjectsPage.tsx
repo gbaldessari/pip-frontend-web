@@ -4,6 +4,8 @@ import { Curso, Profesor, Asignatura, RegisterAsignatura } from '../../services/
 import { registerAsignatura, mostrarAsignatura, updateAsignatura, eliminarAsignatura,mostrarCursos, mostrarProfesores } from '../../services/auth.service'; // Asegúrate de que las rutas sean correctas
 
 const SubjectsPage: React.FC = () => {
+  const [error, setError] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
   const [cursos, setCursos] = useState<Curso[]>([]);
   const [profesores, setProfesores] = useState<Profesor[]>([]);
   const [asignaturas, setAsignaturas] = useState<Asignatura[]>([]);
@@ -71,6 +73,7 @@ const SubjectsPage: React.FC = () => {
       if (!response.success) {
         console.error("Error al agregar asignatura:", response.error);
       } else {
+        setSuccessMessage("Asignatura agregada correctamente");
         cargarAsignatura();
         closeModal();
       }
@@ -108,6 +111,7 @@ const SubjectsPage: React.FC = () => {
         console.error("Error al eliminar asignatura:", response.error);
       } else {
         setAsignaturas(asignaturas.filter(subject => subject.id !== id));
+        setSuccessMessage("Asignatura eliminada correctamente");
         cargarAsignatura();
       }
     } catch (error) {
@@ -165,6 +169,10 @@ const SubjectsPage: React.FC = () => {
           />
           <button style={styles.addButton} onClick={openModal}>Agregar Asignatura</button>
         </div>
+        
+        {/* Mensajes de Error y Éxito */}
+        {error && <div style={{ color: 'red' }}>{error}</div>}
+        {successMessage && <div style={{ color: 'green' }}>{successMessage}</div>}
 
         <table style={styles.table as React.CSSProperties}>
           <thead style={styles.tableHead as React.CSSProperties}>
@@ -243,6 +251,3 @@ const SubjectsPage: React.FC = () => {
 
 export default SubjectsPage;
 
-function setError(arg0: string) {
-  throw new Error("Function not implemented.");
-}
