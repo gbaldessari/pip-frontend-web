@@ -136,3 +136,13 @@ export type RegisterAsignatura = {
 export type EliminarApoderado = {
 	id: string;
 }
+
+export type RegisterProfesor = {
+	id: string;
+	nombre: string;
+	apellido: string;
+}
+
+export type EliminarProfesor = {
+	id: string;
+}

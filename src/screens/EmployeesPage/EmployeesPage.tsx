@@ -1,57 +1,81 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { employeesPageStyles as styles } from './employeesPage.styles';
+import { mostrarProfesores, eliminarProfesor, registerProfesores, registerUser } from '../../services/auth.service';
+import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
+import { auth } from '../../firebase-config';
+import { Profesor, RegisterUser } from "../../services/services.types";
 
-interface Employee {
-  id: number;
-  type: 'Profesor' | 'Administrativo';
+interface Empleado {
+  id: string;
+  type: 'profesor' | 'administrativo';
   firstName: string;
   lastName: string;
   rut: string;
 }
 
-const EmployeesPage: React.FC = () => {
-  const [employees, setEmployees] = useState<Employee[]>([
-    { id: 1, type: 'Profesor', firstName: 'Carlos', lastName: 'López', rut: '12345678-9' },
-    { id: 2, type: 'Administrativo', firstName: 'Ana', lastName: 'Pérez', rut: '98765432-1' },
-  ]);
+type NuevoUsuario = {
+  correo: string;
+  contraseña: string;
+  confirmarContraseña: string;
+};
 
-  const [filter, setFilter] = useState({ type: '', firstName: '', lastName: '', rut: '' });
-  const [editingEmployee, setEditingEmployee] = useState<Employee | null>(null);
-  const [modalOpen, setModalOpen] = useState(false);
-  const [newEmployee, setNewEmployee] = useState<Employee>({
-    id: Date.now(),
-    type: 'Profesor',
-    firstName: '',
-    lastName: '',
-    rut: '',
+const EmployeesPage: React.FC = () => {
+  const [profesores, setProfesores] = useState<Profesor[]>([]);
+  const [successMessage, setSuccessMessage] = useState('');
+  const [error, setError] = useState('');
+  const [filter, setFilter] = useState({nombre: '', apellido: '' });
+  const [editingProfesor, setEditingProfesor] = useState<Profesor | null>(null);
+  const [newProfesor, setNewProfesor] = useState<Profesor>({ id: '', nombre: '', apellido: '' });
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
+  const [usuario, setUsuario] = useState<NuevoUsuario>({
+    correo: '',
+    contraseña: '',
+    confirmarContraseña: ''
   });
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setNewEmployee({ ...newEmployee, [name]: value });
+  const cargarDatos = async () => {
+    try {
+      const listaProfesores = await mostrarProfesores();
+      setProfesores(listaProfesores);
+    } catch (error) {
+      console.error("Error al cargar los profesores:", error);
+    }
   };
 
-  const handleAddEmployee = () => {
-    setEmployees([...employees, { ...newEmployee, id: Date.now() }]);
-    setModalOpen(false);
-    setNewEmployee({ id: Date.now(), type: 'Profesor', firstName: '', lastName: '', rut: '' });
+  useEffect(() => {
+    cargarDatos();
+  }, []);
+
+  const openModal = () => {
+    setNewProfesor({ id: '', nombre: '', apellido: '' });
+    setEditingProfesor(null);
+    setModalIsOpen(true);
   };
 
-  const handleEditEmployee = (employee: Employee) => {
-    setEditingEmployee(employee);
-    setNewEmployee(employee);
-    setModalOpen(true);
+  const handleEditProfesor = (profesor: Profesor) => {
+    setEditingProfesor(profesor);
+    setNewProfesor(profesor);
+    setModalIsOpen(true);
   };
 
-  const handleUpdateEmployee = () => {
-    setEmployees(employees.map(employee => (employee.id === newEmployee.id ? newEmployee : employee)));
-    setModalOpen(false);
-    setEditingEmployee(null);
-    setNewEmployee({ id: Date.now(), type: 'Profesor', firstName: '', lastName: '', rut: '' });
+  
+  const handleUpdateProfesor = async () => {
   };
 
-  const handleDeleteEmployee = (id: number) => {
-    setEmployees(employees.filter(employee => employee.id !== id));
+
+  const handleDeleteProfesor = async (id: string) => {
+    try {
+      const response = await eliminarProfesor({ id });
+      if (!response.success) {
+        throw new Error('Error al eliminar el Profesor');
+      }
+      setSuccessMessage("Profesor eliminado exitosamente");
+      cargarDatos();
+    } catch (error) {
+      setError("Error al eliminar el Profesor");
+    }
   };
 
   const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -59,142 +83,190 @@ const EmployeesPage: React.FC = () => {
     setFilter({ ...filter, [name]: value });
   };
 
-  const filteredEmployees = employees.filter(employee =>
-    (filter.type ? employee.type === filter.type : true) &&
-    (filter.firstName ? employee.firstName.includes(filter.firstName) : true) &&
-    (filter.lastName ? employee.lastName.includes(filter.lastName) : true) &&
-    (filter.rut ? employee.rut.includes(filter.rut) : true)
+  const filteredProfesores = profesores.filter(profesor =>
+    (filter.nombre ? profesor.nombre.includes(filter.nombre) : true) &&
+    (filter.apellido ? profesor.apellido.includes(filter.apellido) : true) 
   );
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setNewProfesor({ ...newProfesor, [name]: value });
+  };
+
+  const handleInputUsuarioChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setUsuario({ ...usuario, [name]: value });
+  };
+
+  const handleAddProfesor = async () => {
+    if (!newProfesor.nombre || !newProfesor.apellido) {
+      setError("Por favor, ingresa todos los campos requeridos.");
+      return;
+    }
+    if (usuario.correo === '' || usuario.contraseña === '' || usuario.confirmarContraseña === '') {
+      setError("Por favor, ingresa un correo y contraseña.");
+      return;
+    }
+    if (usuario.contraseña !== usuario.confirmarContraseña) {
+      setError('Las contraseñas no coinciden.');
+      return;
+    }
+
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, usuario.correo, usuario.contraseña);
+      const user = userCredential.user;
+
+      const dataUser : RegisterUser = {
+        id: user.uid,
+        nombre: newProfesor.nombre,
+        apellido: newProfesor.apellido,
+        rol: "profesor",
+        uid: user.uid
+      };
+
+      await registerProfesores({ id: user.uid, nombre: newProfesor.nombre, apellido: newProfesor.apellido});
+      await registerUser(dataUser);
+      await sendEmailVerification(user);
+
+      setSuccessMessage("Profesor agregado exitosamente");
+      cargarDatos();
+      closeModal();
+    } catch (err: any) {
+      if (err.code === 'auth/email-already-in-use') {
+        setError('Este correo ya está registrado.');
+      } else if (err.code === 'auth/invalid-email') {
+        setError('Correo inválido.');
+      } else {
+        setError('Error al crear la cuenta: ' + err.message);
+      }
+    }
+  };
+
+  const closeModal = () => {
+    setModalIsOpen(false);
+    setEditingProfesor(null);
+    setNewProfesor({ id: '', nombre: '', apellido: '' });
+  };
+
+  const togglePasswordVisibility = () => setIsPasswordVisible(!isPasswordVisible);
+  const toggleConfirmPasswordVisibility = () => setIsConfirmPasswordVisible(!isConfirmPasswordVisible);    
+
+
+
 
   return (
     <div style={styles.container as React.CSSProperties}>
       <header style={styles.header as React.CSSProperties}>
-        <h1>Registro de Empleados</h1>
+        <h1>Gestión de Profesores</h1>
         <img src="https://firebasestorage.googleapis.com/v0/b/escuelapp-f167e.appspot.com/o/Bajos.png?alt=media" alt="Logo Colegio" style={styles.schoolImage} />
       </header>
       <div style={styles.body as React.CSSProperties}>
-      <button style={styles.backButton} onClick={() => window.history.back()}>Volver al menú</button>
+        <button style={styles.backButton} onClick={() => window.history.back()}>Volver al menú</button>
         <div style={styles.filterContainer as React.CSSProperties}>
-          <select name="type" value={filter.type} onChange={handleFilterChange} style={styles.filterInput as React.CSSProperties}>
-            <option value="">Tipo</option>
-            <option value="Profesor">Profesor</option>
-            <option value="Administrativo">Administrativo</option>
-          </select>
-          <input
-            type="text"
-            name="firstName"
-            value={filter.firstName}
-            onChange={handleFilterChange}
-            placeholder="Nombre"
-            style={styles.filterInput as React.CSSProperties}
-          />
-          <input
-            type="text"
-            name="lastName"
-            value={filter.lastName}
-            onChange={handleFilterChange}
-            placeholder="Apellido"
-            style={styles.filterInput as React.CSSProperties}
-          />
-          <input
-            type="text"
-            name="rut"
-            value={filter.rut}
-            onChange={handleFilterChange}
-            placeholder="RUT"
-            style={styles.filterInput as React.CSSProperties}
-          />
-          <button style={styles.addButton as React.CSSProperties} onClick={() => setModalOpen(true)}>
-            Agregar Empleado
-          </button>
+          <input type="text" name="firstName" value={filter.nombre} onChange={handleFilterChange} placeholder="Nombre" style={styles.filterInput as React.CSSProperties} />
+          <input type="text" name="lastName" value={filter.apellido} onChange={handleFilterChange} placeholder="Apellido" style={styles.filterInput as React.CSSProperties} />
+          <button style={styles.addButton as React.CSSProperties} onClick={openModal}>Agregar Profesor</button>
         </div>
-
+  
         <table style={styles.table as React.CSSProperties}>
           <thead style={styles.tableHead as React.CSSProperties}>
             <tr>
-              <th>ID</th>
               <th>Tipo</th>
               <th>Nombre</th>
               <th>Apellido</th>
-              <th>RUT</th>
               <th>Acciones</th>
             </tr>
           </thead>
           <tbody style={styles.tableBody as React.CSSProperties}>
-            {filteredEmployees.map((employee) => (
-              <tr key={employee.id}>
-                <td>{employee.id}</td>
-                <td>{employee.type}</td>
-                <td>{employee.firstName}</td>
-                <td>{employee.lastName}</td>
-                <td>{employee.rut}</td>
+            {filteredProfesores.map((profesor) => (
+              <tr key={profesor.id}>
+                <td>Profesor</td>
+                <td>{profesor.nombre}</td>
+                <td>{profesor.apellido}</td>
                 <td>
-                  <button style={styles.editButton as React.CSSProperties} onClick={() => handleEditEmployee(employee)}>Editar</button>
-                  <button style={styles.deleteButton as React.CSSProperties} onClick={() => handleDeleteEmployee(employee.id)}>Eliminar</button>
+                  <button style={styles.editButton as React.CSSProperties} onClick={() => handleEditProfesor(profesor)}>Editar</button>
+                  <button style={styles.deleteButton as React.CSSProperties} onClick={() => handleDeleteProfesor(profesor.id)}>Eliminar</button>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
-
-        {modalOpen && (
-          <div style={styles.modalOverlay as React.CSSProperties}>
-            <div style={styles.modalContent as React.CSSProperties}>
-              <h2>{editingEmployee ? "Editar Empleado" : "Agregar Empleado"}</h2>
-              <select
-                name="type"
-                value={newEmployee.type}
-                onChange={handleInputChange}
-                style={styles.input as React.CSSProperties}
-              >
-                <option value="Profesor">Profesor</option>
-                <option value="Administrativo">Administrativo</option>
-              </select>
+      </div>
+  
+      {modalIsOpen && (
+        <div style={styles.modalOverlay as React.CSSProperties}>
+          <div style={styles.modalContent as React.CSSProperties}>
+            <h2>{editingProfesor ? "Editar Profesor" : "Agregar Profesor"}</h2>
+            <>
               <input
                 type="text"
-                name="firstName"
-                value={newEmployee.firstName}
+                name="nombre"
+                value={newProfesor.nombre}
                 onChange={handleInputChange}
                 placeholder="Nombre"
                 style={styles.input as React.CSSProperties}
               />
               <input
                 type="text"
-                name="lastName"
-                value={newEmployee.lastName}
+                name="apellido"
+                value={newProfesor.apellido}
                 onChange={handleInputChange}
                 placeholder="Apellido"
                 style={styles.input as React.CSSProperties}
               />
-              <input
-                type="text"
-                name="rut"
-                value={newEmployee.rut}
-                onChange={handleInputChange}
-                placeholder="RUT"
-                style={styles.input as React.CSSProperties}
-              />
-
-              <div style={styles.modalActions as React.CSSProperties}>
-                {editingEmployee ? (
-                  <button style={styles.updateButton as React.CSSProperties} onClick={handleUpdateEmployee}>
-                    Actualizar Empleado
-                  </button>
-                ) : (
-                  <button style={styles.addButton as React.CSSProperties} onClick={handleAddEmployee}>
-                    Agregar Empleado
-                  </button>
-                )}
-                <button style={styles.cancelButton as React.CSSProperties} onClick={() => setModalOpen(false)}>
-                  Cancelar
-                </button>
-              </div>
+              {!editingProfesor && (
+                <>
+                  <input
+                    type="text"
+                    name="correo"
+                    value={usuario.correo}
+                    onChange={handleInputUsuarioChange}
+                    placeholder="Correo"
+                    style={styles.input as React.CSSProperties}
+                  />
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <input
+                      type={isPasswordVisible ? 'text' : 'password'}
+                      name="contraseña"
+                      value={usuario.contraseña}
+                      onChange={handleInputUsuarioChange}
+                      placeholder="Contraseña"
+                      style={styles.input as React.CSSProperties}
+                    />
+                    <button onClick={togglePasswordVisibility}>
+                      {isPasswordVisible ? '☠️' : '👁️'}
+                    </button>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <input
+                      type={isConfirmPasswordVisible ? 'text' : 'password'}
+                      name="confirmarContraseña"
+                      value={usuario.confirmarContraseña}
+                      onChange={handleInputUsuarioChange}
+                      placeholder="Confirmar Contraseña"
+                      style={styles.input as React.CSSProperties}
+                    />
+                    <button onClick={toggleConfirmPasswordVisibility}>
+                      {isConfirmPasswordVisible ? '☠️' : '👁️'}
+                    </button>
+                  </div>
+                </>
+              )}
+            </>
+            <div style={styles.modalActions as React.CSSProperties}>
+              {editingProfesor ? (
+                <button style={styles.updateButton} onClick={handleUpdateProfesor}>Actualizar Apoderado</button>
+              ) : (
+                <button style={styles.addButton} onClick={handleAddProfesor}>Agregar Apoderado</button>
+              )}
+              <button style={styles.cancelButton} onClick={closeModal}>Cancelar</button>
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 };
+
 
 export default EmployeesPage;
