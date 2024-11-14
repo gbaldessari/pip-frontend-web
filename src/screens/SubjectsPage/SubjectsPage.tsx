@@ -82,11 +82,11 @@ const SubjectsPage: React.FC = () => {
     }
   };
 
-  const handleEditSubject = (subject: Asignatura) => {
-    setEditingSubject(subject);
-    setNuevaAsignatura({ nombre: subject.nombre, profesorId: subject.profesor.id, cursoId: subject.curso.id });
-    openModal();
-  };
+  // const handleEditSubject = (subject: Asignatura) => {
+  //   setEditingSubject(subject);
+  //   setNuevaAsignatura({ nombre: subject.nombre, profesorId: subject.profesor.id, cursoId: subject.curso.id });
+  //   openModal();
+  // };
 
   const handleUpdateSubject = async () => {
     // if (editingSubject) {

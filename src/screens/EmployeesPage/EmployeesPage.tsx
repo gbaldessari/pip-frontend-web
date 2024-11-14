@@ -26,6 +26,9 @@ const EmployeesPage: React.FC = () => {
     confirmarContraseña: ''
   });
 
+  const message = successMessage || error;
+  console.log(message);
+
   const cargarDatos = async () => {
     try {
       const listaProfesores = await mostrarProfesores();

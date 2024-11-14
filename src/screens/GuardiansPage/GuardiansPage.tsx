@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { guardiansPageStyles as styles } from './guardiansPage.styles';
-import { Apoderados, Alumno, RegisterApoderado, RegisterUser } from '../../services/services.types';
+import { Apoderados, RegisterUser } from '../../services/services.types';
 import { mostrarApoderados, eliminarApoderado, updateApoderado, registerApoderado, registerUser } from '../../services/auth.service';
 import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
 import { auth } from '../../firebase-config';
@@ -22,6 +22,10 @@ const GuardiansPage: React.FC = () => {
     confirmarContraseña: string;
   };
 
+  
+  const message = successMessage || error;
+  console.log(message);
+  
   const [usuario, setUsuario] = useState<NuevoUsuario>({
     correo: '',
     contraseña: '',
