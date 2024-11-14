@@ -5,14 +5,6 @@ import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/
 import { auth } from '../../firebase-config';
 import { Profesor, RegisterUser } from "../../services/services.types";
 
-interface Empleado {
-  id: string;
-  type: 'profesor' | 'administrativo';
-  firstName: string;
-  lastName: string;
-  rut: string;
-}
-
 type NuevoUsuario = {
   correo: string;
   contraseña: string;
