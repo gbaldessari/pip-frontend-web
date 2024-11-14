@@ -1,6 +1,6 @@
 import axios from "axios";
 import axiosInstance from "./AxiosInstance";
-import { GetUserDataPayload, GetUserDataResponse, LoginPayload, LoginResponse, RecoverPasswordPayload, RecoverPasswordResponse, RegisterAlumno, RegisterApoderado, RegisterResponse, ServiceResponse, Apoderados, UpdateAlumno, EliminarAlumno, RegisterAsignatura, Asignatura, Profesor, EliminarAsignatura, Alumno, UpdateApoderado, EliminarApoderado } from "./services.types";
+import { GetUserDataPayload, GetUserDataResponse, LoginPayload, LoginResponse, RecoverPasswordPayload, RecoverPasswordResponse, RegisterAlumno, RegisterApoderado, RegisterResponse, ServiceResponse, Apoderados, UpdateAlumno, EliminarAlumno, RegisterAsignatura, Asignatura, Profesor, EliminarAsignatura, Alumno, UpdateApoderado, EliminarApoderado, EliminarProfesor, RegisterProfesor } from "./services.types";
 
 
 
@@ -164,6 +164,42 @@ export const updateApoderado = async (id: string, payload: UpdateApoderado): Pro
     return { success: false, error: String(error) };
   }
 };
+
+export const registerProfesores = async (payload: RegisterProfesor): Promise<ServiceResponse<RegisterResponse>> => {
+  try {
+    const response = await axios.post('https://backend-integrador-32fz.onrender.com/profesores/createProfesor', payload);
+    return { success: true, data: response.data };
+  } catch (error) {
+    console.error('Error en registerService:', error);
+    return { success: false, error: String(error) };
+  }
+};
+
+export const eliminarProfesor = async (payload: EliminarProfesor): Promise<ServiceResponse<RegisterResponse>> => {
+  try {
+    const response = await axios.delete(`https://backend-integrador-32fz.onrender.com/profesores/${payload.id}`);
+    return { success: true, data: response.data };
+  } catch (error) {
+    console.error('Error en eliminarAlumno:', error);
+    return { success: false, error: String(error) };
+  }
+};
+
+
+
+
+
+//Cambiar logica del backend sobre los admins.
+export const mostrarAdmins = async (): Promise<Profesor[]> => {
+  try {
+    const response = await axios.get(`https://backend-integrador-32fz.onrender.com/profesores`); 
+    return response.data; 
+  } catch (error) {
+    console.error("Error al obtener apoderados:", error);
+    throw error; 
+  }
+};
+
 
 
 
