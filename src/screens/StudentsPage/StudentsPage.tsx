@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { studentsPageStyles as styles } from './studentsPage.styles';
 import { mostrarEstudiantes, registerAlumno, mostrarCursos, mostrarApoderados, updateAlumno, eliminarAlumno } from '../../services/auth.service';
-import { Student, Curso, Apoderados, RegisterEstudiante } from '../../services/services.types'; 
+import { Alumno, Curso, Apoderados, RegisterEstudiante } from '../../services/services.types'; 
 
 const StudentsPage: React.FC = () => {
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
-  const [estudiantes, setEstudiantes] = useState<Student[]>([]);
+  const [estudiantes, setEstudiantes] = useState<Alumno[]>([]);
   const [cursos, setCursos] = useState<Curso[]>([]);
   const [apoderados, setApoderados] = useState<Apoderados[]>([]);
-  const [filteredStudents, setFilteredStudents] = useState<Student[]>([]);
+  const [filteredStudents, setFilteredStudents] = useState<Alumno[]>([]);
   const [searchFilters, setSearchFilters] = useState({
     nombre: '',
     apellido: '',
@@ -28,7 +28,7 @@ const StudentsPage: React.FC = () => {
     apoderadoId: ''
   });
 
-  const [editingStudent, setEditingStudent] = useState<Student | null>(null);
+  const [editingStudent, setEditingStudent] = useState<Alumno | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const cargarEstudiantes = async () => {
@@ -110,7 +110,7 @@ const StudentsPage: React.FC = () => {
     }
   };
 
-  const handleEditStudent = (student: Student) => {
+  const handleEditStudent = (student: Alumno) => {
     setEditingStudent(student);
     
     setIsModalOpen(true);
@@ -156,8 +156,6 @@ const StudentsPage: React.FC = () => {
       if (!response.success) {
         throw new Error('Error al actualizar el estudiante');
       }
-
-      
       setSuccessMessage("Estudiante actualizado exitosamente");
       setEditingStudent(null);
       setnuevoEstudiante({ nombre: '', apellido: '', rut: '', fechaNacimiento: '', curso: '', apoderadoId: '' });

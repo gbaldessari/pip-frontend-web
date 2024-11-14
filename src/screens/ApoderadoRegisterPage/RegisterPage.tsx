@@ -41,7 +41,6 @@ const RegisterPage: React.FC = () => {
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
 
-            console.log("🚀 ~ handleRegister ~ userCredential:", userCredential)
 
             const data : RegisterApoderado = {
                 id: user.uid,
@@ -57,11 +56,9 @@ const RegisterPage: React.FC = () => {
                 uid: user.uid
             }
 
-            const userResp = await registerApoderado(data)
-            const userResp2 = await registerUser(dataUser)
+            await registerApoderado(data)
+            await registerUser(dataUser)
             
-            console.log("🚀 ~ handleRegister ~ userResp2:", userResp2)
-            console.log("🚀 ~ handleRegister ~ userResp:", userResp)
             
             await sendEmailVerification(user);
             setLoginSuccess('Registro exitoso. Revisa tu correo para verificar tu cuenta.');

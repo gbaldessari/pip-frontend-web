@@ -52,7 +52,7 @@ export type GetUserDataPayload = {
 	token: string;
 }
 
-export interface Student {
+export interface Alumno {
 	id: string;
 	nombre: string;
 	apellido: string;
@@ -78,6 +78,12 @@ export type UpdateAlumno = {
 	curso?: string;
 }
 
+export type UpdateApoderado = {
+	nombre?: string;
+	apellido?: string;
+}
+
+
 export type RegisterEstudiante = {
 	nombre: string;
 	apellido: string;
@@ -97,7 +103,7 @@ export type Apoderados = {
 	nombre: string;
 	apellido: string;
 	id: string;
-	estudiantes: Student[];
+	alumnos: Alumno[];
 }
 
 export type EliminarAlumno = {
@@ -125,4 +131,8 @@ export type RegisterAsignatura = {
 	nombre: string;
 	profesorId: string;
 	cursoId: string;
+}
+
+export type EliminarApoderado = {
+	id: string;
 }

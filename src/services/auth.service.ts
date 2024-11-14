@@ -1,6 +1,6 @@
 import axios from "axios";
 import axiosInstance from "./AxiosInstance";
-import { GetUserDataPayload, GetUserDataResponse, LoginPayload, LoginResponse, RecoverPasswordPayload, RecoverPasswordResponse, RegisterAlumno, RegisterApoderado, RegisterResponse, ServiceResponse, Student, Apoderados, UpdateAlumno, EliminarAlumno, RegisterAsignatura, Asignatura, Profesor, EliminarAsignatura } from "./services.types";
+import { GetUserDataPayload, GetUserDataResponse, LoginPayload, LoginResponse, RecoverPasswordPayload, RecoverPasswordResponse, RegisterAlumno, RegisterApoderado, RegisterResponse, ServiceResponse, Apoderados, UpdateAlumno, EliminarAlumno, RegisterAsignatura, Asignatura, Profesor, EliminarAsignatura, Alumno, UpdateApoderado, EliminarApoderado } from "./services.types";
 
 
 
@@ -34,7 +34,7 @@ export const registerUser = async (payload: RegisterApoderado): Promise<ServiceR
   }
 };
 
-export const mostrarEstudiantes = async (): Promise<Student[]> => {
+export const mostrarEstudiantes = async (): Promise<Alumno[]> => {
   try {
     const response = await axios.get(`https://backend-integrador-32fz.onrender.com/alumnos`); 
     return response.data; 
@@ -54,7 +54,7 @@ export const mostrarApoderados = async (): Promise<Apoderados[]> => {
   }
 };
 
-export const mostrarCursos = async (): Promise<Student[]> => {
+export const mostrarCursos = async (): Promise<Alumno[]> => {
   try {
     const response = await axios.get(`https://backend-integrador-32fz.onrender.com/cursos`); 
     return response.data; 
@@ -145,6 +145,25 @@ export const mostrarProfesores = async (): Promise<Profesor[]> => {
   }
 };
 
+export const eliminarApoderado = async (payload: EliminarApoderado): Promise<ServiceResponse<RegisterResponse>> => {
+  try {
+    const response = await axios.delete(`https://backend-integrador-32fz.onrender.com/apoderados/${payload.id}`);
+    return { success: true, data: response.data };
+  } catch (error) {
+    console.error('Error en eliminarAlumno:', error);
+    return { success: false, error: String(error) };
+  }
+};
+
+export const updateApoderado = async (id: string, payload: UpdateApoderado): Promise<ServiceResponse<RegisterResponse>> => {
+  try {
+    const response = await axios.patch(`https://backend-integrador-32fz.onrender.com/apoderados/${id}`, payload);
+    return { success: true, data: response.data };
+  } catch (error) {
+    console.error('Error en updateAlumno:', error);
+    return { success: false, error: String(error) };
+  }
+};
 
 
 
