@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { subjectsPageStyles as styles } from './subjectsPage.styles';
 import { Curso, Profesor, Asignatura, RegisterAsignatura } from '../../services/services.types';
-import { registerAsignatura, mostrarAsignatura, updateAsignatura, eliminarAsignatura,mostrarCursos, mostrarProfesores } from '../../services/auth.service'; // Asegúrate de que las rutas sean correctas
+import { registerAsignatura, mostrarAsignatura, eliminarAsignatura,mostrarCursos, mostrarProfesores } from '../../services/auth.service'; // Asegúrate de que las rutas sean correctas
 
 const SubjectsPage: React.FC = () => {
   const [error, setError] = useState('');
