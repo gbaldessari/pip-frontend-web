@@ -12,8 +12,8 @@ type NuevoUsuario = {
 
 const EmployeesPage: React.FC = () => {
   const [profesores, setProfesores] = useState<Profesor[]>([]);
-  const [successMessage, setSuccessMessage] = useState('');
-  const [error, setError] = useState('');
+  const [, setSuccessMessage] = useState('');
+  const [, setError] = useState('');
   const [filter, setFilter] = useState({nombre: '', apellido: '' });
   const [editingProfesor, setEditingProfesor] = useState<Profesor | null>(null);
   const [newProfesor, setNewProfesor] = useState<Profesor>({ id: '', nombre: '', apellido: '' });
@@ -25,9 +25,6 @@ const EmployeesPage: React.FC = () => {
     contraseña: '',
     confirmarContraseña: ''
   });
-
-  const message = successMessage || error;
-  console.log(message);
 
   const cargarDatos = async () => {
     try {

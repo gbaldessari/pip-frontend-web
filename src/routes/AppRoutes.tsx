@@ -20,6 +20,9 @@ import EmployeesPage from "../screens/EmployeesPage/EmployeesPage";
 import GuardiansPage from "../screens/GuardiansPage/GuardiansPage";
 import PaymentsPage from "../screens/PaymentsPage/PaymentsPage";
 import SubjectsPage from "../screens/SubjectsPage/SubjectsPage";
+import GradesAdminPage from "../screens/GradesAdminPage/GradesAdminPage";
+import TeacherForumPage from "../screens/TeacherForumPage/TeacherForumPage";
+
 
 export const AppRoutes: React.FC<{}> = () => {
   const { user, loading } = useUser();
@@ -57,6 +60,8 @@ export const AppRoutes: React.FC<{}> = () => {
                       <Route path="/payments" element={<PaymentsPage />} />
                       <Route path="/employees" element={<EmployeesPage />} />
                       <Route path="/guardians" element={<GuardiansPage />} />
+                      <Route path="/grades-admin" element={<GradesAdminPage />} /> 
+                      <Route path="/teacher-forum" element={<TeacherForumPage />} />
                   </>
               )}
           </Routes>

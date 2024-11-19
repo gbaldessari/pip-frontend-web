@@ -13,12 +13,14 @@ interface Subject {
 }
 
 const AttendancePage: React.FC = () => {
+  // Simulación de asignaturas del profesor
   const subjects: Subject[] = [
     { id: 1, name: "Matemáticas" },
     { id: 2, name: "Ciencias" },
     { id: 3, name: "Historia" }
   ];
 
+  // Simulación de estudiantes
   const students: Student[] = [
     { id: 1, name: "Juan Pérez", present: false },
     { id: 2, name: "Ana Gómez", present: false },
@@ -56,6 +58,7 @@ const AttendancePage: React.FC = () => {
         <h1>Control de Asistencia</h1>
       </header>
       <div style={styles.body as React.CSSProperties}>
+      <button style={styles.backButton} onClick={() => window.history.back()}>Volver al menú</button>
         <div style={styles.form as React.CSSProperties}>
           <label style={styles.label as React.CSSProperties}>Selecciona Asignatura:</label>
           <select

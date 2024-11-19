@@ -68,10 +68,46 @@ const TeacherPage: React.FC = () => {
             }
             onMouseEnter={() => setHoveredButton("attendance")}
             onMouseLeave={() => setHoveredButton(null)}
-            onClick={() => navigator('/attendance')}
+            onClick={() => navigator("/attendance")}
           >
             Control de asistencia
           </button>
+          <button
+          style={
+            hoveredButton === "evaluations"
+            ? {
+              ...styles.bodyButton,
+              backgroundColor: "#315b73",
+              transform: "scale(1.05)",
+            }
+            : styles.bodyButton
+          }
+          onMouseEnter={() => setHoveredButton("evaluations")}
+          onMouseLeave={() => setHoveredButton(null)}
+          onClick={() => navigator("/grades-admin")}
+          >
+            Control de Evaluaciones
+            </button>
+          
+            <button
+            style={
+              hoveredButton === "forum"
+                ? {
+                    ...styles.bodyButton,
+                    backgroundColor: "#315b73",
+                    transform: "scale(1.05)",
+                  }
+                : styles.bodyButton
+            }
+            onMouseEnter={() => setHoveredButton("forum")}
+            onMouseLeave={() => setHoveredButton(null)}
+            onClick={() => navigator("/teacher-forum")}
+          >
+            Foro
+          </button>
+
+            
+
         </div>
       </main>
 
