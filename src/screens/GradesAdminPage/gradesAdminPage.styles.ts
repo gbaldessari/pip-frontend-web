@@ -1,6 +1,6 @@
 import { CSSProperties } from "react";
 
-export const attendancePageStyles = {
+export const gradesAdminPageStyles = {
   container: {
     backgroundColor: "#1d1551",
     padding: "20px",
@@ -78,9 +78,6 @@ export const attendancePageStyles = {
     padding: "10px",
     borderBottom: "1px solid #555",
     textAlign: "center",
-  } as CSSProperties,
-  checkbox: {
-    transform: "scale(1.5)",
   } as CSSProperties,
   submitButton: {
     backgroundColor: "#28a745",

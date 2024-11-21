@@ -4,7 +4,6 @@ import { mostrarProfesores, eliminarProfesor, registerProfesores, registerUser }
 import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
 import { auth } from '../../firebase-config';
 import { Profesor, RegisterUser } from "../../services/services.types";
-
 type NuevoUsuario = {
   correo: string;
   contraseña: string;
@@ -13,8 +12,8 @@ type NuevoUsuario = {
 
 const EmployeesPage: React.FC = () => {
   const [profesores, setProfesores] = useState<Profesor[]>([]);
-  const [successMessage, setSuccessMessage] = useState('');
-  const [error, setError] = useState('');
+  const [, setSuccessMessage] = useState('');
+  const [, setError] = useState('');
   const [filter, setFilter] = useState({nombre: '', apellido: '' });
   const [editingProfesor, setEditingProfesor] = useState<Profesor | null>(null);
   const [newProfesor, setNewProfesor] = useState<Profesor>({ id: '', nombre: '', apellido: '' });

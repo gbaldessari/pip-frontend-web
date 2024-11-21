@@ -5,7 +5,7 @@ import { auth } from '../../firebase-config';
 import { getFirestore, doc, setDoc } from 'firebase/firestore';
 import { adminCreatorPageStyles as styles } from './adminCreatorPage.styles';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
-import { useUser } from '../../routes/UserContext'; // Importar el contexto del usuario
+import { useUser } from '../../routes/UserContext'; 
 
 const AdminCreatorPage: React.FC = () => {
     const [name, setName] = useState('');
@@ -13,13 +13,13 @@ const AdminCreatorPage: React.FC = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-    const [power, setPower] = useState('Estandar'); // Poder por defecto es 'Estandar'
+    const [power, setPower] = useState('Estandar'); 
     const [error, setError] = useState('');
     const [registerSuccess, setRegisterSuccess] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
     const db = getFirestore();
-    const { user } = useUser(); // Accede al contexto del usuario
+    const { user } = useUser();
 
     const validateInputs = () => {
         if (!name || !lastName) {
@@ -38,7 +38,6 @@ const AdminCreatorPage: React.FC = () => {
     };
 
     const handleRegister = async () => {
-        // Verifica si el usuario actual tiene poder "Alto" o "Estandar"
         if (user?.rol !== 'Alto') {
             setError('Usted no puede crear usuarios de tipo Administradores');
             return;
@@ -50,21 +49,18 @@ const AdminCreatorPage: React.FC = () => {
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             const newUser = userCredential.user;
 
-            // Crear el documento del usuario en Firestore
             await setDoc(doc(db, "user", newUser.uid), {
                 nombre: name,
                 apellido: lastName,
                 email: newUser.email,
-                poder: power, // 'Estandar' o 'Alto'
+                poder: power, 
                 rol: 'admin',
                 uid: newUser.uid,
             });
 
-            // Enviar correo de verificación
             await sendEmailVerification(newUser);
             setRegisterSuccess('Administrador creado exitosamente. Revisa tu correo para verificar tu cuenta.');
 
-            // Mostrar mensaje emergente y redirigir a la página de administración después de un tiempo
             alert('Administrador creado exitosamente.');
             setTimeout(() => navigate('/admin'), 5000);
         } catch (err: any) {
