@@ -199,6 +199,44 @@ export const mostrarAdmins = async (): Promise<Profesor[]> => {
 };
 
 
+
+export const getAsignaturasdeUnProfesor = async (id:string ):  Promise<Asignatura[]> => {
+  try{
+    const response = await axios.get(`https://backend-integrador-32fz.onrender.com/profesores/${id}/asignaturas`);
+    return response.data;
+  }catch(error){
+    console.error("Error aqui", error);
+    throw error;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 export const recoverPasswordService = async (payload: RecoverPasswordPayload): Promise<ServiceResponse<RecoverPasswordResponse>> => {
   try {
     const response = await axiosInstance.post('ENDPOINT-RECUPERAR-CONTRASENA', payload);

@@ -28,6 +28,7 @@ const HomePage: React.FC = () => {
             setLoginSuccess('Inicio de sesión exitoso');
             setError('');
             setShowPrompt(false);
+            localStorage.setItem('user_uid', JSON.stringify(userCredential.user.uid));
             await fetchUserData(userCredential.user.uid);
         } catch (err: any) {
             switch (err.code) {

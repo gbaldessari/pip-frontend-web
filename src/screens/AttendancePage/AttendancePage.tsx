@@ -1,36 +1,47 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { attendancePageStyles as styles } from './attendancePage.styles';
-
+import { Asignatura } from "../../services/services.types";
+import { getAsignaturasdeUnProfesor } from "../../services/auth.service";
 interface Student {
   id: number;
   name: string;
   present: boolean;
 }
 
-interface Subject {
-  id: number;
-  name: string;
-}
-
 const AttendancePage: React.FC = () => {
-  // Simulación de asignaturas del profesor
-  const subjects: Subject[] = [
-    { id: 1, name: "Matemáticas" },
-    { id: 2, name: "Ciencias" },
-    { id: 3, name: "Historia" }
-  ];
-
-  // Simulación de estudiantes
-  const students: Student[] = [
+  const [subjects, setSubjects] = useState<Asignatura[]>([]);
+  const [students, setStudents] = useState<Student[]>([
     { id: 1, name: "Juan Pérez", present: false },
     { id: 2, name: "Ana Gómez", present: false },
     { id: 3, name: "Luis Rodríguez", present: false }
-  ];
-
-  const [selectedSubject, setSelectedSubject] = useState<number | null>(null);
+  ]);
+  const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
   const [classDate, setClassDate] = useState<string>('');
   const [classTime, setClassTime] = useState<string>('');
   const [attendance, setAttendance] = useState<Student[]>(students);
+  const [error, setError] = useState('');
+  const user = localStorage.getItem('user_uid');
+  
+
+  useEffect(() => {
+    const fetchSubjects = async () => {
+      if (!user || !user) {
+        console.error("El UID del usuario no está disponible.");
+        return; 
+      }
+      try {
+        console.log("UID del usuario:", user);
+        const asignaturas = await getAsignaturasdeUnProfesor(user);
+        console.log("Asignaturas:", asignaturas);
+        setSubjects(asignaturas);
+      } catch (error) {
+        setError('Error al cargar las asignaturas');
+        console.error(error);
+      }
+    };
+
+    fetchSubjects();
+  }, [user]); 
 
   const handleAttendanceChange = (id: number) => {
     setAttendance(attendance.map(student =>
@@ -44,7 +55,7 @@ const AttendancePage: React.FC = () => {
       return;
     }
 
-    const selectedSubjectName = subjects.find(subject => subject.id === selectedSubject)?.name;
+    const selectedSubjectName = subjects.find(subject => subject.id === selectedSubject)?.nombre;
     console.log("Asignatura:", selectedSubjectName);
     console.log("Fecha:", classDate);
     console.log("Hora:", classTime);
@@ -58,17 +69,17 @@ const AttendancePage: React.FC = () => {
         <h1>Control de Asistencia</h1>
       </header>
       <div style={styles.body as React.CSSProperties}>
-      <button style={styles.backButton} onClick={() => window.history.back()}>Volver al menú</button>
+        <button style={styles.backButton} onClick={() => window.history.back()}>Volver al menú</button>
         <div style={styles.form as React.CSSProperties}>
           <label style={styles.label as React.CSSProperties}>Selecciona Asignatura:</label>
           <select
             value={selectedSubject || ""}
-            onChange={(e) => setSelectedSubject(parseInt(e.target.value))}
+            onChange={(e) => setSelectedSubject(e.target.value)}
             style={styles.select as React.CSSProperties}
           >
             <option value="">-- Selecciona una asignatura --</option>
             {subjects.map(subject => (
-              <option key={subject.id} value={subject.id}>{subject.name}</option>
+              <option key={subject.id} value={subject.id}>{subject.nombre}</option>
             ))}
           </select>
 
