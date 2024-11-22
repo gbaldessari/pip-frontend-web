@@ -1,6 +1,6 @@
 import axios from "axios";
 import axiosInstance from "./AxiosInstance";
-import { GetUserDataPayload, GetUserDataResponse, LoginPayload, LoginResponse, RecoverPasswordPayload, RecoverPasswordResponse, RegisterAlumno, RegisterApoderado, RegisterResponse, ServiceResponse, Apoderados, UpdateAlumno, EliminarAlumno, RegisterAsignatura, Asignatura, Profesor, EliminarAsignatura, Alumno, UpdateApoderado, EliminarApoderado, EliminarProfesor, RegisterProfesor } from "./services.types";
+import { GetUserDataPayload, GetUserDataResponse, LoginPayload, LoginResponse, RecoverPasswordPayload, RecoverPasswordResponse, RegisterAlumno, RegisterApoderado, RegisterResponse, ServiceResponse, Apoderados, UpdateAlumno, EliminarAlumno, RegisterAsignatura, Asignatura, Profesor, EliminarAsignatura, Alumno, UpdateApoderado, EliminarApoderado, EliminarProfesor, RegisterProfesor, Curso } from "./services.types";
 
 
 
@@ -54,7 +54,7 @@ export const mostrarApoderados = async (): Promise<Apoderados[]> => {
   }
 };
 
-export const mostrarCursos = async (): Promise<Alumno[]> => {
+export const mostrarCursos = async (): Promise<Curso[]> => {
   try {
     const response = await axios.get(`https://backend-integrador-32fz.onrender.com/cursos`); 
     return response.data; 
@@ -187,8 +187,6 @@ export const eliminarProfesor = async (payload: EliminarProfesor): Promise<Servi
 
 
 
-
-
 //Cambiar logica del backend sobre los admins.
 export const mostrarAdmins = async (): Promise<Profesor[]> => {
   try {
@@ -199,9 +197,6 @@ export const mostrarAdmins = async (): Promise<Profesor[]> => {
     throw error; 
   }
 };
-
-
-
 
 
 export const recoverPasswordService = async (payload: RecoverPasswordPayload): Promise<ServiceResponse<RecoverPasswordResponse>> => {

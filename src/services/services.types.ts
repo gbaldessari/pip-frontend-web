@@ -52,6 +52,8 @@ export type GetUserDataPayload = {
 	token: string;
 }
 
+//------------------------------------------------------------------------//
+
 export interface Alumno {
 	id: string;
 	nombre: string;
@@ -59,8 +61,26 @@ export interface Alumno {
 	rut: string;
 	fechaNacimiento: string;
 	curso: string;
-	apoderadoNombre: string | null;
+	apoderadoNombre: string ;
+	asistencia: Asistencia[];
+    notas : Nota[];
   }
+
+export interface Asistencia {
+	id: string;
+	fecha: string;
+	asistencia: boolean;
+}
+
+export interface Nota {
+	id: string;
+	calificacion: number;
+	alumnoId: string;
+	asignaturaId: string;
+	fecha: string;
+}
+
+
 
 export type RegisterAlumno = {
 	nombre: string;
@@ -97,6 +117,9 @@ export type RegisterEstudiante = {
 export interface Curso {
 	id: string;
 	nombre: string;
+	asignaturaId: string;
+	year: string;
+	alumnos:  Alumno[];
   }
 
 export type Apoderados = {
