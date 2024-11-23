@@ -203,7 +203,7 @@ export const mostrarAdmins = async (): Promise<Profesor[]> => {
 
 export const getAsignaturasdeUnProfesor = async (id:string ):  Promise<Asignatura[]> => {
   try{
-    console.log("ID del profesor:", id);
+    console.log("https://backend-integrador-32fz.onrender.com/profesores/${id}/asignaturas");
     const response = await axios.get(`https://backend-integrador-32fz.onrender.com/profesores/${id}/asignaturas`);
     console.log("Asignaturas del profesor:", response.data);
     return response.data;
