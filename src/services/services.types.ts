@@ -141,6 +141,7 @@ export interface Profesor {
 	id: string;
 	nombre: string;
 	apellido: string;
+	asignaturas: Asignatura[];
   }
 
 export interface Asignatura{

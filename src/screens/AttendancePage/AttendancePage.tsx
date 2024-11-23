@@ -25,7 +25,7 @@ const AttendancePage: React.FC = () => {
 
   useEffect(() => {
     const fetchSubjects = async () => {
-      if (!user || !user) {
+      if (!user ) {
         console.error("El UID del usuario no está disponible.");
         return; 
       }

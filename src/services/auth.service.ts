@@ -123,6 +123,7 @@ export const eliminarAsignatura = async (payload: EliminarAsignatura): Promise<S
     console.error('Error en eliminarAlumno:', error);
     return { success: false, error: String(error) };
   }
+
 };
 export const updateAsignatura = async (id: string, payload: UpdateAlumno): Promise<ServiceResponse<RegisterResponse>> => {
   try {
@@ -202,7 +203,9 @@ export const mostrarAdmins = async (): Promise<Profesor[]> => {
 
 export const getAsignaturasdeUnProfesor = async (id:string ):  Promise<Asignatura[]> => {
   try{
+    console.log("ID del profesor:", id);
     const response = await axios.get(`https://backend-integrador-32fz.onrender.com/profesores/${id}/asignaturas`);
+    console.log("Asignaturas del profesor:", response.data);
     return response.data;
   }catch(error){
     console.error("Error aqui", error);
