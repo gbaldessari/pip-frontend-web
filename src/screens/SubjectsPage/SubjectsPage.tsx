@@ -26,9 +26,10 @@ const SubjectsPage: React.FC = () => {
 
   const cargarAsignatura = async () => {
     try {
-      const data = await mostrarAsignatura();
-      setAsignaturas(data);
-      console.log("Asignaturas:", data);
+      const respuesta = await mostrarAsignatura();
+      if (respuesta.data) {
+        setAsignaturas(respuesta.data);
+      }
     } catch (error) {
       console.error("Error al cargar las asignaturas:", error);
     }
@@ -36,9 +37,10 @@ const SubjectsPage: React.FC = () => {
   
   const cargarCursos = async () => {
     try {
-      const listaCursos = await mostrarCursos(); 
-      setCursos(listaCursos);
-      console.log("Cursos:", listaCursos);
+      const respuesta = await mostrarCursos(); 
+      if (respuesta.data) {
+        setCursos(respuesta.data);
+      }
     } catch (error) {
       setError("No se pudieron cargar los cursos");
     }
@@ -46,9 +48,10 @@ const SubjectsPage: React.FC = () => {
 
   const cargarProfesores = async () => {
     try{
-      const listaProfesores = await mostrarProfesores();
-      setProfesores(listaProfesores);
-      console.log("Profesores:", listaProfesores);
+      const respuesta = await mostrarProfesores();
+      if (respuesta.data) {
+        setProfesores(respuesta.data);
+      }
     } catch (error) {
       setError("No se pudieron cargar los profesores");
     }

@@ -16,7 +16,7 @@ const EmployeesPage: React.FC = () => {
   const [, setError] = useState('');
   const [filter, setFilter] = useState({nombre: '', apellido: '' });
   const [editingProfesor, setEditingProfesor] = useState<Profesor | null>(null);
-  const [newProfesor, setNewProfesor] = useState<Profesor>({ id: '', nombre: '', apellido: '' });
+  const [newProfesor, setNewProfesor] = useState<Profesor>({ id: '', nombre: '', apellido: '', asignaturas: [] });
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
@@ -28,8 +28,10 @@ const EmployeesPage: React.FC = () => {
 
   const cargarDatos = async () => {
     try {
-      const listaProfesores = await mostrarProfesores();
-      setProfesores(listaProfesores);
+      const respuesta = await mostrarProfesores();
+      if (respuesta.data) {
+        setProfesores(respuesta.data);
+      }
     } catch (error) {
       console.error("Error al cargar los profesores:", error);
     }
@@ -40,7 +42,7 @@ const EmployeesPage: React.FC = () => {
   }, []);
 
   const openModal = () => {
-    setNewProfesor({ id: '', nombre: '', apellido: '' });
+    setNewProfesor({ id: '', nombre: '', apellido: '', asignaturas: [] });
     setEditingProfesor(null);
     setModalIsOpen(true);
   };
@@ -136,7 +138,7 @@ const EmployeesPage: React.FC = () => {
   const closeModal = () => {
     setModalIsOpen(false);
     setEditingProfesor(null);
-    setNewProfesor({ id: '', nombre: '', apellido: '' });
+    setNewProfesor({ id: '', nombre: '', apellido: '', asignaturas: [] });
   };
 
   const togglePasswordVisibility = () => setIsPasswordVisible(!isPasswordVisible);

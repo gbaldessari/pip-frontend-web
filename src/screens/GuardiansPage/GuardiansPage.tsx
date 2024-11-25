@@ -16,16 +16,18 @@ const GuardiansPage: React.FC = () => {
   const [expandedApoderadoId, setExpandedApoderadoId] = useState<string | null>(null);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
+
   type NuevoUsuario = {
     correo: string;
     contraseña: string;
     confirmarContraseña: string;
   };
 
-  
+
+
   const message = successMessage || error;
   console.log(message);
-  
+
   const [usuario, setUsuario] = useState<NuevoUsuario>({
     correo: '',
     contraseña: '',
@@ -34,8 +36,10 @@ const GuardiansPage: React.FC = () => {
 
   const cargarDatos = async () => {
     try {
-      const listaApoderados = await mostrarApoderados();
-      setApoderados(listaApoderados);
+      const respuesta = await mostrarApoderados();
+      if (respuesta.data) {
+        setApoderados(respuesta.data);
+      }
     } catch (error) {
       console.error("Error al cargar los apoderados:", error);
     }
@@ -61,11 +65,12 @@ const GuardiansPage: React.FC = () => {
     if (!editingApoderado) return;
 
     const updatedData = {
+      id: editingApoderado.id,
       nombre: newApoderado.nombre,
       apellido: newApoderado.apellido,
     };
     try {
-      const response = await updateApoderado(editingApoderado.id, updatedData);
+      const response = await updateApoderado(updatedData);
       if (!response.success) {
         throw new Error('Error al actualizar el Apoderado');
       }
@@ -121,50 +126,50 @@ const GuardiansPage: React.FC = () => {
       setError("Por favor, ingresa un nombre y apellido.");
       return;
     }
-    if(usuario.correo === '' || usuario.contraseña === '' || usuario.confirmarContraseña === ''){
+    if (usuario.correo === '' || usuario.contraseña === '' || usuario.confirmarContraseña === '') {
       setError("Por favor, ingresa un correo y contraseña.");
       return;
     }
-    if(usuario.contraseña !== usuario.confirmarContraseña){
+    if (usuario.contraseña !== usuario.confirmarContraseña) {
       setError('Las contraseñas no coinciden.');
       return;
     }
-  
+
     try {
 
       const userCredential = await createUserWithEmailAndPassword(auth, usuario.correo, usuario.contraseña);
       const user = userCredential.user;
 
-      const dataUser : RegisterUser = {
+      const dataUser: RegisterUser = {
         id: user.uid,
         nombre: newApoderado.nombre,
         apellido: newApoderado.apellido,
         rol: 'apoderado',
         uid: user.uid
       }
-      
-      await registerApoderado({id: user.uid, nombre: newApoderado.nombre, apellido: newApoderado.apellido});
+
+      await registerApoderado({ id: user.uid, nombre: newApoderado.nombre, apellido: newApoderado.apellido });
       await registerUser(dataUser);
-    
+
       await sendEmailVerification(user);
       setSuccessMessage("Apoderado agregado exitosamente");
-      cargarDatos(); 
+      cargarDatos();
       closeModal();
     } catch (err: any) {
       if (err.code === 'auth/email-already-in-use') {
-          setError('Este correo ya está registrado.');
+        setError('Este correo ya está registrado.');
       } else if (err.code === 'auth/invalid-email') {
-          setError('Correo inválido.');
+        setError('Correo inválido.');
       } else {
-          setError('Error al crear la cuenta: ' + err.message);
+        setError('Error al crear la cuenta: ' + err.message);
       }
-  }
+    }
   };
 
 
 
   const togglePasswordVisibility = () => setIsPasswordVisible(!isPasswordVisible);
-  const toggleConfirmPasswordVisibility = () => setIsConfirmPasswordVisible(!isConfirmPasswordVisible);      
+  const toggleConfirmPasswordVisibility = () => setIsConfirmPasswordVisible(!isConfirmPasswordVisible);
 
 
 
@@ -251,83 +256,83 @@ const GuardiansPage: React.FC = () => {
           <div style={styles.modalOverlay as React.CSSProperties}>
             <div style={styles.modalContent as React.CSSProperties}>
               <h2>{editingApoderado ? "Editar Apoderado" : "Agregar Apoderado"}</h2>
-              {editingApoderado ?(
+              {editingApoderado ? (
                 <>
-                <input
-                type="text"
-                name="nombre"
-                value={newApoderado.nombre}
-                onChange={handleInputChange}
-                placeholder="Nombre"
-                style={styles.input as React.CSSProperties}
-                />
+                  <input
+                    type="text"
+                    name="nombre"
+                    value={newApoderado.nombre}
+                    onChange={handleInputChange}
+                    placeholder="Nombre"
+                    style={styles.input as React.CSSProperties}
+                  />
 
-                <input
-                  type="text"
-                  name="apellido"
-                  value={newApoderado.apellido}
-                  onChange={handleInputChange}
-                  placeholder="Apellido"
-                  style={styles.input as React.CSSProperties}
-                />
+                  <input
+                    type="text"
+                    name="apellido"
+                    value={newApoderado.apellido}
+                    onChange={handleInputChange}
+                    placeholder="Apellido"
+                    style={styles.input as React.CSSProperties}
+                  />
 
-              </>
+                </>
               ) : (
 
                 <>
- <input
-                type="text"
-                name="nombre"
-                value={newApoderado.nombre}
-                onChange={handleInputChange}
-                placeholder="Nombre"
-                style={styles.input as React.CSSProperties}
-              />
-              <input
-                type="text"
-                name="apellido"
-                value={newApoderado.apellido}
-                onChange={handleInputChange}
-                placeholder="Apellido"
-                style={styles.input as React.CSSProperties}
-              />
-              <input
-                type="text"
-                name="correo"
-                value={usuario.correo}
-                onChange={handleInputUsuarioChange}
-                placeholder="Correo"
-                style={styles.input as React.CSSProperties}
-              />
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <input
-                  type={isPasswordVisible ? 'text' : 'password'}
-                  name="contraseña"
-                  value={usuario.contraseña}
-                  onChange={handleInputUsuarioChange}
-                  placeholder="Contraseña"
-                  style={styles.input as React.CSSProperties}
-                />
-                <button onClick={togglePasswordVisibility}>
-                  {isPasswordVisible ? '☠️' : '👁️'}
-                </button>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <input
-                  type={isConfirmPasswordVisible ? 'text' : 'password'}
-                  name="confirmarContraseña"
-                  value={usuario.confirmarContraseña}
-                  onChange={handleInputUsuarioChange}
-                  placeholder="Confirmar Contraseña"
-                  style={styles.input as React.CSSProperties}
-                />
-                <button onClick={toggleConfirmPasswordVisibility}>
-                  {isConfirmPasswordVisible ? '☠️' : '👁️'}
-                </button>
-              </div>
+                  <input
+                    type="text"
+                    name="nombre"
+                    value={newApoderado.nombre}
+                    onChange={handleInputChange}
+                    placeholder="Nombre"
+                    style={styles.input as React.CSSProperties}
+                  />
+                  <input
+                    type="text"
+                    name="apellido"
+                    value={newApoderado.apellido}
+                    onChange={handleInputChange}
+                    placeholder="Apellido"
+                    style={styles.input as React.CSSProperties}
+                  />
+                  <input
+                    type="text"
+                    name="correo"
+                    value={usuario.correo}
+                    onChange={handleInputUsuarioChange}
+                    placeholder="Correo"
+                    style={styles.input as React.CSSProperties}
+                  />
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <input
+                      type={isPasswordVisible ? 'text' : 'password'}
+                      name="contraseña"
+                      value={usuario.contraseña}
+                      onChange={handleInputUsuarioChange}
+                      placeholder="Contraseña"
+                      style={styles.input as React.CSSProperties}
+                    />
+                    <button onClick={togglePasswordVisibility}>
+                      {isPasswordVisible ? '☠️' : '👁️'}
+                    </button>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <input
+                      type={isConfirmPasswordVisible ? 'text' : 'password'}
+                      name="confirmarContraseña"
+                      value={usuario.confirmarContraseña}
+                      onChange={handleInputUsuarioChange}
+                      placeholder="Confirmar Contraseña"
+                      style={styles.input as React.CSSProperties}
+                    />
+                    <button onClick={toggleConfirmPasswordVisibility}>
+                      {isConfirmPasswordVisible ? '☠️' : '👁️'}
+                    </button>
+                  </div>
 
-              </>
-              
+                </>
+
               )}
               <div style={styles.modalActions as React.CSSProperties}>
                 {editingApoderado ? (

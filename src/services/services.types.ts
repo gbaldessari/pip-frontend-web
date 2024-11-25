@@ -4,30 +4,26 @@ export type ServiceResponse<T> = {
 	error?: string;
 }
 
-export type LoginResponse = {
-	token: string;
-	refreshtoken: string;
-}
-
 export type RegisterResponse = {
 	message: string;
 }
 
-export type RecoverPasswordResponse = {
-	message: string;
-}
-
-export type GetUserDataResponse = {
+export type RegisterApoderadoPayload = {
+	id: string;
 	nombre: string;
 	apellido: string;
-	email: string;
-	rol: string;
 }
 
-export type LoginPayload = {
-	email: string;
-	password: string;
+export type AsistenciaPayload = {
+	cursoId: string;
+	alumnoId: string;
+	fecha: string;
+	asistencia: boolean;
 }
+
+
+
+//------------------------------------------------------------------------//
 
 export type RegisterApoderado = {
 	id: string;
@@ -35,52 +31,31 @@ export type RegisterApoderado = {
 	apellido: string;
 }
 
-export type RegisterUser = {
-	id: string;
-	nombre: string;
-	apellido: string;
-	rol: string;
-	uid: string;
-
-}
-
-export type RecoverPasswordPayload = {
-	email: string;
-}
-
-export type GetUserDataPayload = {
-	token: string;
-}
-
-//------------------------------------------------------------------------//
-
-export interface Alumno {
+export type Alumno = {
 	id: string;
 	nombre: string;
 	apellido: string;
 	rut: string;
 	fechaNacimiento: string;
 	curso: string;
-	apoderadoNombre: string ;
+	apoderadoNombre: string;
 	asistencia: Asistencia[];
-    notas : Nota[];
-  }
+	notas: Nota[];
+}
 
-export interface Asistencia {
+export type Asistencia = {
 	id: string;
 	fecha: string;
 	asistencia: boolean;
 }
 
-export interface Nota {
+export type Nota = {
 	id: string;
 	calificacion: number;
 	alumnoId: string;
 	asignaturaId: string;
 	fecha: string;
 }
-
-
 
 export type RegisterAlumno = {
 	nombre: string;
@@ -99,6 +74,7 @@ export type UpdateAlumno = {
 }
 
 export type UpdateApoderado = {
+	id: string;
 	nombre?: string;
 	apellido?: string;
 }
@@ -114,13 +90,13 @@ export type RegisterEstudiante = {
 
 }
 
-export interface Curso {
+export type Curso = {
 	id: string;
 	nombre: string;
 	asignaturaId: string;
 	year: string;
-	alumnos:  Alumno[];
-  }
+	alumnos: Alumno[];
+}
 
 export type Apoderados = {
 	nombre: string;
@@ -137,14 +113,14 @@ export type EliminarAsignatura = {
 	id: string;
 }
 
-export interface Profesor {
+export type Profesor = {
 	id: string;
 	nombre: string;
 	apellido: string;
 	asignaturas: Asignatura[];
-  }
+}
 
-export interface Asignatura{
+export type Asignatura = {
 	id: string;
 	nombre: string;
 	profesor: Profesor;
@@ -169,4 +145,12 @@ export type RegisterProfesor = {
 
 export type EliminarProfesor = {
 	id: string;
+}
+
+export type RegisterUser = {
+	id: string;
+	nombre: string;
+	apellido: string;
+	rol: string;
+	uid: string;
 }
