@@ -45,35 +45,17 @@ export const adminPageStyles = {
     fontSize: '1.8rem',
     color: '#fff',
   },
-  adminButton: {
-    backgroundColor: '#4273ff',
-    fontSize: '1.5rem',
-    color: '#fff',
-    border: 'none',
-    padding: '1rem 2rem',
-    marginRight: '2rem',
-    borderRadius: '5px',
-    cursor: 'pointer',
-    zIndex: 2,
-    transition: 'background-color 0.3s ease, transform 0.2s ease',
-  },
   logoutButton: {
     backgroundColor: '#ff4747',
     fontSize: '1rem',
     color: '#fff',
     border: 'none',
     padding: '1rem 0.5rem',
-    margin: '5rem', // Coloca el botón al final del contenedor
+    margin: '5rem',
     borderRadius: '520px',
     cursor: 'pointer',
     zIndex: 2,
-    transition: 'background-color 0.3s ease, transform 0.2s ease',
-    '&:hover': {
-      backgroundColor: '#cc3737',
-      transform: 'scale(1.05)',
-    },
   },
-
   body: {
     padding: '2rem',
     display: 'flex',
@@ -102,7 +84,7 @@ export const adminPageStyles = {
       backgroundColor: '#315b73',
       transform: 'scale(1.05)',
     },
-    '@media (max-width: 768px)': {
+    '@media (maxWidth: 768px)': {
       padding: '1rem 2rem',
       fontSize: '1rem',
     },

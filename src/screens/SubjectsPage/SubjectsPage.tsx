@@ -132,13 +132,13 @@ const SubjectsPage: React.FC = () => {
     setNuevaAsignatura({ nombre: '', profesorId: '', cursoId: '' }); // Resetear valores
   };
 
-  const filteredSubjects = asignaturas.filter(subject => {
+  const filteredSubjects = Array.isArray(asignaturas) ? asignaturas.filter(subject => {
     return (
       subject.nombre.toLowerCase().includes(filterName.toLowerCase()) &&
       subject.curso.nombre.toLowerCase().includes(filterCourse.toLowerCase()) &&
       subject.profesor.nombre.toLowerCase().includes(filterTeacher.toLowerCase())
     );
-  });
+  }) : [];
 
   return (
     <div style={styles.container as React.CSSProperties}>

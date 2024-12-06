@@ -65,6 +65,7 @@ const StudentsPage: React.FC = () => {
   };
 
   const filtrarEstudiantes = () => {
+    if (!Array.isArray(estudiantes)) return;
     setFilteredStudents(
       estudiantes.filter((estudiante) =>
         Object.keys(searchFilters).every((key) =>
@@ -235,7 +236,7 @@ const StudentsPage: React.FC = () => {
             </tr>
           </thead>
           <tbody style={styles.tableBody as React.CSSProperties}>
-            {filteredStudents.map((student) => (
+            {Array.isArray(filteredStudents) && filteredStudents.map((student) => (
               <tr key={student.id}>
                 <td>{student.id}</td>
                 <td>{student.nombre}</td>

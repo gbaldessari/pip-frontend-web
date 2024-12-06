@@ -2,21 +2,21 @@ import { CSSProperties } from "react";
 
 export const employeesPageStyles = {
   container: {
-    backgroundColor: "#1d1551", // Color de fondo azul más oscuro
+    backgroundColor: "#1d1551",
     padding: "20px",
     borderRadius: "8px",
-    minHeight: "100vh", // Para ocupar toda la altura de la pantalla
+    minHeight: "100vh",
     display: "flex",
     flexDirection: "column",
-    alignItems: "center", // Centrar horizontalmente
+    alignItems: "center",
   } as CSSProperties,
   header: {
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
     marginBottom: "20px",
-    width: "100%", // Para ocupar el ancho completo
-    padding: "0 20px", // Espacio lateral
+    width: "100%",
+    padding: "0 20px",
   } as CSSProperties,
   schoolImage: {
     borderRadius: "50%",
@@ -26,25 +26,25 @@ export const employeesPageStyles = {
   body: {
     display: "flex",
     flexDirection: "column",
-    width: "100%", // Para que el cuerpo ocupe todo el ancho
-    padding: "0 20px", // Espacio lateral
+    width: "100%",
+    padding: "0 20px",
   } as CSSProperties,
   backButton: {
-    backgroundColor: "#ffc107", // Color amarillo para el botón de volver
+    backgroundColor: "#ffc107",
     color: "#000",
     padding: "10px 20px",
     border: "none",
     borderRadius: "5px",
     cursor: "pointer",
     marginBottom: "20px",
-    alignSelf: "flex-start", // Alinear a la izquierda
+    alignSelf: "flex-start",
   } as CSSProperties,
   filterContainer: {
     display: "flex",
     flexWrap: "wrap",
     gap: "10px",
     marginBottom: "20px",
-    width: "100%", // Para que ocupe todo el ancho
+    width: "100%",
   } as CSSProperties,
   filterInput: {
     padding: "10px",
@@ -65,12 +65,12 @@ export const employeesPageStyles = {
     borderCollapse: "collapse",
   } as CSSProperties,
   tableHead: {
-    backgroundColor: "#0056b3", // Color azul más oscuro para el encabezado
+    backgroundColor: "#0056b3",
     color: "#fff",
     fontWeight: "bold",
   } as CSSProperties,
   saveButton: {
-    backgroundColor: '#4CAF50', // Verde
+    backgroundColor: '#4CAF50',
     color: 'white',
     padding: '10px 20px',
     border: 'none',
@@ -83,7 +83,7 @@ export const employeesPageStyles = {
   },
   
   closeButton: {
-    backgroundColor: '#f44336', // Rojo
+    backgroundColor: '#f44336',
     color: 'white',
     padding: '10px 20px',
     border: 'none',
@@ -95,8 +95,8 @@ export const employeesPageStyles = {
     },
   },
   tableBody: {
-    backgroundColor: "#333333", // Color gris para el cuerpo de la tabla
-    color: "#fff", // Letras blancas
+    backgroundColor: "#333333",
+    color: "#fff",
   } as CSSProperties,
   editButton: {
     backgroundColor: "#ffc107",
@@ -166,9 +166,8 @@ export const employeesPageStyles = {
     maxWidth: '500px',
     color: '#f4f4f4',
   } as CSSProperties,
-  // Estilos para el botón de título "Registro de estudiantes"
   titleButton: {
-    backgroundColor: "#87CEEB", // Celeste
+    backgroundColor: "#87CEEB",
     color: "#fff",
     padding: "10px 20px",
     border: "none",
@@ -177,9 +176,9 @@ export const employeesPageStyles = {
     transition: "transform 0.2s ease-in-out",
     margin: "20px 0",
     fontSize: "1.2em",
-    boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)", // Sombra para efecto de profundidad
+    boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
   } as CSSProperties,
   titleButtonHover: {
-    transform: "scale(1.05)", // Efecto de hover
+    transform: "scale(1.05)",
   },
 };

@@ -2,13 +2,13 @@ import React, { useState } from "react";
 import { teacherPageStyles as styles } from "./teacherPage.styles";
 import { useNavigate } from "react-router-dom";
 import { getAuth, signOut } from "firebase/auth";
-import { useUser } from "../../routes/UserContext"; // Asegúrate de importar tu UserContext
+import { useUser } from "../../routes/UserContext";
 
 const TeacherPage: React.FC = () => {
   const [hoveredButton, setHoveredButton] = useState<string | null>(null);
   const navigator = useNavigate();
   const auth = getAuth();
-  const { user } = useUser(); // Obtenemos el contexto del usuario
+  const { user } = useUser();
 
   const handleLogout = () => {
     signOut(auth)
@@ -38,19 +38,10 @@ const TeacherPage: React.FC = () => {
           </h2>
         </div>
         <button
-          style={
-            hoveredButton === "header"
-              ? {
-                  ...styles.headerButton,
-                  backgroundColor: "#315bb7",
-                  transform: "scale(1.05)",
-                }
-              : styles.headerButton
-          }
-          onMouseEnter={() => setHoveredButton("header")}
-          onMouseLeave={() => setHoveredButton(null)}
+          style={styles.logoutButton}
+          onClick={handleLogout}
         >
-          Profesor
+          Cerrar sesión
         </button>
       </header>
 
@@ -60,10 +51,10 @@ const TeacherPage: React.FC = () => {
             style={
               hoveredButton === "attendance"
                 ? {
-                    ...styles.bodyButton,
-                    backgroundColor: "#315b73",
-                    transform: "scale(1.05)",
-                  }
+                  ...styles.bodyButton,
+                  backgroundColor: "#315b73",
+                  transform: "scale(1.05)",
+                }
                 : styles.bodyButton
             }
             onMouseEnter={() => setHoveredButton("attendance")}
@@ -73,30 +64,30 @@ const TeacherPage: React.FC = () => {
             Control de asistencia
           </button>
           <button
-          style={
-            hoveredButton === "evaluations"
-            ? {
-              ...styles.bodyButton,
-              backgroundColor: "#315b73",
-              transform: "scale(1.05)",
+            style={
+              hoveredButton === "evaluations"
+                ? {
+                  ...styles.bodyButton,
+                  backgroundColor: "#315b73",
+                  transform: "scale(1.05)",
+                }
+                : styles.bodyButton
             }
-            : styles.bodyButton
-          }
-          onMouseEnter={() => setHoveredButton("evaluations")}
-          onMouseLeave={() => setHoveredButton(null)}
-          onClick={() => navigator("/grades-admin")}
+            onMouseEnter={() => setHoveredButton("evaluations")}
+            onMouseLeave={() => setHoveredButton(null)}
+            onClick={() => navigator("/grades-admin")}
           >
             Control de Evaluaciones
-            </button>
-          
-            <button
+          </button>
+
+          <button
             style={
               hoveredButton === "forum"
                 ? {
-                    ...styles.bodyButton,
-                    backgroundColor: "#315b73",
-                    transform: "scale(1.05)",
-                  }
+                  ...styles.bodyButton,
+                  backgroundColor: "#315b73",
+                  transform: "scale(1.05)",
+                }
                 : styles.bodyButton
             }
             onMouseEnter={() => setHoveredButton("forum")}
@@ -105,19 +96,8 @@ const TeacherPage: React.FC = () => {
           >
             Foro
           </button>
-
-            
-
         </div>
       </main>
-
-      {/* Botón de Cerrar Sesión */}
-      <button
-        style={styles.logoutButton}
-        onClick={handleLogout}
-      >
-        Cerrar sesión
-      </button>
     </div>
   );
 };

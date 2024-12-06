@@ -7,8 +7,6 @@ import { auth } from '../../firebase-config';
 
 const GuardiansPage: React.FC = () => {
   const [apoderados, setApoderados] = useState<Apoderados[]>([]);
-  const [successMessage, setSuccessMessage] = useState('');
-  const [error, setError] = useState('');
   const [filter, setFilter] = useState({ firstName: '', lastName: '' });
   const [editingApoderado, setEditingApoderado] = useState<Apoderados | null>(null);
   const [newApoderado, setNewApoderado] = useState<Apoderados>({ nombre: '', apellido: '', id: '', alumnos: [] });
@@ -23,11 +21,6 @@ const GuardiansPage: React.FC = () => {
     confirmarContraseña: string;
   };
 
-
-
-  const message = successMessage || error;
-  console.log(message);
-
   const [usuario, setUsuario] = useState<NuevoUsuario>({
     correo: '',
     contraseña: '',
@@ -37,11 +30,14 @@ const GuardiansPage: React.FC = () => {
   const cargarDatos = async () => {
     try {
       const respuesta = await mostrarApoderados();
-      if (respuesta.data) {
+      if (Array.isArray(respuesta.data)) {
         setApoderados(respuesta.data);
+      } else {
+        setApoderados([]);
       }
     } catch (error) {
       console.error("Error al cargar los apoderados:", error);
+      setApoderados([]);
     }
   };
 
@@ -74,12 +70,11 @@ const GuardiansPage: React.FC = () => {
       if (!response.success) {
         throw new Error('Error al actualizar el Apoderado');
       }
-      setSuccessMessage("Apoderado actualizado exitosamente");
       setEditingApoderado(null);
       cargarDatos();
       closeModal();
     } catch (error) {
-      setError("Error al actualizar el Apoderado");
+      console.error('Error al actualizar el Apoderado:', error);
     }
   };
 
@@ -89,11 +84,9 @@ const GuardiansPage: React.FC = () => {
       if (!response.success) {
         throw new Error('Error al eliminar el Apoderado');
       }
-
-      setSuccessMessage("Apoderado eliminado exitosamente");
       cargarDatos();
     } catch (error) {
-      setError("Error al eliminar el Apoderado");
+      console.error('Error al eliminar el Apoderado:', error);
     }
   };
 
@@ -106,10 +99,10 @@ const GuardiansPage: React.FC = () => {
     setFilter({ ...filter, [name]: value });
   };
 
-  const filteredApoderado = apoderados.filter(apoderado =>
+  const filteredApoderado = Array.isArray(apoderados) ? apoderados.filter(apoderado =>
     (filter.firstName ? apoderado.nombre.includes(filter.firstName) : true) &&
     (filter.lastName ? apoderado.apellido.includes(filter.lastName) : true)
-  );
+  ) : [];
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -123,15 +116,15 @@ const GuardiansPage: React.FC = () => {
 
   const handleAddApoderado = async () => {
     if (!newApoderado.nombre || !newApoderado.apellido) {
-      setError("Por favor, ingresa un nombre y apellido.");
+      console.error('Por favor, ingresa un nombre y apellido.');
       return;
     }
     if (usuario.correo === '' || usuario.contraseña === '' || usuario.confirmarContraseña === '') {
-      setError("Por favor, ingresa un correo y contraseña.");
+      console.error('Por favor, ingresa un correo y contraseña.');
       return;
     }
     if (usuario.contraseña !== usuario.confirmarContraseña) {
-      setError('Las contraseñas no coinciden.');
+      console.error('Las contraseñas no coinciden.');
       return;
     }
 
@@ -152,16 +145,15 @@ const GuardiansPage: React.FC = () => {
       await registerUser(dataUser);
 
       await sendEmailVerification(user);
-      setSuccessMessage("Apoderado agregado exitosamente");
       cargarDatos();
       closeModal();
     } catch (err: any) {
       if (err.code === 'auth/email-already-in-use') {
-        setError('Este correo ya está registrado.');
+        console.error('Este correo ya está registrado.');
       } else if (err.code === 'auth/invalid-email') {
-        setError('Correo inválido.');
+        console.error('Correo inválido.');
       } else {
-        setError('Error al crear la cuenta: ' + err.message);
+        console.error('Error al crear la cuenta: ' + err.message);
       }
     }
   };

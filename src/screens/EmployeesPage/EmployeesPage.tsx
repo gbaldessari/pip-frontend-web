@@ -4,6 +4,7 @@ import { mostrarProfesores, eliminarProfesor, registerProfesores, registerUser }
 import { createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
 import { auth } from '../../firebase-config';
 import { Profesor, RegisterUser } from "../../services/services.types";
+
 type NuevoUsuario = {
   correo: string;
   contraseña: string;
@@ -14,7 +15,7 @@ const EmployeesPage: React.FC = () => {
   const [profesores, setProfesores] = useState<Profesor[]>([]);
   const [, setSuccessMessage] = useState('');
   const [, setError] = useState('');
-  const [filter, setFilter] = useState({nombre: '', apellido: '' });
+  const [filter, setFilter] = useState({ nombre: '', apellido: '' });
   const [editingProfesor, setEditingProfesor] = useState<Profesor | null>(null);
   const [newProfesor, setNewProfesor] = useState<Profesor>({ id: '', nombre: '', apellido: '', asignaturas: [] });
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -53,17 +54,12 @@ const EmployeesPage: React.FC = () => {
     setModalIsOpen(true);
   };
 
-  
-  const handleUpdateProfesor = async () => {
-  };
-
+  const handleUpdateProfesor = async () => { };
 
   const handleDeleteProfesor = async (id: string) => {
     try {
       const response = await eliminarProfesor({ id });
-      if (!response.success) {
-        throw new Error('Error al eliminar el Profesor');
-      }
+      if (!response.success) throw new Error('Error al eliminar el Profesor');
       setSuccessMessage("Profesor eliminado exitosamente");
       cargarDatos();
     } catch (error) {
@@ -76,10 +72,12 @@ const EmployeesPage: React.FC = () => {
     setFilter({ ...filter, [name]: value });
   };
 
-  const filteredProfesores = profesores.filter(profesor =>
-    (filter.nombre ? profesor.nombre.includes(filter.nombre) : true) &&
-    (filter.apellido ? profesor.apellido.includes(filter.apellido) : true) 
-  );
+  const filteredProfesores = Array.isArray(profesores)
+    ? profesores.filter(profesor =>
+        (filter.nombre ? profesor.nombre.includes(filter.nombre) : true) &&
+        (filter.apellido ? profesor.apellido.includes(filter.apellido) : true)
+      )
+    : [];
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -92,12 +90,8 @@ const EmployeesPage: React.FC = () => {
   };
 
   const handleAddProfesor = async () => {
-    if (!newProfesor.nombre || !newProfesor.apellido) {
-      setError("Por favor, ingresa todos los campos requeridos.");
-      return;
-    }
-    if (usuario.correo === '' || usuario.contraseña === '' || usuario.confirmarContraseña === '') {
-      setError("Por favor, ingresa un correo y contraseña.");
+    if (!newProfesor.nombre || !newProfesor.apellido || usuario.correo === '' || usuario.contraseña === '' || usuario.confirmarContraseña === '') {
+      setError("Por favor, completa todos los campos requeridos.");
       return;
     }
     if (usuario.contraseña !== usuario.confirmarContraseña) {
@@ -109,7 +103,7 @@ const EmployeesPage: React.FC = () => {
       const userCredential = await createUserWithEmailAndPassword(auth, usuario.correo, usuario.contraseña);
       const user = userCredential.user;
 
-      const dataUser : RegisterUser = {
+      const dataUser: RegisterUser = {
         id: user.uid,
         nombre: newProfesor.nombre,
         apellido: newProfesor.apellido,
@@ -117,7 +111,7 @@ const EmployeesPage: React.FC = () => {
         uid: user.uid
       };
 
-      await registerProfesores({ id: user.uid, nombre: newProfesor.nombre, apellido: newProfesor.apellido});
+      await registerProfesores({ id: user.uid, nombre: newProfesor.nombre, apellido: newProfesor.apellido });
       await registerUser(dataUser);
       await sendEmailVerification(user);
 
@@ -142,15 +136,12 @@ const EmployeesPage: React.FC = () => {
   };
 
   const togglePasswordVisibility = () => setIsPasswordVisible(!isPasswordVisible);
-  const toggleConfirmPasswordVisibility = () => setIsConfirmPasswordVisible(!isConfirmPasswordVisible);    
-
-
-
+  const toggleConfirmPasswordVisibility = () => setIsConfirmPasswordVisible(!isConfirmPasswordVisible);
 
   return (
     <div style={styles.container as React.CSSProperties}>
       <header style={styles.header as React.CSSProperties}>
-        <h1>Gestión de Profesores</h1>
+        <h1>Gestión de Empleados</h1>
         <img src="https://firebasestorage.googleapis.com/v0/b/escuelapp-f167e.appspot.com/o/Bajos.png?alt=media" alt="Logo Colegio" style={styles.schoolImage} />
       </header>
       <div style={styles.body as React.CSSProperties}>
@@ -160,7 +151,6 @@ const EmployeesPage: React.FC = () => {
           <input type="text" name="lastName" value={filter.apellido} onChange={handleFilterChange} placeholder="Apellido" style={styles.filterInput as React.CSSProperties} />
           <button style={styles.addButton as React.CSSProperties} onClick={openModal}>Agregar Profesor</button>
         </div>
-  
         <table style={styles.table as React.CSSProperties}>
           <thead style={styles.tableHead as React.CSSProperties}>
             <tr>
@@ -185,72 +175,30 @@ const EmployeesPage: React.FC = () => {
           </tbody>
         </table>
       </div>
-  
       {modalIsOpen && (
         <div style={styles.modalOverlay as React.CSSProperties}>
           <div style={styles.modalContent as React.CSSProperties}>
             <h2>{editingProfesor ? "Editar Profesor" : "Agregar Profesor"}</h2>
-            <>
-              <input
-                type="text"
-                name="nombre"
-                value={newProfesor.nombre}
-                onChange={handleInputChange}
-                placeholder="Nombre"
-                style={styles.input as React.CSSProperties}
-              />
-              <input
-                type="text"
-                name="apellido"
-                value={newProfesor.apellido}
-                onChange={handleInputChange}
-                placeholder="Apellido"
-                style={styles.input as React.CSSProperties}
-              />
-              {!editingProfesor && (
-                <>
-                  <input
-                    type="text"
-                    name="correo"
-                    value={usuario.correo}
-                    onChange={handleInputUsuarioChange}
-                    placeholder="Correo"
-                    style={styles.input as React.CSSProperties}
-                  />
-                  <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <input
-                      type={isPasswordVisible ? 'text' : 'password'}
-                      name="contraseña"
-                      value={usuario.contraseña}
-                      onChange={handleInputUsuarioChange}
-                      placeholder="Contraseña"
-                      style={styles.input as React.CSSProperties}
-                    />
-                    <button onClick={togglePasswordVisibility}>
-                      {isPasswordVisible ? '☠️' : '👁️'}
-                    </button>
-                  </div>
-                  <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <input
-                      type={isConfirmPasswordVisible ? 'text' : 'password'}
-                      name="confirmarContraseña"
-                      value={usuario.confirmarContraseña}
-                      onChange={handleInputUsuarioChange}
-                      placeholder="Confirmar Contraseña"
-                      style={styles.input as React.CSSProperties}
-                    />
-                    <button onClick={toggleConfirmPasswordVisibility}>
-                      {isConfirmPasswordVisible ? '☠️' : '👁️'}
-                    </button>
-                  </div>
-                </>
-              )}
-            </>
+            <input type="text" name="nombre" value={newProfesor.nombre} onChange={handleInputChange} placeholder="Nombre" style={styles.input as React.CSSProperties} />
+            <input type="text" name="apellido" value={newProfesor.apellido} onChange={handleInputChange} placeholder="Apellido" style={styles.input as React.CSSProperties} />
+            {!editingProfesor && (
+              <>
+                <input type="text" name="correo" value={usuario.correo} onChange={handleInputUsuarioChange} placeholder="Correo" style={styles.input as React.CSSProperties} />
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <input type={isPasswordVisible ? 'text' : 'password'} name="contraseña" value={usuario.contraseña} onChange={handleInputUsuarioChange} placeholder="Contraseña" style={styles.input as React.CSSProperties} />
+                  <button onClick={togglePasswordVisibility}>{isPasswordVisible ? '☠️' : '👁️'}</button>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <input type={isConfirmPasswordVisible ? 'text' : 'password'} name="confirmarContraseña" value={usuario.confirmarContraseña} onChange={handleInputUsuarioChange} placeholder="Confirmar Contraseña" style={styles.input as React.CSSProperties} />
+                  <button onClick={toggleConfirmPasswordVisibility}>{isConfirmPasswordVisible ? '☠️' : '👁️'}</button>
+                </div>
+              </>
+            )}
             <div style={styles.modalActions as React.CSSProperties}>
               {editingProfesor ? (
-                <button style={styles.updateButton} onClick={handleUpdateProfesor}>Actualizar Apoderado</button>
+                <button style={styles.updateButton} onClick={handleUpdateProfesor}>Actualizar Profesor</button>
               ) : (
-                <button style={styles.addButton} onClick={handleAddProfesor}>Agregar Apoderado</button>
+                <button style={styles.addButton} onClick={handleAddProfesor}>Agregar Profesor</button>
               )}
               <button style={styles.cancelButton} onClick={closeModal}>Cancelar</button>
             </div>
@@ -260,6 +208,5 @@ const EmployeesPage: React.FC = () => {
     </div>
   );
 };
-
 
 export default EmployeesPage;

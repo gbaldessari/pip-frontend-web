@@ -15,10 +15,16 @@ export type RegisterApoderadoPayload = {
 }
 
 export type AsistenciaPayload = {
-	cursoId: string;
+	asignaturaId: string;
 	alumnoId: string;
 	fecha: string;
 	asistencia: boolean;
+}
+
+export type AlumnoResponse = {
+	id: string;
+	nombre: string;
+	apellido: string;
 }
 
 
@@ -39,7 +45,7 @@ export type Alumno = {
 	fechaNacimiento: string;
 	curso: string;
 	apoderadoNombre: string;
-	asistencia: Asistencia[];
+	asistencia: AsistenciaPayload[];
 	notas: Nota[];
 }
 

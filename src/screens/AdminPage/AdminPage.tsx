@@ -1,12 +1,12 @@
-import React, { useState} from "react";
+import React, { useState } from "react";
 import { adminPageStyles as styles } from "./adminPage.styles";
 import { useNavigate } from "react-router-dom";
 import { getAuth, signOut } from "firebase/auth";
-import { useUser } from "../../routes/UserContext"; // Asegúrate de importar tu UserContext
+import { useUser } from "../../routes/UserContext";
 
 const AdminPage: React.FC = () => {
   const [hoveredButton, setHoveredButton] = useState<string | null>(null);
-  const { user } = useUser(); // Obtenemos el contexto del usuario
+  const { user } = useUser();
   const navigator = useNavigate();
   const auth = getAuth();
 
@@ -37,11 +37,14 @@ const AdminPage: React.FC = () => {
             Bienvenido, {user?.nombre} {user?.apellido}
           </h2>
         </div>
-        <button style={styles.adminButton}>
-          Administrador
+        <button
+          style={styles.logoutButton}
+          onClick={handleLogout}
+        >
+          Cerrar sesión
         </button>
       </header>
-  
+
       <main style={styles.body as React.CSSProperties}>
         <div style={styles.subBody as React.CSSProperties}>
           <button
@@ -69,7 +72,7 @@ const AdminPage: React.FC = () => {
             Gestión de apoderados
           </button>
         </div>
-  
+
         <div style={styles.subBody as React.CSSProperties}>
           <button
             style={hoveredButton === "payments" ? { ...styles.bodyButton, backgroundColor: "#315b73", transform: "scale(1.05)" } : styles.bodyButton}
@@ -97,17 +100,9 @@ const AdminPage: React.FC = () => {
           </button>
         </div>
       </main>
-  
-      {/* Botón de Cerrar Sesión movido al final */}
-      <button
-        style={styles.logoutButton}
-        onClick={handleLogout}
-      >
-        Cerrar sesión
-      </button>
     </div>
   );
-  
+
 };
 
 export default AdminPage;

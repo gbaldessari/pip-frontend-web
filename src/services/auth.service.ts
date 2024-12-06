@@ -1,5 +1,5 @@
 import axiosInstance from "./AxiosInstance";
-import { RegisterAlumno, RegisterApoderadoPayload, RegisterResponse, ServiceResponse, Apoderados, UpdateAlumno, EliminarAlumno, RegisterAsignatura, Asignatura, Profesor, EliminarAsignatura, Alumno, UpdateApoderado, EliminarApoderado, EliminarProfesor, RegisterProfesor, Curso, AsistenciaPayload } from "./services.types";
+import { RegisterAlumno, RegisterApoderadoPayload, RegisterResponse, ServiceResponse, Apoderados, UpdateAlumno, EliminarAlumno, RegisterAsignatura, Asignatura, Profesor, EliminarAsignatura, Alumno, UpdateApoderado, EliminarApoderado, EliminarProfesor, RegisterProfesor, Curso, AsistenciaPayload, AlumnoResponse } from "./services.types";
 
 
 export const registerApoderado = async (payload: RegisterApoderadoPayload): Promise<ServiceResponse<RegisterResponse>> => {
@@ -157,9 +157,9 @@ export const eliminarProfesor = async (payload: EliminarProfesor): Promise<Servi
   }
 };
 
-export const mostrarAdmins = async (): Promise<ServiceResponse<Profesor[]>> => {
+export const mostrarAdmins = async (): Promise<ServiceResponse<any>> => {
   try {
-    const response = await axiosInstance.get('/profesores');
+    const response = await axiosInstance.get('/admins');
     return { success: true, data: response.data };
   } catch (error) {
     return { success: false, error: String(error) };
@@ -169,6 +169,17 @@ export const mostrarAdmins = async (): Promise<ServiceResponse<Profesor[]>> => {
 export const getAsignaturasdeUnProfesor = async (id: string): Promise<ServiceResponse<Asignatura[]>> => {
   try {
     const response = await axiosInstance.get(`/profesores/${id}/asignaturas`);
+    console.log(response);
+    return { success: true, data: response.data };
+  } catch (error) {
+    return { success: false, error: String(error) };
+  }
+}
+
+export const getAlumnosCurso = async (id: string): Promise<ServiceResponse<AlumnoResponse[]>> => {
+  try {
+    const response = await axiosInstance.get(`/asignatura/${id}/alumnos`);
+    console.log(response);
     return { success: true, data: response.data };
   } catch (error) {
     return { success: false, error: String(error) };
@@ -177,7 +188,7 @@ export const getAsignaturasdeUnProfesor = async (id: string): Promise<ServiceRes
 
 export const enviarAsistencia = async (payload: AsistenciaPayload[]): Promise<ServiceResponse<String>> => {
   try {
-    await axiosInstance.post('/asistencia/crearAsistencia', payload);
+    await axiosInstance.post('/asistencia/bulk', payload);
     return { success: true, data: "Asistencia enviada" };
   } catch (error) {
     return { success: false, error: String(error) };

@@ -45,22 +45,6 @@ export const teacherPageStyles = {
     fontSize: '1.8rem',
     color: '#fff',
   },
-  headerButton: {
-    backgroundColor: '#4273ff',
-    fontSize: '1.5rem',
-    color: '#fff',
-    border: 'none',
-    padding: '1rem 2rem',
-    marginRight: '2rem',
-    borderRadius: '5px',
-    cursor: 'pointer',
-    zIndex: 2,
-    transition: 'background-color 0.3s ease, transform 0.2s ease',
-    '&:hover': {
-      backgroundColor: '#315bb7',
-      transform: 'scale(1.05)',
-    },
-  },
   body: {
     padding: '10rem',
     display: 'flex',
@@ -89,7 +73,7 @@ export const teacherPageStyles = {
       backgroundColor: '#315b73',
       transform: 'scale(1.05)',
     },
-    '@media (max-width: 768px)': {
+    '@media (maxWidth: 768px)': {
       padding: '1.5rem 3rem',
       fontSize: '1.2rem',
     },
@@ -104,10 +88,5 @@ export const teacherPageStyles = {
     borderRadius: '520px',
     cursor: 'pointer',
     zIndex: 2,
-    transition: 'background-color 0.3s ease, transform 0.2s ease',
-    '&:hover': {
-      backgroundColor: '#cc3737',
-      transform: 'scale(1.05)',
-    },
   },
 };

@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { attendancePageStyles as styles } from './attendancePage.styles';
 import { Asignatura, AsistenciaPayload } from "../../services/services.types";
-import { enviarAsistencia, getAsignaturasdeUnProfesor } from "../../services/auth.service";
+import { enviarAsistencia, getAlumnosCurso, getAsignaturasdeUnProfesor } from "../../services/auth.service";
 
 type Attendance = {
   id: string;
   name: string;
   present: boolean;
-}
+};
 
 const AttendancePage: React.FC = () => {
   const [subjects, setSubjects] = useState<Asignatura[]>([]);
@@ -17,25 +17,39 @@ const AttendancePage: React.FC = () => {
   const [isSelected, setIsSelected] = useState(false);
   const user = localStorage.getItem('user_uid');
 
+  const fetchSubjects = async () => {
+    if (!user) {
+      console.error("El UID del usuario no está disponible.");
+      return;
+    }
+    try {
+      const respuesta = await getAsignaturasdeUnProfesor(user);
+      if (respuesta.data) {
+        setSubjects(respuesta.data);
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Error al obtener las asignaturas.");
+    }
+  };
+
+  const fetchStudents = async (id: string) => {
+    try {
+      const respuesta = await getAlumnosCurso(id);
+      if (respuesta.data) {
+        setAttendance(respuesta.data.map(student => ({
+          id: student.id,
+          name: `${student.nombre} ${student.apellido}`,
+          present: false,
+        })));
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Error al obtener la lista de estudiantes.");
+    }
+  };
 
   useEffect(() => {
-    const fetchSubjects = async () => {
-      if (!user) {
-        console.error("El UID del usuario no está disponible.");
-        return;
-      }
-      try {
-        console.log("UID del usuario:", user);
-        const respuesta = await getAsignaturasdeUnProfesor(user);
-
-        if (respuesta.data) {
-          setSubjects(respuesta.data);
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
     fetchSubjects();
   }, [user]);
 
@@ -57,23 +71,24 @@ const AttendancePage: React.FC = () => {
       return;
     }
 
-    const selectedSubjectid: string = foundSubject.id;
+    const attendanceData: AsistenciaPayload[] = attendance.map(student => ({
+      asignaturaId: foundSubject.id,
+      alumnoId: student.id,
+      fecha: classDate,
+      asistencia: student.present,
+    }));
 
-    const attendanceData: AsistenciaPayload[] = attendance.map(student => {
-      return {
-        cursoId: selectedSubjectid,
-        alumnoId: student.id,
-        fecha: classDate,
-        asistencia: student.present
-      };
-    });
-
-    const respuesta = await enviarAsistencia(attendanceData);
-    if (!respuesta.success) {
+    try {
+      const respuesta = await enviarAsistencia(attendanceData);
+      if (respuesta.success) {
+        alert("Asistencia registrada exitosamente");
+      } else {
+        alert("Error al registrar la asistencia.");
+      }
+    } catch (error) {
+      console.error(error);
       alert("Error al registrar la asistencia.");
-      return;
     }
-    alert("Asistencia registrada exitosamente");
   };
 
   return (
@@ -86,13 +101,14 @@ const AttendancePage: React.FC = () => {
         <div style={styles.form as React.CSSProperties}>
           <label style={styles.label as React.CSSProperties}>Selecciona Asignatura:</label>
           <select
-            value={selectedSubject?.nombre || ""}
+            value={selectedSubject?.id || ""}
             onChange={(e) => {
               const selectedId = e.target.value;
               const subject = subjects.find(subject => subject.id === selectedId) || null;
               setSelectedSubject(subject);
               if (selectedId) {
                 setIsSelected(true);
+                fetchStudents(subject?.id || '');
               } else {
                 setIsSelected(false);
               }
@@ -113,31 +129,33 @@ const AttendancePage: React.FC = () => {
             style={styles.input as React.CSSProperties}
           />
 
-          {isSelected && <div>
-            <h2>Lista de Estudiantes</h2>
-            <table style={styles.table as React.CSSProperties}>
-              <thead>
-                <tr>
-                  <th>Nombre</th>
-                  <th>Presente</th>
-                </tr>
-              </thead>
-              <tbody>
-                {attendance.map(student => (
-                  <tr key={student.id}>
-                    <td>{student.name}</td>
-                    <td>
-                      <input
-                        type="checkbox"
-                        checked={student.present}
-                        onChange={() => handleAttendanceChange(student.id)}
-                      />
-                    </td>
+          {isSelected && (
+            <div>
+              <h2>Lista de Estudiantes</h2>
+              <table style={styles.table as React.CSSProperties}>
+                <thead>
+                  <tr>
+                    <th>Nombre</th>
+                    <th>Presente</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>}
+                </thead>
+                <tbody>
+                  {attendance.map(student => (
+                    <tr key={student.id}>
+                      <td>{student.name}</td>
+                      <td>
+                        <input
+                          type="checkbox"
+                          checked={student.present}
+                          onChange={() => handleAttendanceChange(student.id)}
+                        />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
 
           <button style={styles.submitButton as React.CSSProperties} onClick={handleSubmitAttendance}>
             Registrar Asistencia
