@@ -78,17 +78,13 @@ const AttendancePage: React.FC = () => {
       asistencia: student.present,
     }));
 
-    try {
-      const respuesta = await enviarAsistencia(attendanceData);
-      if (respuesta.success) {
-        alert("Asistencia registrada exitosamente");
-      } else {
-        alert("Error al registrar la asistencia.");
-      }
-    } catch (error) {
-      console.error(error);
+    const respuesta = await enviarAsistencia(attendanceData);
+    if (respuesta.success) {
+      alert("Asistencia registrada exitosamente");
+    } else {
       alert("Error al registrar la asistencia.");
     }
+
   };
 
   return (
@@ -117,7 +113,7 @@ const AttendancePage: React.FC = () => {
           >
             <option value="">-- Selecciona una asignatura --</option>
             {subjects.map(subject => (
-              <option key={subject.id} value={subject.id}>{subject.nombre}</option>
+              <option key={subject.id} value={subject.id}>{subject.nombre + " " + subject.curso.nombre}</option>
             ))}
           </select>
 

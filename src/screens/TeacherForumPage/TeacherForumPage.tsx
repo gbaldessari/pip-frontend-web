@@ -1,12 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { forumPageStyles as styles } from "./teacherForumPage.styles";
-
-import { collection, getDocs, addDoc, getFirestore } from "firebase/firestore";
-
-interface Course {
-  id: string;
-  name: string;
-}
+import { Asignatura } from "../../services/services.types";
+import { getAsignaturasdeUnProfesor } from "../../services/auth.service";
 
 interface Topic {
   id: string;
@@ -15,20 +10,31 @@ interface Topic {
 }
 
 const ForumPage: React.FC = () => {
-  const [courses, setCourses] = useState<Course[]>([]);
-  const [selectedCourse, setSelectedCourse] = useState<string | null>(null);
+  const [subjects, setSubjects] = useState<Asignatura[]>([]);
+  const [selectedSubject, setSelectedSubject] = useState<Asignatura | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newForum, setNewForum] = useState({ title: "", description: "", courseId: "" });
-  const db = getFirestore();
+  const user = localStorage.getItem('user_uid');
 
+  const fetchSubjects = async () => {
+    if (!user) {
+      console.error("El UID del usuario no está disponible.");
+      return;
+    }
+    try {
+      const respuesta = await getAsignaturasdeUnProfesor(user);
+      if (respuesta.data) {
+        setSubjects(respuesta.data);
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Error al obtener las asignaturas.");
+    }
+  };
   useEffect(() => {
-    const fetchCourses = async () => {
-      const courseSnapshot = await getDocs(collection(db, "Cursos"));
-      const coursesData = courseSnapshot.docs.map(doc => ({ id: doc.id, name: doc.data().nombre }));
-      setCourses(coursesData);
-    };
-    fetchCourses();
-  }, [db]);
+
+    fetchSubjects();
+  }, [user]);
 
   const exampleTopics: Topic[] = [
     { id: "1", title: "Reunión de padres", description: "Planificación anual" },
@@ -36,51 +42,25 @@ const ForumPage: React.FC = () => {
     { id: "3", title: "Evaluación de proyectos", description: "Discusión sobre el proyecto final" }
   ];
 
-  const handleSelectCourse = (courseId: string) => {
-    setSelectedCourse(courseId);
-  };
-
   const handleCreateForum = async () => {
-    if (!newForum.title || !newForum.description || !newForum.courseId) {
-      alert("Por favor complete todos los campos.");
-      return;
-    }
-    await addDoc(collection(db, "Foros"), {
-      titulo: newForum.title,
-      descripcion: newForum.description,
-      cursoId: newForum.courseId,
-      fechaCreacion: new Date(),
-    });
-    setIsModalOpen(false);
-    setNewForum({ title: "", description: "", courseId: "" });
-    alert("Foro creado exitosamente");
+
   };
 
   return (
     <div style={styles.container as React.CSSProperties}>
       <header style={styles.header as React.CSSProperties}>
         <h1>Foro de Profesores y Apoderados</h1>
-        
+
         <button style={styles.createButton} onClick={() => setIsModalOpen(true)}>
           Crear Foro
         </button>
       </header>
 
       <div style={styles.body as React.CSSProperties}>
-      <button style={styles.backButton} onClick={() => window.history.back()}>Volver al menú</button>
-        <label style={styles.label as React.CSSProperties}>Selecciona Curso:</label>
-        <select
-          value={selectedCourse || ""}
-          onChange={(e) => handleSelectCourse(e.target.value)}
-          style={styles.select as React.CSSProperties}
-        >
-          <option value="">-- Selecciona un curso --</option>
-          {courses.map(course => (
-            <option key={course.id} value={course.id}>{course.name}</option>
-          ))}
-        </select>
+        <button style={styles.backButton} onClick={() => window.history.back()}>Volver al menú</button>
 
-        <h2 style={styles.topicsTitle as React.CSSProperties}>Tópicos del Foro</h2>
+
+        <h2 style={styles.topicsTitle as React.CSSProperties}>Foros Activos</h2>
         <div style={styles.topicsContainer as React.CSSProperties}>
           {exampleTopics.map(topic => (
             <div key={topic.id} style={styles.topic as React.CSSProperties}>
@@ -111,14 +91,19 @@ const ForumPage: React.FC = () => {
               style={styles.textarea as React.CSSProperties}
             />
             <label style={styles.label as React.CSSProperties}>Curso:</label>
+            <label style={styles.label as React.CSSProperties}>Selecciona Curso:</label>
             <select
-              value={newForum.courseId || ""}
-              onChange={(e) => setNewForum({ ...newForum, courseId: e.target.value })}
+              value={selectedSubject?.id || ""}
+              onChange={(e) => {
+                const selectedId = e.target.value;
+                const subject = subjects.find(subject => subject.id === selectedId) || null;
+                setSelectedSubject(subject);
+              }}
               style={styles.select as React.CSSProperties}
             >
-              <option value="">-- Selecciona un curso --</option>
-              {courses.map(course => (
-                <option key={course.id} value={course.id}>{course.name}</option>
+              <option value="">-- Selecciona una Asignatura --</option>
+              {subjects.map(subjects => (
+                <option key={subjects.id} value={subjects.id}>{subjects.nombre + " " + subjects.curso.nombre}</option>
               ))}
             </select>
 

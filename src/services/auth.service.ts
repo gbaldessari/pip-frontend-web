@@ -1,5 +1,5 @@
 import axiosInstance from "./AxiosInstance";
-import { RegisterAlumno, RegisterApoderadoPayload, RegisterResponse, ServiceResponse, Apoderados, UpdateAlumno, EliminarAlumno, RegisterAsignatura, Asignatura, Profesor, EliminarAsignatura, Alumno, UpdateApoderado, EliminarApoderado, EliminarProfesor, RegisterProfesor, Curso, AsistenciaPayload, AlumnoResponse } from "./services.types";
+import { RegisterAlumno, RegisterApoderadoPayload, RegisterResponse, ServiceResponse, Apoderados, UpdateAlumno, EliminarAlumno, RegisterAsignatura, Asignatura, Profesor, EliminarAsignatura, Alumno, UpdateApoderado, EliminarApoderado, EliminarProfesor, RegisterProfesor, Curso, AsistenciaPayload, AlumnoResponse, NotaPayload } from "./services.types";
 
 
 export const registerApoderado = async (payload: RegisterApoderadoPayload): Promise<ServiceResponse<RegisterResponse>> => {
@@ -190,6 +190,15 @@ export const enviarAsistencia = async (payload: AsistenciaPayload[]): Promise<Se
   try {
     await axiosInstance.post('/asistencia/bulk', payload);
     return { success: true, data: "Asistencia enviada" };
+  } catch (error) {
+    return { success: false, error: String(error) };
+  }
+};
+
+export const enviarNotas = async (payload: NotaPayload[]): Promise<ServiceResponse<String>> => {
+  try {
+    await axiosInstance.post('/notas/bulk', payload);
+    return { success: true, data: "Notas enviadas" };
   } catch (error) {
     return { success: false, error: String(error) };
   }

@@ -21,6 +21,13 @@ export type AsistenciaPayload = {
 	asistencia: boolean;
 }
 
+export type NotaPayload = {
+	calificacion: number;
+	alumnoId: string;
+	asignaturaId: string;
+	fecha: string;
+}
+
 export type AlumnoResponse = {
 	id: string;
 	nombre: string;
