@@ -22,11 +22,17 @@ export const reportsPageStyles = {
     paddingBottom: '3rem',
     marginBottom: '3rem',
   },
+  tableContainer: {
+    display: 'flex',
+    justifyContent: 'center',
+    width: '100%',
+  },
   table: {
     width: '100%',
-    maxWidth: '800px',
+    maxWidth: '1500px',
     borderCollapse: 'collapse',
     marginBottom: '2rem',
+    margin: '0 auto',
   },
   tableHead: {
     backgroundColor: '#4273ff',
@@ -41,5 +47,35 @@ export const reportsPageStyles = {
     border: '1px solid #ccc',
     padding: '10px',
     color: '#fff',
+  },
+  select: {
+    padding: '1rem',
+    borderRadius: '5px',
+    border: '1px solid #ccc',
+    width: '100%',
+    marginBottom: '2rem',
+  },
+  weekNavigation: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    marginBottom: '2rem',
+  },
+  dateRange: {
+    marginBottom: '2rem',
+    fontSize: '1.2rem',
+    color: '#fff',
+    textAlign: 'center',
+  },
+  button: {
+    padding: '0.5rem 1rem',
+    borderRadius: '5px',
+    border: 'none',
+    backgroundColor: '#4273ff',
+    color: '#fff',
+    cursor: 'pointer',
+    fontSize: '1rem',
+  },
+  buttonHover: {
+    backgroundColor: '#365bbf',
   },
 };

@@ -13,8 +13,6 @@ type NuevoUsuario = {
 
 const EmployeesPage: React.FC = () => {
   const [profesores, setProfesores] = useState<Profesor[]>([]);
-  const [, setSuccessMessage] = useState('');
-  const [, setError] = useState('');
   const [filter, setFilter] = useState({ nombre: '', apellido: '' });
   const [editingProfesor, setEditingProfesor] = useState<Profesor | null>(null);
   const [newProfesor, setNewProfesor] = useState<Profesor>({ id: '', nombre: '', apellido: '', asignaturas: [] });
@@ -34,6 +32,7 @@ const EmployeesPage: React.FC = () => {
         setProfesores(respuesta.data);
       }
     } catch (error) {
+      alert("Error al cargar los profesores");
       console.error("Error al cargar los profesores:", error);
     }
   };
@@ -57,14 +56,13 @@ const EmployeesPage: React.FC = () => {
   const handleUpdateProfesor = async () => { };
 
   const handleDeleteProfesor = async (id: string) => {
-    try {
-      const response = await eliminarProfesor({ id });
-      if (!response.success) throw new Error('Error al eliminar el Profesor');
-      setSuccessMessage("Profesor eliminado exitosamente");
-      cargarDatos();
-    } catch (error) {
-      setError("Error al eliminar el Profesor");
+    const response = await eliminarProfesor({ id });
+    if (!response.success) {
+      alert("Error al eliminar el Profesor");
+      return;
     }
+    alert("Profesor eliminado exitosamente");
+    cargarDatos();
   };
 
   const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -74,9 +72,9 @@ const EmployeesPage: React.FC = () => {
 
   const filteredProfesores = Array.isArray(profesores)
     ? profesores.filter(profesor =>
-        (filter.nombre ? profesor.nombre.includes(filter.nombre) : true) &&
-        (filter.apellido ? profesor.apellido.includes(filter.apellido) : true)
-      )
+      (filter.nombre ? profesor.nombre.includes(filter.nombre) : true) &&
+      (filter.apellido ? profesor.apellido.includes(filter.apellido) : true)
+    )
     : [];
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -91,42 +89,44 @@ const EmployeesPage: React.FC = () => {
 
   const handleAddProfesor = async () => {
     if (!newProfesor.nombre || !newProfesor.apellido || usuario.correo === '' || usuario.contraseña === '' || usuario.confirmarContraseña === '') {
-      setError("Por favor, completa todos los campos requeridos.");
+      alert("Por favor, completa todos los campos requeridos.");
       return;
     }
     if (usuario.contraseña !== usuario.confirmarContraseña) {
-      setError('Las contraseñas no coinciden.');
+      alert('Las contraseñas no coinciden.');
       return;
     }
 
-    try {
-      const userCredential = await createUserWithEmailAndPassword(auth, usuario.correo, usuario.contraseña);
-      const user = userCredential.user;
-
-      const dataUser: RegisterUser = {
-        id: user.uid,
-        nombre: newProfesor.nombre,
-        apellido: newProfesor.apellido,
-        rol: "profesor",
-        uid: user.uid
-      };
-
-      await registerProfesores({ id: user.uid, nombre: newProfesor.nombre, apellido: newProfesor.apellido });
-      await registerUser(dataUser);
-      await sendEmailVerification(user);
-
-      setSuccessMessage("Profesor agregado exitosamente");
-      cargarDatos();
-      closeModal();
-    } catch (err: any) {
-      if (err.code === 'auth/email-already-in-use') {
-        setError('Este correo ya está registrado.');
-      } else if (err.code === 'auth/invalid-email') {
-        setError('Correo inválido.');
-      } else {
-        setError('Error al crear la cuenta: ' + err.message);
-      }
+    const userCredential = await createUserWithEmailAndPassword(auth, usuario.correo, usuario.contraseña);
+    if (!userCredential.user) {
+      alert('Error al crear el usuario');
+      return;
     }
+    const usuarioCreado = userCredential.user;
+
+    const dataUser: RegisterUser = {
+      id: usuarioCreado.uid,
+      nombre: newProfesor.nombre,
+      apellido: newProfesor.apellido,
+      rol: "profesor",
+      uid: usuarioCreado.uid
+    };
+
+    const responseRegisterProfesor = await registerProfesores({ id: usuarioCreado.uid, nombre: newProfesor.nombre, apellido: newProfesor.apellido });
+    if (!responseRegisterProfesor.data) {
+      alert('Error al registrar el profesor');
+      return;
+    }
+
+    const responseRegisterUser = await registerUser(dataUser);
+    if (!responseRegisterUser.success) {
+      alert('Error al registrar el usuario');
+      return;
+    }
+    await sendEmailVerification(usuarioCreado);
+    alert("Profesor agregado exitosamente");
+    cargarDatos();
+    closeModal();
   };
 
   const closeModal = () => {

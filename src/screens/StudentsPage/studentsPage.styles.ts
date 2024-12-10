@@ -100,7 +100,7 @@ export const studentsPageStyles = {
     justifyContent: "center",
   } as CSSProperties,
   modal: {
-    backgroundColor: "#fff",
+    backgroundColor: "#1d1551",
     padding: "20px",
     borderRadius: "8px",
     minWidth: "400px",

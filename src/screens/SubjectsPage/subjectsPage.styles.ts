@@ -2,21 +2,21 @@ import { CSSProperties } from "react";
 
 export const subjectsPageStyles = {
   container: {
-    backgroundColor: "#1d1551", // Color de fondo azul más oscuro
+    backgroundColor: "#1d1551",
     padding: "20px",
     borderRadius: "8px",
-    minHeight: "100vh", // Para ocupar toda la altura de la pantalla
+    minHeight: "100vh",
     display: "flex",
     flexDirection: "column",
-    alignItems: "center", // Centrar horizontalmente
+    alignItems: "center",
   } as CSSProperties,
   header: {
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
     marginBottom: "20px",
-    width: "100%", // Para ocupar el ancho completo
-    padding: "0 20px", // Espacio lateral
+    width: "100%",
+    padding: "0 20px",
   } as CSSProperties,
   schoolImage: {
     borderRadius: "50%",
@@ -26,25 +26,25 @@ export const subjectsPageStyles = {
   body: {
     display: "flex",
     flexDirection: "column",
-    width: "100%", // Para que el cuerpo ocupe todo el ancho
-    padding: "0 20px", // Espacio lateral
+    width: "100%",
+    padding: "0 20px",
   } as CSSProperties,
   backButton: {
-    backgroundColor: "#ffc107", // Color amarillo para el botón de volver
+    backgroundColor: "#ffc107",
     color: "#000",
     padding: "10px 20px",
     border: "none",
     borderRadius: "5px",
     cursor: "pointer",
     marginBottom: "20px",
-    alignSelf: "flex-start", // Alinear a la izquierda
+    alignSelf: "flex-start",
   } as CSSProperties,
   filterContainer: {
     display: "flex",
     flexWrap: "wrap",
     gap: "10px",
     marginBottom: "20px",
-    width: "100%", // Para que ocupe todo el ancho
+    width: "100%",
   } as CSSProperties,
   filterInput: {
     padding: "10px",
@@ -65,38 +65,34 @@ export const subjectsPageStyles = {
     borderCollapse: "collapse",
   } as CSSProperties,
   tableHead: {
-    backgroundColor: "#0056b3", // Color azul más oscuro para el encabezado
+    backgroundColor: "#0056b3",
     color: "#fff",
     fontWeight: "bold",
   } as CSSProperties,
   saveButton: {
-    backgroundColor: '#4CAF50', // Verde
+    backgroundColor: '#4CAF50',
     color: 'white',
     padding: '10px 20px',
     border: 'none',
     borderRadius: '4px',
     cursor: 'pointer',
     fontSize: '16px',
-    '&:hover': {
-      backgroundColor: '#45a049',
-    },
+    margin: "5px",
   },
   
   closeButton: {
-    backgroundColor: '#f44336', // Rojo
+    backgroundColor: '#f44336',
     color: 'white',
     padding: '10px 20px',
     border: 'none',
     borderRadius: '4px',
     cursor: 'pointer',
     fontSize: '16px',
-    '&:hover': {
-      backgroundColor: '#e53935',
-    },
+    margin: "5px",
   },
   tableBody: {
-    backgroundColor: "#333333", // Color gris para el cuerpo de la tabla
-    color: "#fff", // Letras blancas
+    backgroundColor: "#333333",
+    color: "#fff",
   } as CSSProperties,
   editButton: {
     backgroundColor: "#ffc107",
@@ -134,7 +130,7 @@ export const subjectsPageStyles = {
     padding: "10px",
     borderRadius: "5px",
     border: "1px solid #ccc",
-    width: "100%",
+    width: "90%",
     marginBottom: "10px",
   } as CSSProperties,
   modalActions: {
@@ -149,6 +145,7 @@ export const subjectsPageStyles = {
     border: "none",
     borderRadius: "5px",
     cursor: "pointer",
+    margin: "5px",
   } as CSSProperties,
   cancelButton: {
     backgroundColor: "#6c757d",
@@ -157,6 +154,7 @@ export const subjectsPageStyles = {
     border: "none",
     borderRadius: "5px",
     cursor: "pointer",
+    margin: "5px",
   } as CSSProperties,
   modalContent: {
     backgroundColor: '#1d1551',
@@ -166,20 +164,4 @@ export const subjectsPageStyles = {
     maxWidth: '500px',
     color: '#f4f4f4',
   } as CSSProperties,
-  // Estilos para el botón de título "Registro de estudiantes"
-  titleButton: {
-    backgroundColor: "#87CEEB", // Celeste
-    color: "#fff",
-    padding: "10px 20px",
-    border: "none",
-    borderRadius: "5px",
-    cursor: "pointer",
-    transition: "transform 0.2s ease-in-out",
-    margin: "20px 0",
-    fontSize: "1.2em",
-    boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)", // Sombra para efecto de profundidad
-  } as CSSProperties,
-  titleButtonHover: {
-    transform: "scale(1.05)", // Efecto de hover
-  },
 };

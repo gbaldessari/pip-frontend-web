@@ -127,34 +127,33 @@ const GuardiansPage: React.FC = () => {
       console.error('Las contraseñas no coinciden.');
       return;
     }
+    const userCredential = await createUserWithEmailAndPassword(auth, usuario.correo, usuario.contraseña);
+    const user = userCredential.user;
 
-    try {
+    const dataUser: RegisterUser = {
+      id: user.uid,
+      nombre: newApoderado.nombre,
+      apellido: newApoderado.apellido,
+      rol: 'apoderado',
+      uid: user.uid
+    }
 
-      const userCredential = await createUserWithEmailAndPassword(auth, usuario.correo, usuario.contraseña);
-      const user = userCredential.user;
-
-      const dataUser: RegisterUser = {
-        id: user.uid,
-        nombre: newApoderado.nombre,
-        apellido: newApoderado.apellido,
-        rol: 'apoderado',
-        uid: user.uid
+    const response = await registerApoderado({ id: user.uid, nombre: newApoderado.nombre, apellido: newApoderado.apellido });
+    if (response.data) {
+      const responseRegister = await registerUser(dataUser);
+      if (responseRegister.data) {
+        await sendEmailVerification(user);
+        cargarDatos();
+        closeModal();
       }
-
-      await registerApoderado({ id: user.uid, nombre: newApoderado.nombre, apellido: newApoderado.apellido });
-      await registerUser(dataUser);
-
-      await sendEmailVerification(user);
-      cargarDatos();
-      closeModal();
-    } catch (err: any) {
-      if (err.code === 'auth/email-already-in-use') {
-        console.error('Este correo ya está registrado.');
-      } else if (err.code === 'auth/invalid-email') {
-        console.error('Correo inválido.');
-      } else {
-        console.error('Error al crear la cuenta: ' + err.message);
+      else {
+        console.error('Error al registrar el Usuario:', responseRegister.error);
+        alert('Error al registrar el Usuario');
       }
+    }
+    else {
+      console.error('Error al registrar el Apoderado:', response.error);
+      alert('Error al registrar el Apoderado');
     }
   };
 

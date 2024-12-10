@@ -34,8 +34,49 @@ export type AlumnoResponse = {
 	apellido: string;
 }
 
+export type Foro = {
+	id: string;
+	title: string;
+	description: string;
+	profesorId: string;
+	asignatura: Asignatura;
+	fecha: string;
+	comentarios: Comentario[];
+}
 
+export type ForoPayload = {
+	title: string;
+	description: string;
+	profesorId: string;
+	asignaturaId: string;
+	fecha: string;
+}
 
+export type Comentario = {
+	id: string;
+	nombre: string;
+	comentario: string;
+	foroId: string;
+	fecha: string;
+}
+
+export type ComentarioPayload = {
+	userId: string;
+	comentario: string;
+	foroId: string;
+	fecha: string;
+}
+
+export type NotaResponse = {
+	calificacion: number;
+	asignatura: string;
+}
+
+export type AsistenciaResponse = {
+	nombreAsignatura: string;
+	fecha: string;
+	asistencia: boolean;
+  };
 //------------------------------------------------------------------------//
 
 export type RegisterApoderado = {

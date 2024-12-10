@@ -117,7 +117,7 @@ const MainPage: React.FC = () => {
             onMouseLeave={() => setHoveredButton(null)}
             onClick={() => navigator('/reports')}
           >
-            Reportes
+            Asistencia
           </button>
         </div>
 

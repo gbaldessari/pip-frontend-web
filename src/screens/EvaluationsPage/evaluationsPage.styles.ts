@@ -49,4 +49,11 @@ export const evaluationsPageStyles = {
     alignItems: 'center',
     padding: '2rem',
   },
+  select: {
+    padding: '1rem',
+    borderRadius: '5px',
+    border: '1px solid #ccc',
+    width: '100%',
+    marginBottom: '2rem',
+  },
 };

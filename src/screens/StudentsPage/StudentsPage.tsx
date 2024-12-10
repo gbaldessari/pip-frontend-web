@@ -213,7 +213,7 @@ const StudentsPage: React.FC = () => {
           <input type="text" name="rut" placeholder="Buscar por Rut" value={searchFilters.rut} onChange={handleFilterChange} style={styles.filterInput as React.CSSProperties} />
           <input type="date" name="fechaNacimiento" placeholder="Buscar por fecha de nacimiento" value={searchFilters.fechaNacimiento} onChange={handleFilterChange} style={styles.filterInput as React.CSSProperties} />
           <input type="text" name="curso" placeholder="Buscar por curso" value={searchFilters.curso} onChange={handleFilterChange} style={styles.filterInput as React.CSSProperties} />
-          {/*<input type="text" name="apoderado" placeholder="Buscar por apoderado" value={searchFilters.apoderadoNombre} onChange={handleFilterChange} style={styles.filterInput as React.CSSProperties} /> */}
+          <input type="text" name="apoderadoNombre" placeholder="Buscar por apoderado" value={searchFilters.apoderadoNombre} onChange={handleFilterChange} style={styles.filterInput as React.CSSProperties} />
           <button style={styles.addButton} onClick={() => setIsModalOpen(true)}>Agregar Estudiante</button>
         </div>
 
@@ -225,7 +225,6 @@ const StudentsPage: React.FC = () => {
         <table style={styles.table as React.CSSProperties}>
           <thead style={styles.tableHead as React.CSSProperties}>
             <tr>
-              <th>ID</th>
               <th>Nombre</th>
               <th>Apellido</th>
               <th>RUT</th>
@@ -238,7 +237,6 @@ const StudentsPage: React.FC = () => {
           <tbody style={styles.tableBody as React.CSSProperties}>
             {Array.isArray(filteredStudents) && filteredStudents.map((student) => (
               <tr key={student.id}>
-                <td>{student.id}</td>
                 <td>{student.nombre}</td>
                 <td>{student.apellido}</td>
                 <td>{student.rut}</td>

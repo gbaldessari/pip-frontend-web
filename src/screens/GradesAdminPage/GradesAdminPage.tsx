@@ -76,8 +76,9 @@ const GradesAdminPage: React.FC = () => {
     const respuesta = await enviarNotas(payload);
     if (respuesta.success) {
       alert("Evaluación registrada exitosamente");
+      window.history.back()
     }
-    else{
+    else {
       console.error(respuesta.error);
       alert("Error al registrar la evaluación.");
     }
@@ -87,11 +88,11 @@ const GradesAdminPage: React.FC = () => {
     <div style={styles.container as React.CSSProperties}>
       <header style={styles.header as React.CSSProperties}>
         <h1>Registrar Evaluación</h1>
+      </header>
+      <div style={styles.body as React.CSSProperties}>
         <button style={styles.backButton} onClick={() => navigate(-1)}>
           Volver al menú
         </button>
-      </header>
-      <div style={styles.body as React.CSSProperties}>
         <div style={styles.form as React.CSSProperties}>
           <label style={styles.label as React.CSSProperties}>Asignatura:</label>
           <select

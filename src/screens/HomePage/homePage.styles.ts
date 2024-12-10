@@ -12,7 +12,6 @@ export const homePageStyles = {
         width: '100%',
         height: '100vh',
         position: 'relative',
-        paddingTop: '50px',
         zIndex: 1,
     } as CSSProperties,
     header: {
@@ -26,6 +25,7 @@ export const homePageStyles = {
         padding: '2rem',
         boxShadow: '0 4px 8px rgba(0, 0, 0, 0.3)',
         width: '100%',
+        height: '100vh',
         position: 'relative',
         zIndex: 2,
     } as CSSProperties,

@@ -81,6 +81,7 @@ const AttendancePage: React.FC = () => {
     const respuesta = await enviarAsistencia(attendanceData);
     if (respuesta.success) {
       alert("Asistencia registrada exitosamente");
+      window.history.back()
     } else {
       alert("Error al registrar la asistencia.");
     }

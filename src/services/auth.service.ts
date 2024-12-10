@@ -1,5 +1,5 @@
 import axiosInstance from "./AxiosInstance";
-import { RegisterAlumno, RegisterApoderadoPayload, RegisterResponse, ServiceResponse, Apoderados, UpdateAlumno, EliminarAlumno, RegisterAsignatura, Asignatura, Profesor, EliminarAsignatura, Alumno, UpdateApoderado, EliminarApoderado, EliminarProfesor, RegisterProfesor, Curso, AsistenciaPayload, AlumnoResponse, NotaPayload } from "./services.types";
+import { RegisterAlumno, RegisterApoderadoPayload, RegisterResponse, ServiceResponse, Apoderados, UpdateAlumno, EliminarAlumno, RegisterAsignatura, Asignatura, Profesor, EliminarAsignatura, Alumno, UpdateApoderado, EliminarApoderado, EliminarProfesor, RegisterProfesor, Curso, AsistenciaPayload, AlumnoResponse, NotaPayload, Foro, ForoPayload, ComentarioPayload, NotaResponse, AsistenciaResponse } from "./services.types";
 
 
 export const registerApoderado = async (payload: RegisterApoderadoPayload): Promise<ServiceResponse<RegisterResponse>> => {
@@ -102,7 +102,7 @@ export const eliminarAsignatura = async (payload: EliminarAsignatura): Promise<S
   }
 };
 
-export const updateAsignatura = async (id: string, payload: UpdateAlumno): Promise<ServiceResponse<RegisterResponse>> => {
+export const updateAsignatura = async (id: string, payload: Asignatura): Promise<ServiceResponse<string>> => {
   try {
     const response = await axiosInstance.patch(`/asignatura/${id}`, payload);
     return { success: true, data: response.data };
@@ -203,3 +203,66 @@ export const enviarNotas = async (payload: NotaPayload[]): Promise<ServiceRespon
     return { success: false, error: String(error) };
   }
 };
+
+export const getForosdeUnProfesor = async (id: string): Promise<ServiceResponse<Foro[]>> => {
+  try {
+    const response = await axiosInstance.get(`/foro/${id}/forosProfesor`);
+    return { success: true, data: response.data };
+  } catch (error) {
+    return { success: false, error: String(error) };
+  }
+}
+
+export const createForo = async (payload: ForoPayload): Promise<ServiceResponse<String>> => {
+  try {
+    await axiosInstance.post('/foro/createForo', payload);
+    return { success: true, data: "Foro creado" };
+  } catch (error) {
+    return { success: false, error: String(error) };
+  }
+}
+
+export const comentarForo = async (payload: ComentarioPayload): Promise<ServiceResponse<String>> => {
+  try {
+    await axiosInstance.post(`foro-comentario`, payload);
+    return { success: true, data: "Comentario creado" };
+  } catch (error) {
+    return { success: false, error: String(error) };
+  }
+}
+
+export const eliminarForo = async (idForo:string): Promise<ServiceResponse<String>> => {
+  try {
+    await axiosInstance.delete(`foro/${idForo}`);
+    return { success: true, data: "Comentario creado" };
+  } catch (error) {
+    return { success: false, error: String(error) };
+  }
+}
+
+export const obtenerNotas = async (idAlumno:string): Promise<ServiceResponse<NotaResponse[]>> => {
+  try {
+    const response = await axiosInstance.get(`notas/${idAlumno}`);
+    return { success: true, data: response.data };
+  } catch (error) {
+    return { success: false, error: String(error) };
+  }
+}
+
+export const getAlumnosdeUnApoderado = async (idApoderado:string): Promise<ServiceResponse<AlumnoResponse[]>> => {
+  try {
+    const response = await axiosInstance.get(`apoderados/alumnos/${idApoderado}`);
+    return { success: true, data: response.data };
+  } catch (error) {
+    return { success: false, error: String(error) };
+  }
+}
+
+export const obtenerAsistencia = async (idAlumno:string): Promise<ServiceResponse<AsistenciaResponse[]>> => {
+  try {
+    const response = await axiosInstance.get(`alumnos/asistencia/${idAlumno}`);
+    return { success: true, data: response.data };
+  } catch (error) {
+    return { success: false, error: String(error) };
+  }
+}
