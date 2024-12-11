@@ -98,10 +98,7 @@ const GuardianForumPage: React.FC = () => {
       <header style={styles.header as React.CSSProperties}>
         <h1>Foro de Profesores y Apoderados</h1>
       </header>
-
       <div style={styles.body as React.CSSProperties}>
-        <button style={styles.backButton} onClick={() => window.history.back()}>Volver al menú</button>
-
         <select
           value={selectedStudent || ""}
           onChange={(e) => setSelectedStudent(e.target.value)}

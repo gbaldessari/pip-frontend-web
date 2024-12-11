@@ -55,5 +55,6 @@ export const evaluationsPageStyles = {
     border: '1px solid #ccc',
     width: '100%',
     marginBottom: '2rem',
+    fontSize: '1rem',
   },
 };

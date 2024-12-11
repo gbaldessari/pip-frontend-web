@@ -28,10 +28,17 @@ export type NotaPayload = {
 	fecha: string;
 }
 
+export type Promedio = {
+	asignatura: string;
+	promedio: number;
+};
+
 export type AlumnoResponse = {
 	id: string;
 	nombre: string;
 	apellido: string;
+	rut: string;
+	curso: string;
 }
 
 export type Foro = {
@@ -76,7 +83,7 @@ export type AsistenciaResponse = {
 	nombreAsignatura: string;
 	fecha: string;
 	asistencia: boolean;
-  };
+};
 //------------------------------------------------------------------------//
 
 export type RegisterApoderado = {

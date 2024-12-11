@@ -1,45 +1,156 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { documentsPageStyles as styles } from './documentsPage.styles';
-import { generateDocument } from '../../services/documents.service';
+import { pdf } from '@react-pdf/renderer';
+import { getAlumnosdeUnApoderado, obtenerNotas } from "../../services/auth.service";
+import { AlumnoResponse, NotaResponse, Promedio } from "../../services/services.types";
+import { Certificate, GradesCertificate } from "./documents.template";
+
+
+const DownloadLink = ({ loading, onClick }: { loading: boolean, onClick: () => void }) => {
+  const [hover, setHover] = useState(false);
+
+  return (
+    <button
+      onClick={onClick}
+      style={{
+        ...styles.downloadButton,
+        ...(hover ? styles.downloadButtonHover : {}),
+      } as React.CSSProperties}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+    >
+      {loading ? "Generando documento..." : "Descargar Documento"}
+    </button>
+  );
+};
 
 const DocumentsPage: React.FC = () => {
-  const documents = [
-    { id: 1, name: "Certificado de Notas", htmlContent: "<h1>Certificado de Notas</h1><p>Este es el certificado de notas.</p>" },
-    { id: 2, name: "Matricula", htmlContent: "<!DOCTYPE html>\n<html lang=\"es\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Certificado de Matrícula</title>\n    <style>\n        body {\n            font-family: Arial, sans-serif;\n            line-height: 1.6;\n            margin: 50px;\n            border: 1px solid #000;\n            padding: 30px;\n        }\n        .header {\n            text-align: center;\n            margin-bottom: 20px;\n        }\n        .header img {\n            width: 100px;\n            height: auto;\n        }\n        .header h1 {\n            font-size: 24px;\n            margin: 10px 0;\n        }\n        .content {\n            margin: 20px 0;\n        }\n        .content p {\n            margin: 10px 0;\n        }\n        .footer {\n            margin-top: 40px;\n            text-align: center;\n        }\n        .footer p {\n            margin: 5px 0;\n        }\n        .signature {\n            margin-top: 50px;\n            text-align: center;\n        }\n        .signature div {\n            display: inline-block;\n            text-align: center;\n        }\n        .signature div p {\n            margin: 5px 0;\n        }\n        .signature-line {\n            border-top: 1px solid #000;\n            width: 200px;\n            margin: 0 auto;\n        }\n    </style>\n</head>\n<body>\n    <div class=\"header\">\n        <img src=\"https://via.placeholder.com/100\" alt=\"Logo del colegio\">\n        <h1>CERTIFICADO DE MATRÍCULA</h1>\n        <p><strong>Año Escolar: 2024</strong></p>\n    </div>\n\n    <div class=\"content\">\n        <p>El Colegio <strong>\"San Pedro\"</strong>, certifica que el/la estudiante:</p>\n        <p><strong>Nombre del Estudiante:</strong> Juan Pérez Rodríguez</p>\n        <p><strong>Documento de Identidad:</strong> 123456789</p>\n        <p><strong>Grado:</strong> 6° Primaria</p>\n        <p><strong>Fecha de Matrícula:</strong> 10 de diciembre de 2023</p>\n        <p>Se encuentra formalmente matriculado/a en nuestra institución para el presente año académico.</p>\n    </div>\n\n    <div class=\"footer\">\n        <p>Emitido en Ciudad de México, el 10 de diciembre de 2023</p>\n        <p><strong>Colegio San Pedro</strong></p>\n    </div>\n\n    <div class=\"signature\">\n        <div>\n            <p class=\"signature-line\"></p>\n            <p><strong>Director/a del Colegio</strong></p>\n        </div>\n    </div>\n</body>\n</html>" },
-  ];
+  const [selectedStudent, setSelectedStudent] = useState<string | null>(null);
+  const [students, setStudents] = useState<AlumnoResponse[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
 
-  const handleGenerateDocument = async (htmlContent: string) => {
+  const fetchStudents = async () => {
+    const user = localStorage.getItem('user_uid');
+    if (!user) {
+      console.error("El UID del usuario no está disponible.");
+      return;
+    }
     try {
-      const pdfBlob = await generateDocument(htmlContent);
-      const url = window.URL.createObjectURL(pdfBlob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', 'documento.pdf');
-      document.body.appendChild(link);
-      link.click();
-      if (link.parentNode) {
-        link.parentNode.removeChild(link);
+      const response = await getAlumnosdeUnApoderado(user);
+      if (response.data) {
+        console.log(response.data);
+        setStudents(response.data);
       }
     } catch (error) {
-      console.error('Error generating document:', error);
+      console.error(error);
+      alert("Error al obtener los alumnos.");
     }
   };
+
+  useEffect(() => {
+    fetchStudents();
+  }, []);
+
+  const handleDownload = async () => {
+    if (!selectedStudent) return;
+    const student = students.find((s) => s.id === selectedStudent);
+    if (!student) return;
+    const blob = await pdf(<Certificate student={student} />).toBlob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'certificado_matricula.pdf';
+    a.click();
+    URL.revokeObjectURL(url);
+    setLoading(false);
+  };
+
+  const obtenerPromedios = (notas: NotaResponse[]) => {
+    const subjects: { [key: string]: number[] } = {};
+
+    notas.forEach((nota) => {
+      if (!subjects[nota.asignatura]) {
+        subjects[nota.asignatura] = [];
+      }
+      subjects[nota.asignatura].push(nota.calificacion);
+    });
+
+    const promedios: Promedio[] = Object.keys(subjects).map((asignatura) => {
+      const notasAsignatura = subjects[asignatura];
+      const promedio = notasAsignatura.reduce((acc, curr) => acc + curr, 0) / notasAsignatura.length;
+      return { asignatura, promedio };
+    });
+    console.log(promedios);
+    return promedios;
+  };
+
+  const fetchGrades = async (studentId: string) => {
+    if (!studentId) return;
+    const response = await obtenerNotas(studentId);
+    if (response.data) {
+      return obtenerPromedios(response.data);
+    }
+    else{
+      console.log(response.error);
+      alert("Error al obtener las notas");
+    }
+  }
+
+  const handleDownloadGrades = async (evaluations: Promedio[]) => {
+    if (!selectedStudent) return;
+    const student = students.find((s) => s.id === selectedStudent);
+    if (!student) return;
+    setLoading(true);
+    const blob = await pdf(<GradesCertificate student={student} subjects={evaluations} />).toBlob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'certificado_notas.pdf';
+    a.click();
+    URL.revokeObjectURL(url);
+    setLoading(false);
+  };
+
+  const documents = [
+    { id: 1, name: "Certificado de Notas" },
+    { id: 2, name: "Certificado de Matrícula" },
+  ];
 
   return (
     <div style={styles.container as React.CSSProperties}>
       <header style={styles.header as React.CSSProperties}>
         <h1>Documentos</h1>
       </header>
-      <p style={styles.description}>Accede a tus documentos importantes:</p>
-      <ul style={styles.documentList}>
-        {documents.map((document) => (
-          <li key={document.id} style={styles.documentItem}>
-            <button onClick={() => handleGenerateDocument(document.htmlContent)} style={styles.generateButton as React.CSSProperties}>
-              Generar {document.name}
-            </button>
-          </li>
+      <select
+        value={selectedStudent || ""}
+        onChange={(e) => setSelectedStudent(e.target.value)}
+        style={styles.select as React.CSSProperties}
+      >
+        <option value="" disabled>Seleccione un alumno</option>
+        {students.map((student) => (
+          <option key={student.id} value={student.id}>
+            {student.nombre + " " + student.apellido}
+          </option>
         ))}
-      </ul>
+      </select>
+      {selectedStudent && (
+        <>
+          <p style={styles.description as React.CSSProperties}>Accede a tus documentos importantes:</p>
+          <ul style={styles.documentList as React.CSSProperties}>
+            {documents.map((doc) => (
+              <li key={doc.id} style={styles.documentItem as React.CSSProperties}>
+                <p style={styles.documentName as React.CSSProperties}>{doc.name}</p>
+                {doc.name === "Certificado de Matrícula" && (
+                  <DownloadLink loading={loading} onClick={handleDownload} />
+                )}
+                {doc.name === "Certificado de Notas" && (
+                  <DownloadLink loading={loading} onClick={async () => handleDownloadGrades(await fetchGrades(selectedStudent) || [])} />
+                )}
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
     </div>
   );
 };
