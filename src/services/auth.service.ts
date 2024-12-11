@@ -266,3 +266,12 @@ export const obtenerAsistencia = async (idAlumno:string): Promise<ServiceRespons
     return { success: false, error: String(error) };
   }
 }
+
+export const getForosdeUnAlumno = async (idAlumno:string): Promise<ServiceResponse<Foro[]>> => {
+  try {
+    const response = await axiosInstance.get(`foro/alumno/${idAlumno}`);
+    return { success: true, data: response.data };
+  } catch (error) {
+    return { success: false, error: String(error) };
+  }
+}

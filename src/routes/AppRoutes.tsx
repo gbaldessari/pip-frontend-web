@@ -13,7 +13,7 @@ import { useUser } from "./UserContext";
 import DocumentsPage from "../screens/DocumentsPage/DocumentsPage";
 import ReportsPage from "../screens/ReportsPage/ReportsPage";
 import ServicesPage from "../screens/ServicesPage/ServicesPage";
-import ComplaintsPage from "../screens/ComplaintsPage/ComplaintsPage";
+import GuardianForumPage from "../screens/GuardianForumPage/GuardianForumPage";
 import StudentsPage from "../screens/StudentsPage/StudentsPage";
 import AttendancePage from "../screens/AttendancePage/AttendancePage";
 import EmployeesPage from "../screens/EmployeesPage/EmployeesPage";
@@ -42,7 +42,6 @@ export const AppRoutes: React.FC<{}> = () => {
               <Route path="/recover" element={<RecoverPage />} />
               <Route path="/password-reset" element={<PasswordResetPage />} />
 
-              {/* Rutas protegidas */}
               {user && (
                   <>
                       <Route path="/main" element={user.rol === 'apoderado' ? <MainPage /> : <Navigate to="/" />} />
@@ -53,7 +52,7 @@ export const AppRoutes: React.FC<{}> = () => {
                       <Route path="/documents" element={<DocumentsPage />} />
                       <Route path="/reports" element={<ReportsPage />} />
                       <Route path="/services" element={<ServicesPage />} />
-                      <Route path="/complaints" element={<ComplaintsPage />} />
+                      <Route path="/guardian-forum" element={<GuardianForumPage />} />
                       <Route path="/students" element={<StudentsPage />} />
                       <Route path="/subjects" element={<SubjectsPage />} />
                       <Route path="/attendance" element={<AttendancePage />} />

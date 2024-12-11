@@ -179,31 +179,33 @@ const ReportsPage: React.FC = () => {
         {getFormattedDateRange(currentWeek)}
       </div>
       {selectedStudent && attendance.length > 0 && (
-        <table style={styles.table as React.CSSProperties}>
-          <thead style={styles.tableHead}>
-            <tr>
-              <th style={styles.tableCell}>Asignatura</th>
-              {getWeekDays(currentWeek).map((day, index) => (
-                <th key={index} style={styles.tableCell}>
-                  {day.day} <br /> {day.date}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody style={styles.tableBody as React.CSSProperties}>
-            {filterAttendanceByWeek(attendance, currentWeek).map((record) => (
-              <tr key={record.subject} style={styles.tableRow}>
-                <td style={styles.tableCell}>{record.subject}</td>
-                {getWeekDays(currentWeek).map((day, index) => {
-                  const classRecord = record.classes.find(cls => formatDate(new Date(cls.date)) === day.date);
-                  return (
-                    <td key={index} style={classRecord ? getAttendanceStyle(classRecord.attendance) : styles.tableCell}/>
-                  );
-                })}
+        <div style={styles.tableContainer as React.CSSProperties}>
+          <table style={styles.table as React.CSSProperties}>
+            <thead style={styles.tableHead}>
+              <tr>
+                <th style={styles.tableCell}>Asignatura</th>
+                {getWeekDays(currentWeek).map((day, index) => (
+                  <th key={index} style={styles.tableCell}>
+                    {day.day} <br /> {day.date}
+                  </th>
+                ))}
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody style={styles.tableBody as React.CSSProperties}>
+              {filterAttendanceByWeek(attendance, currentWeek).map((record) => (
+                <tr key={record.subject} style={styles.tableRow}>
+                  <td style={styles.tableCell}>{record.subject}</td>
+                  {getWeekDays(currentWeek).map((day, index) => {
+                    const classRecord = record.classes.find(cls => formatDate(new Date(cls.date)) === day.date);
+                    return (
+                      <td key={index} style={classRecord ? getAttendanceStyle(classRecord.attendance) : styles.tableCell}/>
+                    );
+                  })}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
     </div>
   );

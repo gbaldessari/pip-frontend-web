@@ -140,7 +140,7 @@ const MainPage: React.FC = () => {
           </button>
           <button
             style={
-              hoveredButton === "complaints"
+              hoveredButton === "forum"
                 ? {
                     ...getBodyButtonStyles(),
                     backgroundColor: "#315b73",
@@ -148,11 +148,11 @@ const MainPage: React.FC = () => {
                   }
                 : getBodyButtonStyles()
             }
-            onMouseEnter={() => setHoveredButton("complaints")}
+            onMouseEnter={() => setHoveredButton("forum")}
             onMouseLeave={() => setHoveredButton(null)}
-            onClick={() => navigator('/complaints')}
+            onClick={() => navigator('/guardian-forum')}
           >
-            Reclamos
+            Foro
           </button>
         </div>
       </main>

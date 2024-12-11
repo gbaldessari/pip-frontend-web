@@ -45,4 +45,16 @@ export const documentsPageStyles = {
     borderRadius: '5px',
     fontSize: '1.2rem',
   },
+  generateButton: {
+    backgroundColor: '#28a745',
+    color: '#fff',
+    textDecoration: 'none',
+    padding: '1rem 2rem',
+    borderRadius: '5px',
+    fontSize: '1.2rem',
+    cursor: 'pointer',
+    marginTop: '2rem',
+    display: 'block',
+    textAlign: 'center',
+  },
 };
