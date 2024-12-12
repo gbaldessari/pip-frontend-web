@@ -26,5 +26,9 @@ export default defineConfig(({ mode }) => {
       },
       chunkSizeWarningLimit: 1000, // Ajusta el límite según tus necesidades
     },
+    server: {
+      host: '0.0.0.0', // Escucha en todas las interfaces
+      port: parseInt(process.env.PORT || '3000'), // Usa el puerto asignado por Render
+    },
   };
 });
