@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { mainPageStyles as styles} from "./mainPage.styles";
+import { mainPageStyles as styles } from "./mainPage.styles";
 import { useNavigate } from "react-router-dom";
 import { getAuth, signOut } from "firebase/auth";
 import { useUser } from "../../routes/UserContext";
+import Chatbot from "./ChatBot";
+import axios from 'axios';
+import { v4 as uuid } from 'uuid';
 
 const MainPage: React.FC = () => {
   const [hoveredButton, setHoveredButton] = useState<string | null>(null);
@@ -10,6 +13,43 @@ const MainPage: React.FC = () => {
   const auth = getAuth();
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const { user } = useUser();
+  const [chatbotVisible, setChatbotVisible] = useState(false);
+  const [messages, setMessages] = useState<{ user: string, text: string }[]>([]);
+
+  const accessToken = import.meta.env.VITE_DIALOGFLOW_ACCESS_TOKEN;
+  const projectId = import.meta.env.VITE_DIALOGFLOW_PROJECT_ID;
+
+  const sendMessageToDialogflow = async (message: string) => {
+    const url = `https://dialogflow.googleapis.com/v2/projects/${projectId}/agent/sessions/${uuid()}:detectIntent`;
+    
+    const request = {
+      queryInput: {
+        text: {
+          text: message,
+          languageCode: 'es',
+        },
+      },
+    };
+
+    try {
+      const response = await axios.post(url, request, {
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      return response.data.queryResult.fulfillmentText;
+    } catch (error) {
+      console.error('Error al enviar mensaje a Dialogflow:', error);
+      return 'Lo siento, no puedo responder en este momento.';
+    }
+  };
+
+  const handleSendMessage = async (message: string) => {
+    setMessages([...messages, { user: 'user', text: message }]);
+    const response = await sendMessageToDialogflow(message);
+    setMessages((prevMessages) => [...prevMessages, { user: 'bot', text: response }]);
+  };
 
   useEffect(() => {
     const handleResize = () => {
@@ -155,6 +195,12 @@ const MainPage: React.FC = () => {
             Foro
           </button>
         </div>
+        {chatbotVisible && <Chatbot messages={messages} onSendMessage={handleSendMessage} onClose={() => setChatbotVisible(false)} />}
+        {!chatbotVisible && (
+          <button onClick={() => setChatbotVisible(true)} style={styles.chatbotButton as React.CSSProperties}>
+            ?
+          </button>
+        )}
       </main>
     </div>
   );
