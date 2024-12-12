@@ -30,7 +30,6 @@ export const gradesAdminPageStyles = {
     display: "flex",
     flexDirection: "column",
     width: "100%",
-    padding: "0 20px",
   } as CSSProperties,
   form: {
     display: "flex",
@@ -43,7 +42,8 @@ export const gradesAdminPageStyles = {
     fontSize: "1rem",
   } as CSSProperties,
   select: {
-    padding: "10px",
+    paddingTop: "10px",
+    paddingBottom: "10px",
     borderRadius: "5px",
     border: "1px solid #ccc",
     width: "100%",
@@ -63,7 +63,8 @@ export const gradesAdminPageStyles = {
     backgroundColor: "#0056b3",
     color: "#fff",
     fontWeight: "bold",
-    padding: "10px",
+    paddingTop: "10px",
+    paddingBottom: "10px",
   } as CSSProperties,
   tableBody: {
     backgroundColor: "#333333",
