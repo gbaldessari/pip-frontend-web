@@ -142,15 +142,12 @@ const ForumPage: React.FC = () => {
     <div style={styles.container as React.CSSProperties}>
       <header style={styles.header as React.CSSProperties}>
         <h1>Foro de Profesores y Apoderados</h1>
-        <button style={styles.createButton} onClick={() => setIsCreateForumModalOpen(true)}>
-          Crear Foro
-        </button>
       </header>
 
       <div style={styles.body as React.CSSProperties}>
-        <button style={styles.backButton} onClick={() => window.history.back()}>Volver al menú</button>
-
-
+        <button style={styles.createButton} onClick={() => setIsCreateForumModalOpen(true)}>
+          Crear Foro
+        </button>
         <h2 style={styles.topicsTitle as React.CSSProperties}>Foros Activos</h2>
         <div style={styles.topicsContainer as React.CSSProperties}>
           {forums.map(forum => (

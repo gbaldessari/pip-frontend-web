@@ -94,7 +94,6 @@ const AttendancePage: React.FC = () => {
         <h1>Control de Asistencia</h1>
       </header>
       <div style={styles.body as React.CSSProperties}>
-        <button style={styles.backButton} onClick={() => window.history.back()}>Volver al menú</button>
         <div style={styles.form as React.CSSProperties}>
           <label style={styles.label as React.CSSProperties}>Selecciona Asignatura:</label>
           <select

@@ -137,12 +137,6 @@ const AdminCreatorPage: React.FC = () => {
                 </button>
                 {error && <p style={styles.errorText as React.CSSProperties}>{error}</p>}
                 {registerSuccess && <p style={styles.successText as React.CSSProperties}>{registerSuccess}</p>}
-                <button
-                    style={styles.backButton as React.CSSProperties}
-                    onClick={() => navigate('/admin')}
-                >
-                    Volver al menú de administrador
-                </button>
             </div>
         </div>
     );

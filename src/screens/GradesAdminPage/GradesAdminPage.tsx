@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { gradesAdminPageStyles as styles } from "./gradesAdminPage.styles";
-import { useNavigate } from "react-router-dom";
 import { enviarNotas, getAlumnosCurso, getAsignaturasdeUnProfesor } from "../../services/auth.service";
 import { Asignatura, NotaPayload } from "../../services/services.types";
 
@@ -17,7 +16,6 @@ const GradesAdminPage: React.FC = () => {
   const [isSelected, setIsSelected] = useState(false);
   const [evaluationDate, setEvaluationDate] = useState<string>("");
   const user = localStorage.getItem('user_uid');
-  const navigate = useNavigate();
 
   const fetchSubjects = async () => {
     if (!user) {
@@ -90,9 +88,6 @@ const GradesAdminPage: React.FC = () => {
         <h1>Registrar Evaluación</h1>
       </header>
       <div style={styles.body as React.CSSProperties}>
-        <button style={styles.backButton} onClick={() => navigate(-1)}>
-          Volver al menú
-        </button>
         <div style={styles.form as React.CSSProperties}>
           <label style={styles.label as React.CSSProperties}>Asignatura:</label>
           <select

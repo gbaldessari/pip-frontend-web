@@ -28,15 +28,11 @@ const GuardiansPage: React.FC = () => {
   });
 
   const cargarDatos = async () => {
-    try {
-      const respuesta = await mostrarApoderados();
-      if (Array.isArray(respuesta.data)) {
-        setApoderados(respuesta.data);
-      } else {
-        setApoderados([]);
-      }
-    } catch (error) {
-      console.error("Error al cargar los apoderados:", error);
+
+    const respuesta = await mostrarApoderados();
+    if (Array.isArray(respuesta.data)) {
+      setApoderados(respuesta.data);
+    } else {
       setApoderados([]);
     }
   };
@@ -65,28 +61,26 @@ const GuardiansPage: React.FC = () => {
       nombre: newApoderado.nombre,
       apellido: newApoderado.apellido,
     };
-    try {
-      const response = await updateApoderado(updatedData);
-      if (!response.success) {
-        throw new Error('Error al actualizar el Apoderado');
-      }
+
+    const response = await updateApoderado(updatedData);
+    if (!response.success) {
+      alert('Error al actualizar el Apoderado');
+    }
+    else {
       setEditingApoderado(null);
       cargarDatos();
       closeModal();
-    } catch (error) {
-      console.error('Error al actualizar el Apoderado:', error);
     }
   };
 
   const handleDeleteApoderado = async (id: string) => {
-    try {
-      const response = await eliminarApoderado({ id });
-      if (!response.success) {
-        throw new Error('Error al eliminar el Apoderado');
-      }
+
+    const response = await eliminarApoderado({ id });
+    if (!response.success) {
+      alert('Error al eliminar el Apoderado');
+    }
+    else {
       cargarDatos();
-    } catch (error) {
-      console.error('Error al eliminar el Apoderado:', error);
     }
   };
 
@@ -147,12 +141,10 @@ const GuardiansPage: React.FC = () => {
         closeModal();
       }
       else {
-        console.error('Error al registrar el Usuario:', responseRegister.error);
         alert('Error al registrar el Usuario');
       }
     }
     else {
-      console.error('Error al registrar el Apoderado:', response.error);
       alert('Error al registrar el Apoderado');
     }
   };
@@ -174,10 +166,8 @@ const GuardiansPage: React.FC = () => {
     <div style={styles.container as React.CSSProperties}>
       <header style={styles.header as React.CSSProperties}>
         <h1>Gestión de Apoderados</h1>
-        <img src="https://firebasestorage.googleapis.com/v0/b/escuelapp-f167e.appspot.com/o/Bajos.png?alt=media" alt="Logo Colegio" style={styles.schoolImage} />
       </header>
       <div style={styles.body as React.CSSProperties}>
-        <button style={styles.backButton} onClick={() => window.history.back()}>Volver al menú</button>
         <div style={styles.filterContainer as React.CSSProperties}>
           <input
             type="text"

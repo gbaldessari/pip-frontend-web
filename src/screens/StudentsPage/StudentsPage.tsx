@@ -4,8 +4,6 @@ import { mostrarEstudiantes, registerAlumno, mostrarCursos, mostrarApoderados, u
 import { Alumno, Curso, Apoderados, RegisterEstudiante } from '../../services/services.types';
 
 const StudentsPage: React.FC = () => {
-  const [error, setError] = useState('');
-  const [successMessage, setSuccessMessage] = useState('');
   const [estudiantes, setEstudiantes] = useState<Alumno[]>([]);
   const [cursos, setCursos] = useState<Curso[]>([]);
   const [apoderados, setApoderados] = useState<Apoderados[]>([]);
@@ -32,18 +30,19 @@ const StudentsPage: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const cargarEstudiantes = async () => {
-    try {
-      const respuesta = await mostrarEstudiantes();
 
-      if (respuesta.data) {
-        setEstudiantes(respuesta.data);
-        setFilteredStudents(respuesta.data);
-      }
+    const respuesta = await mostrarEstudiantes();
 
-    } catch (error) {
-      console.error("Error al cargar estudiantes:", error);
-      setError("No se pudieron cargar los estudiantes");
+    if (respuesta.data) {
+      setEstudiantes(respuesta.data);
+      setFilteredStudents(respuesta.data);
     }
+    else {
+      alert("No se pudieron cargar los estudiantes");
+    }
+
+
+
   };
 
   useEffect(() => {
@@ -81,38 +80,32 @@ const StudentsPage: React.FC = () => {
 
   const handleAddStudent = async () => {
     console.log("Nuevo estudiante:", nuevoEstudiante);
-    setError('');
-    setSuccessMessage('');
 
     const { nombre, apellido, rut, fechaNacimiento, curso, apoderadoId } = nuevoEstudiante;
     if (!nombre || !apellido || !rut || !fechaNacimiento || !curso || !apoderadoId) {
-      setError('Por favor, completa todos los campos.');
+      alert('Por favor, completa todos los campos.');
       return;
     }
 
-    try {
-      const nuevoEstudianteData = {
-        nombre,
-        apellido,
-        rut,
-        fechaNacimiento,
-        curso,
-        apoderadoId
-      };
+    const nuevoEstudianteData = {
+      nombre,
+      apellido,
+      rut,
+      fechaNacimiento,
+      curso,
+      apoderadoId
+    };
 
-      const estudianteNuevo = await registerAlumno(nuevoEstudianteData);
-      if (!estudianteNuevo.success) {
-        setError('Error al añadir el estudiante');
-        return;
-      }
-      setSuccessMessage('Estudiante registrado exitosamente');
-      setIsModalOpen(false);
-      setnuevoEstudiante({ nombre: '', apellido: '', rut: '', fechaNacimiento: '', curso: '', apoderadoId: '' });
-
-      cargarEstudiantes();
-    } catch (error) {
-      setError('Error al añadir el estudiante: ' + error);
+    const estudianteNuevo = await registerAlumno(nuevoEstudianteData);
+    if (!estudianteNuevo.success) {
+      alert('Error al añadir el estudiante');
+      return;
     }
+    alert('Estudiante registrado exitosamente');
+    setIsModalOpen(false);
+    setnuevoEstudiante({ nombre: '', apellido: '', rut: '', fechaNacimiento: '', curso: '', apoderadoId: '' });
+
+    cargarEstudiantes();
   };
 
   const handleEditStudent = (student: Alumno) => {
@@ -122,27 +115,24 @@ const StudentsPage: React.FC = () => {
   };
 
   const cargarCursos = async () => {
-    try {
-      const respuesta = await mostrarCursos();
-      if (respuesta.data) {
-        setCursos(respuesta.data);
-      }
-    } catch (error) {
-      setError("No se pudieron cargar los cursos");
+    const respuesta = await mostrarCursos();
+    if (respuesta.data) {
+      setCursos(respuesta.data);
+    }
+    else {
+      alert("No se pudieron cargar los cursos");
     }
   };
 
   const cargarApoderados = async () => {
-    try {
-      const respuesta = await mostrarApoderados();
-      if (respuesta.data) {
-        setApoderados(respuesta.data);
-      }
-    } catch (error) {
-      setError("No se pudieron cargar los apoderados");
+    const respuesta = await mostrarApoderados();
+    if (respuesta.data) {
+      setApoderados(respuesta.data);
+    }
+    else {
+      alert("No se pudieron cargar los apoderados");
     }
   };
-
 
   useEffect(() => {
     cargarEstudiantes();
@@ -157,37 +147,25 @@ const StudentsPage: React.FC = () => {
       apellido: nuevoEstudiante.apellido,
       curso: nuevoEstudiante.curso,
     };
-
-    try {
-      console.log("🚀 ~ handleEditConfirm ~ updatedData", updatedData);
-      const response = await updateAlumno(editingStudent.id, { ...updatedData });
-      console.log("🚀 ~ handleEditConfirm ~ response", response);
-      if (!response.success) {
-        throw new Error('Error al actualizar el estudiante');
-      }
-      setSuccessMessage("Estudiante actualizado exitosamente");
-      setEditingStudent(null);
-      setnuevoEstudiante({ nombre: '', apellido: '', rut: '', fechaNacimiento: '', curso: '', apoderadoId: '' });
-      setIsModalOpen(false);
-      cargarEstudiantes();
-    } catch (error) {
-      console.error("Error al actualizar el estudiante:", error);
-      setError("No se pudo actualizar el estudiante: " + error);
+    const response = await updateAlumno(editingStudent.id, { ...updatedData });
+    if (!response.success) {
+      alert('Error al actualizar el estudiante');
     }
+    alert("Estudiante actualizado exitosamente");
+    setEditingStudent(null);
+    setnuevoEstudiante({ nombre: '', apellido: '', rut: '', fechaNacimiento: '', curso: '', apoderadoId: '' });
+    setIsModalOpen(false);
+    cargarEstudiantes();
   };
 
   const handleDeleteStudent = async (id: string) => {
-    try {
-
-      const response = await eliminarAlumno({ id });
-      if (!response.success) {
-        throw new Error('Error al eliminar el estudiante');
-      }
-      setSuccessMessage("Estudiante eliminado exitosamente");
+    const response = await eliminarAlumno({ id });
+    if (response.success) {
+      alert("Estudiante eliminado exitosamente");
       cargarEstudiantes();
-
-    } catch (error) {
-      setError("No se pudo eliminar el estudiante");
+    }
+    else {
+      alert('Error al eliminar el estudiante');
     }
   };
 
@@ -201,12 +179,8 @@ const StudentsPage: React.FC = () => {
     <div style={styles.container as React.CSSProperties}>
       <header style={styles.header as React.CSSProperties}>
         <h1>Registros de Estudiantes</h1>
-        <img src="https://firebasestorage.googleapis.com/v0/b/escuelapp-f167e.appspot.com/o/Bajos.png?alt=media" alt="Logo Colegio" style={styles.schoolImage} />
       </header>
       <div style={styles.body as React.CSSProperties}>
-        <button style={styles.backButton} onClick={() => window.history.back()}>Volver al menú</button>
-
-        {/* Filtros de búsqueda */}
         <div style={styles.filterContainer as React.CSSProperties}>
           <input type="text" name="nombre" placeholder="Buscar por nombre" value={searchFilters.nombre} onChange={handleFilterChange} style={styles.filterInput as React.CSSProperties} />
           <input type="text" name="apellido" placeholder="Buscar por apellido" value={searchFilters.apellido} onChange={handleFilterChange} style={styles.filterInput as React.CSSProperties} />
@@ -217,11 +191,6 @@ const StudentsPage: React.FC = () => {
           <button style={styles.addButton} onClick={() => setIsModalOpen(true)}>Agregar Estudiante</button>
         </div>
 
-        {/* Mensajes de Error y Éxito */}
-        {error && <div style={{ color: 'red' }}>{error}</div>}
-        {successMessage && <div style={{ color: 'green' }}>{successMessage}</div>}
-
-        {/* Tabla de estudiantes */}
         <table style={styles.table as React.CSSProperties}>
           <thead style={styles.tableHead as React.CSSProperties}>
             <tr>

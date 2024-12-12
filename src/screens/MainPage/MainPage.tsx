@@ -63,6 +63,10 @@ const MainPage: React.FC = () => {
     };
   }, []);
 
+  useEffect(() => {
+    setMessages([{ user: 'bot', text: 'Hola, soy tu ayudante virtual. ¿En qué puedo ayudarte hoy?' }]);
+  }, []);
+
   const handleLogout = () => {
     signOut(auth)
       .then(() => {

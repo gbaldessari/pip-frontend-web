@@ -1,10 +1,9 @@
+import { Certificate, GradesCertificate } from "./documents.template";
+import { pdf } from '@react-pdf/renderer';
 import React, { useState, useEffect } from "react";
 import { documentsPageStyles as styles } from './documentsPage.styles';
-import { pdf } from '@react-pdf/renderer';
 import { getAlumnosdeUnApoderado, obtenerNotas } from "../../services/auth.service";
 import { AlumnoResponse, NotaResponse, Promedio } from "../../services/services.types";
-import { Certificate, GradesCertificate } from "./documents.template";
-
 
 const DownloadLink = ({ loading, onClick }: { loading: boolean, onClick: () => void }) => {
   const [hover, setHover] = useState(false);

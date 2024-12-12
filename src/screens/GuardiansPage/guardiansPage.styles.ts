@@ -2,22 +2,30 @@ import { CSSProperties } from "react";
 
 export const guardiansPageStyles = {
   container: {
-    backgroundColor: "#1d1551", // Color de fondo azul más oscuro
-    padding: "20px",
-    borderRadius: "8px",
-    minHeight: "100vh", // Para ocupar toda la altura de la pantalla
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center", // Centrar horizontalmente
-  } as CSSProperties,
+    top: '0',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+    color: '#f4f4f4',
+    backgroundColor: '#1d1551',
+    width: '100%',
+    height: '100vh',
+    overflow: 'hidden',
+    boxSizing: 'border-box',
+  },
   header: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginBottom: "20px",
-    width: "100%", // Para ocupar el ancho completo
-    padding: "0 20px", // Espacio lateral
-  } as CSSProperties,
+    top: '0',
+    backgroundColor: '#427390',
+    color: '#fff',
+    padding: '2.5rem 2rem',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'relative',
+    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.3)',
+    borderRadius: '8px',
+    marginBottom: '2rem',
+  },
   schoolImage: {
     borderRadius: "50%",
     width: "100px",
@@ -26,8 +34,7 @@ export const guardiansPageStyles = {
   body: {
     display: "flex",
     flexDirection: "column",
-    width: "100%", // Para que el cuerpo ocupe todo el ancho
-    padding: "0 20px", // Espacio lateral
+    width: "100%",
   } as CSSProperties,
   backButton: {
     backgroundColor: "#ffc107", // Color amarillo para el botón de volver

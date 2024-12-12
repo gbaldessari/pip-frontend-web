@@ -5,7 +5,6 @@ import { auth } from '../../firebase-config';
 import { homePageStyles as styles } from './homePage.styles';
 import { useUser } from '../../routes/UserContext';
 import { getStorage, ref, getDownloadURL } from 'firebase/storage';
-import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 const storage = getStorage();
 
@@ -17,7 +16,6 @@ const HomePage: React.FC = () => {
     const [showPrompt, setShowPrompt] = useState(true);
     const [headerImageUrl, setHeaderImageUrl] = useState('');
     const [bodyImageUrl, setBodyImageUrl] = useState('');
-    const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
     const location = useLocation();
     const { fetchUserData, user } = useUser();
@@ -122,21 +120,13 @@ const HomePage: React.FC = () => {
                     />
                     <div style={styles.passwordContainer}>
                         <input
-                            type={showPassword ? 'text' : 'password'}
+                            type='password'
                             placeholder="Contraseña"
                             style={styles.input as React.CSSProperties}
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             onKeyDown={handleKeyDown}
                         />
-                        <button
-                            style={styles.eyeButton}
-                            onMouseDown={() => setShowPassword(true)}
-                            onMouseUp={() => setShowPassword(false)}
-                            onMouseLeave={() => setShowPassword(false)}
-                        >
-                            {showPassword ? <FaEyeSlash /> : <FaEye />}
-                        </button>
                     </div>
                     <button 
                         style={styles.loginButton as React.CSSProperties}

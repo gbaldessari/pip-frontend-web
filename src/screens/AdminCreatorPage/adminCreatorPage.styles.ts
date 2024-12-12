@@ -9,7 +9,7 @@ export const adminCreatorPageStyles = {
         overflowY: 'auto', // Permite scroll si es necesario
     },
     formContainer: {
-        backgroundColor: '#fff',
+        backgroundColor: '#1d1551',
         padding: '40px',
         borderRadius: '8px',
         boxShadow: '0px 0px 15px rgba(0, 0, 0, 0.1)',
@@ -20,7 +20,7 @@ export const adminCreatorPageStyles = {
         marginBottom: '20px',
         fontSize: '24px',
         textAlign: 'center',
-        color: '#333',
+        color: '#fff',
     },
     input: {
         width: '100%',

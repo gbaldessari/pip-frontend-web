@@ -4,8 +4,6 @@ import { Curso, Profesor, Asignatura, RegisterAsignatura } from '../../services/
 import { registerAsignatura, mostrarAsignatura, eliminarAsignatura, mostrarCursos, mostrarProfesores, updateAsignatura } from '../../services/auth.service'; // Asegúrate de que las rutas sean correctas
 
 const SubjectsPage: React.FC = () => {
-  const [error, setError] = useState('');
-  const [successMessage, setSuccessMessage] = useState('');
   const [cursos, setCursos] = useState<Curso[]>([]);
   const [profesores, setProfesores] = useState<Profesor[]>([]);
   const [asignaturas, setAsignaturas] = useState<Asignatura[]>([]);
@@ -36,24 +34,22 @@ const SubjectsPage: React.FC = () => {
   };
 
   const cargarCursos = async () => {
-    try {
-      const respuesta = await mostrarCursos();
-      if (respuesta.data) {
-        setCursos(respuesta.data);
-      }
-    } catch (error) {
-      setError("No se pudieron cargar los cursos");
+    const respuesta = await mostrarCursos();
+    if (respuesta.data) {
+      setCursos(respuesta.data);
+    }
+    else {
+      alert("No se pudieron cargar los cursos");
     }
   };
 
   const cargarProfesores = async () => {
-    try {
-      const respuesta = await mostrarProfesores();
-      if (respuesta.data) {
-        setProfesores(respuesta.data);
-      }
-    } catch (error) {
-      setError("No se pudieron cargar los profesores");
+    const respuesta = await mostrarProfesores();
+    if (respuesta.data) {
+      setProfesores(respuesta.data);
+    }
+    else {
+      alert("No se pudieron cargar los profesores");
     }
 
   };
@@ -71,10 +67,9 @@ const SubjectsPage: React.FC = () => {
   };
 
   const handleAddSubject = async () => {
-    console.log(nuevaAsignatura);
     const response = await registerAsignatura(nuevaAsignatura);
     if (response.data) {
-      setSuccessMessage("Asignatura agregada correctamente");
+      alert("Asignatura agregada correctamente");
       cargarAsignatura();
       closeModal();
     } else {
@@ -84,35 +79,26 @@ const SubjectsPage: React.FC = () => {
   };
 
 
-  const handleUpdateSubject = async (subjectId:string) => {
+  const handleUpdateSubject = async (subjectId: string) => {
     if (!editingSubject) return;
-    try {
-      const response = await updateAsignatura(subjectId, editingSubject);
-      if (response.data) {
-        setSuccessMessage("Asignatura actualizada correctamente");
-        cargarAsignatura();
-        closeModal();
-      } else {
-        console.error("Error al actualizar asignatura:", response.error);
-        alert("Error al actualizar asignatura");
-      }
-    } catch (error) {
-      console.error("Error al actualizar asignatura:", error);
+    const response = await updateAsignatura(subjectId, editingSubject);
+    if (response.data) {
+      alert("Asignatura actualizada correctamente");
+      cargarAsignatura();
+      closeModal();
+    } else {
+      alert("Error al actualizar asignatura");
     }
   };
 
   const handleDeleteSubject = async (id: string) => {
-    try {
-      const response = await eliminarAsignatura({ id });
-      if (!response.success) {
-        console.error("Error al eliminar asignatura:", response.error);
-      } else {
-        setAsignaturas(asignaturas.filter(subject => subject.id !== id));
-        setSuccessMessage("Asignatura eliminada correctamente");
-        cargarAsignatura();
-      }
-    } catch (error) {
-      console.error("Error al eliminar asignatura:", error);
+    const response = await eliminarAsignatura({ id });
+    if (!response.success) {
+      alert("Error al eliminar asignatura");
+    } else {
+      setAsignaturas(asignaturas.filter(subject => subject.id !== id));
+      alert("Asignatura eliminada correctamente");
+      cargarAsignatura();
     }
   };
 
@@ -148,10 +134,8 @@ const SubjectsPage: React.FC = () => {
     <div style={styles.container as React.CSSProperties}>
       <header style={styles.header as React.CSSProperties}>
         <h1>Gestión de Asignaturas</h1>
-        <img src="https://firebasestorage.googleapis.com/v0/b/escuelapp-f167e.appspot.com/o/Bajos.png?alt=media" alt="Logo Colegio" style={styles.schoolImage} />
       </header>
       <div style={styles.body as React.CSSProperties}>
-        <button style={styles.backButton} onClick={() => window.history.back()}>Volver al menú</button>
         <div style={styles.filterContainer as React.CSSProperties}>
           <input
             type="text"
@@ -176,9 +160,6 @@ const SubjectsPage: React.FC = () => {
           />
           <button style={styles.addButton} onClick={openModal}>Agregar Asignatura</button>
         </div>
-
-        {error && <div style={{ color: 'red' }}>{error}</div>}
-        {successMessage && <div style={{ color: 'green' }}>{successMessage}</div>}
 
         <table style={styles.table as React.CSSProperties}>
           <thead style={styles.tableHead as React.CSSProperties}>
